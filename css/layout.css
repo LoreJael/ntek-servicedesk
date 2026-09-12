@@ -1,0 +1,39 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.logo {
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-acento);
+}
+
+.nav-principal {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-principal a {
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.contenedor {
+  padding: 1.5rem;
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .nav-principal {
+    width: 100%;
+  }
+}

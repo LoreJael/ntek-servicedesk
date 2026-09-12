@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel - NTEK ServiceDesk Lite</title>
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/layout.css">
+  <link rel="stylesheet" href="../../css/componentes.css">
+</head>
+
+<body>
+
+  <header class="header">
+    <p class="logo">NTEK ServiceDesk Lite</p>
+    <nav class="nav-principal" aria-label="Principal">
+      <a href="panel.html">Panel</a>
+      <a href="mis-tickets.html">Mis tickets</a>
+      <a href="nueva-solicitud.html">Nueva solicitud</a>
+      <a href="perfil.html">Perfil</a>
+    </nav>
+    <span class="rol-badge">Cliente</span>
+    <button class="boton">Cerrar sesión</button>
+  </header>
+
+  <main class="contenedor">
+    <section class="ultimos-tickets">
+      <h2>Últimos tickets</h2>
+      <ul class="lista-tickets" id="lista-ultimos-tickets"></ul>
+    </section>
+
+    <section class="ultimos-comentarios">
+      <h2>Últimos comentarios</h2>
+      <ul class="lista-comentarios" id="lista-ultimos-comentarios"></ul>
+    </section>
+
+    <section class="resumen-estados-seccion">
+      <h2>Resumen de tickets</h2>
+      <div class="tarjeta resumen-estados" id="resumen-estados"></div>
+    </section>
+
+
+  </main>
+
+
+  <script type="module" src="../../js/panel-cliente.js"></script>
+
+</body>
+
+</html>

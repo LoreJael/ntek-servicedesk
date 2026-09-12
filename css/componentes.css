@@ -1,0 +1,87 @@
+.form-grupo {
+  margin-bottom: 1rem;
+}
+
+.form-grupo label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.form-grupo input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 6px;
+  font-family: var(--fuente-base);
+  font-size: 1rem;
+}
+
+.boton {
+  display: inline-block;
+  padding: 0.6rem 1.25rem;
+  background-color: var(--color-acento);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--fuente-base);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.tarjeta {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid var(--color-borde);
+  border-radius: 10px;
+}
+
+.lista-tickets,
+.lista-comentarios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lista-tickets .tarjeta,
+.lista-comentarios .tarjeta {
+  margin: 0;
+  max-width: none;
+  flex: 1 1 260px;
+}
+
+.comentario-ticket {
+  font-size: 0.85rem;
+  color: var(--color-texto-secundario, #666);
+  margin-bottom: 0.5rem;
+}
+
+.resumen-estados {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.resumen-item {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.resumen-numero {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-acento);
+  margin: 0;
+}
+
+.resumen-etiqueta {
+  margin: 0;
+  font-size: 0.9rem;
+}
