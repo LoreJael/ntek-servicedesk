@@ -14,3 +14,11 @@ export function activarBotonCerrarSesion() {
     window.location.href = '../publicas/login.html';
   });
 }
+
+export async function protegerRuta() {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    window.location.href = '../publicas/login.html';
+  }
+}
