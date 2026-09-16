@@ -4,6 +4,12 @@
   --color-texto: #14231b;
   --color-acento: #0d8148;
   --color-borde: #d7e7db;
+  
+  --color-prioridad-baja: #eaf6ee;
+  --color-prioridad-media: #fdf3d7;
+  --color-prioridad-alta: #fbe3cf;
+  --color-prioridad-critica: #fbdcdc;
+
 
   /* Tipografia - valor PROVISORIO */
   --fuente-base: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;

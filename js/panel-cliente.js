@@ -1,4 +1,7 @@
 import { ticketsSimulados, comentariosSimulados, perfilActual } from './datos-simulados.js';
+import { activarBotonCerrarSesion } from './sesion.js';
+
+activarBotonCerrarSesion();
 
 // Se realiza una copia del arreglo antes de ordenar, para no modificar el original
 const ticketsOrdenados = [...ticketsSimulados].sort(

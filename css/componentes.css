@@ -85,3 +85,22 @@
   margin: 0;
   font-size: 0.9rem;
 }
+
+#lista-tickets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+  list-style: none;
+  margin: 0;
+}
+
+#lista-tickets .tarjeta {
+  max-width: none;
+  margin: 0;
+}
+
+.tarjeta--prioridad-baja    { background-color: var(--color-prioridad-baja); }
+.tarjeta--prioridad-media   { background-color: var(--color-prioridad-media); }
+.tarjeta--prioridad-alta    { background-color: var(--color-prioridad-alta); }
+.tarjeta--prioridad-critica { background-color: var(--color-prioridad-critica); }
