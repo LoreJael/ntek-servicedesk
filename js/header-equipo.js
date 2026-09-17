@@ -1,5 +1,10 @@
+ const etiquetasRol = {
+  tecnico: "Técnico",
+  admin: "Administrador"
+};
+
 export function crearHeaderEquipo(rol) {
-  const esAdmin = rol === "Administrador";
+  const esAdmin = rol === "admin";
 
   const enlacesAdmin = esAdmin
     ? `
@@ -15,9 +20,8 @@ export function crearHeaderEquipo(rol) {
         <a href="indicadores.html">Indicadores</a>
         <a href="perfil.html">Perfil</a>${enlacesAdmin}
       </nav>
-      <span class="rol-badge">${rol}</span>
+      <span class="rol-badge">${etiquetasRol[rol]}</span>
       <button class="boton">Cerrar sesión</button>
     </header>
   `;
 }
-

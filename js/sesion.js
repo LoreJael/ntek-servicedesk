@@ -35,5 +35,8 @@ export async function protegerRuta(rolesPermitidos) {
 
   if (error || !perfil || !rolesPermitidos.includes(perfil.role)) {
     window.location.href = '../publicas/login.html';
+    return;
   }
+
+  return perfil.role;
 }
