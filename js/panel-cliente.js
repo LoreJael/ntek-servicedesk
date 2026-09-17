@@ -1,9 +1,12 @@
 import { protegerRuta } from './sesion.js';
-await protegerRuta(['cliente']);
+const rolActual = await protegerRuta(['cliente']);
+import { crearHeaderCliente } from './header-cliente.js';
 import { ticketsSimulados, comentariosSimulados, perfilActual } from './datos-simulados.js';
 import { activarBotonCerrarSesion } from './sesion.js';
 
+document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
+
 
 // Se realiza una copia del arreglo antes de ordenar, para no modificar el original
 const ticketsOrdenados = [...ticketsSimulados].sort(
