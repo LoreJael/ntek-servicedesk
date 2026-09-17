@@ -29,11 +29,9 @@ formLogin.addEventListener('submit', async (evento) => {
     return;
   }
 
-  if (perfil.role === 'cliente') {
+   if (perfil.role === 'cliente') {
     window.location.href = '../cliente/panel.html';
-  } else if (perfil.role === 'tecnico') {
-    window.location.href = '../equipo/RUTA_PENDIENTE.html';
-  } else if (perfil.role === 'admin') {
-    window.location.href = '../admin/RUTA_PENDIENTE.html';
+  } else if (perfil.role === 'tecnico' || perfil.role === 'admin') {
+    window.location.href = '../equipo/bandeja-global.html';
   }
 });

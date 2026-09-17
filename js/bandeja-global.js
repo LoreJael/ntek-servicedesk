@@ -1,9 +1,7 @@
 import { protegerRuta } from './sesion.js';
-await protegerRuta(['tecnico', 'admin']);
+const rolActual = await protegerRuta(['tecnico', 'admin']);
 import { crearHeaderEquipo } from "./header-equipo.js";
 import { activarBotonCerrarSesion } from "./sesion.js";
-
-const rolActual = "Técnico"; // dato simulado por ahora
 
 document.getElementById("header-placeholder").innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
