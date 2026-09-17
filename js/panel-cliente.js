@@ -1,5 +1,5 @@
 import { protegerRuta } from './sesion.js';
-await protegerRuta();
+await protegerRuta(['cliente']);
 import { ticketsSimulados, comentariosSimulados, perfilActual } from './datos-simulados.js';
 import { activarBotonCerrarSesion } from './sesion.js';
 

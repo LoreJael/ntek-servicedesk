@@ -1,0 +1,10 @@
+```mermaid
+erDiagram
+    PROFILES ||--o{ TICKETS : "crea"
+    PROFILES o|--o{ TICKETS : "asignado"
+    TICKETS ||--o{ COMMENTS : "tiene"
+    PROFILES ||--o{ COMMENTS : "escribe"
+    TICKETS ||--o{ ATTACHMENTS : "tiene"
+    PROFILES ||--o{ ATTACHMENTS : "sube"
+    PROFILES ||--o{ AUDIT_EVENTS : "genera"
+```

@@ -1,4 +1,5 @@
 import { supabase } from './supabase-client.js';
+import { mostrarNotificacion } from './notificaciones.js';
 
 const formRegistro = document.getElementById('form-registro');
 const mensaje = document.getElementById('mensaje');
@@ -44,6 +45,6 @@ formRegistro.addEventListener('submit', async (evento) => {
 
   // Si la confirmación de correo está activada, no hay sesión todavía:
   // el usuario tiene que hacer clic en el correo antes de poder entrar.
-  mensaje.textContent = 'Cuenta creada. Revisa tu correo para confirmarla antes de iniciar sesión.';
-  formRegistro.reset();
+ mostrarNotificacion('Cuenta creada. Revisa tu correo para confirmarla antes de iniciar sesión.', 'exito');
+formRegistro.reset();
 });

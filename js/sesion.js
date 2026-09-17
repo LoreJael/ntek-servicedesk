@@ -15,10 +15,25 @@ export function activarBotonCerrarSesion() {
   });
 }
 
-export async function protegerRuta() {
+export async function protegerRuta(rolesPermitidos) {
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
+    window.location.href = '../publicas/login.html';
+    return;
+  }
+
+  if (!rolesPermitidos) {
+    return;
+  }
+
+  const { data: perfil, error } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', session.user.id)
+    .single();
+
+  if (error || !perfil || !rolesPermitidos.includes(perfil.role)) {
     window.location.href = '../publicas/login.html';
   }
 }

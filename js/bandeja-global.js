@@ -1,5 +1,5 @@
 import { protegerRuta } from './sesion.js';
-await protegerRuta();
+await protegerRuta(['tecnico', 'admin']);
 import { crearHeaderEquipo } from "./header-equipo.js";
 import { activarBotonCerrarSesion } from "./sesion.js";
 
