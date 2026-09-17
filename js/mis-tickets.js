@@ -36,11 +36,12 @@ ticketsOrdenados.forEach((ticket) => {
   const item = document.createElement('li');
   item.classList.add('tarjeta', `tarjeta--prioridad-${ticket.priority}`);
 
-  item.innerHTML = `
+   item.innerHTML = `
     <p class="ticket-id">N.° ${ticket.id}</p>
     <p class="ticket-titulo">${ticket.title}</p>
     <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]}</p>
     <p class="ticket-fecha">${fecha}</p>
+    <a href="detalle-ticket.html?id=${ticket.id}" class="boton">Ver detalle</a>
   `;
 
   listaTickets.appendChild(item);
