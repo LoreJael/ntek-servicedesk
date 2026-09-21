@@ -11,7 +11,8 @@
   <link rel="stylesheet" href="../../css/componentes.css">
 </head>
 
-<body>
+<body class="verificando">
+  <div class="pantalla-carga">Cargando...</div>
 
   <div id="header-placeholder"></div>
 
@@ -19,7 +20,15 @@
     <div class="tarjeta">
       <h1>Perfil</h1>
 
-      <form id="form-perfil">
+      <div id="vista-perfil">
+        <p><strong>Correo electrónico:</strong> <span id="ver-correo"></span></p>
+        <p><strong>Nombre completo:</strong> <span id="ver-nombre"></span></p>
+        <p><strong>Teléfono:</strong> <span id="ver-telefono"></span></p>
+        <p><strong>Empresa:</strong> <span id="ver-empresa"></span></p>
+        <button type="button" class="boton" id="boton-editar">Editar</button>
+      </div>
+
+      <form id="form-perfil" hidden>
         <div class="form-grupo">
           <label for="correo">Correo electrónico</label>
           <input type="email" id="correo" name="correo" disabled>
@@ -41,6 +50,7 @@
         </div>
 
         <button type="submit" class="boton">Guardar cambios</button>
+        <button type="button" class="boton" id="boton-cancelar">Cancelar</button>
       </form>
     </div>
   </main>

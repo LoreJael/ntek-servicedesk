@@ -24,6 +24,7 @@ export async function protegerRuta(rolesPermitidos) {
   }
 
   if (!rolesPermitidos) {
+    document.body.classList.remove('verificando');
     return;
   }
 
@@ -38,5 +39,6 @@ export async function protegerRuta(rolesPermitidos) {
     return;
   }
 
+  document.body.classList.remove('verificando');
   return perfil.role;
 }
