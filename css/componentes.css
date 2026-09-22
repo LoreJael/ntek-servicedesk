@@ -161,3 +161,20 @@ body.verificando .pantalla-carga {
   justify-content: center;
 }
 
+.estado-vacio,
+.estado-error p {
+  text-align: center;
+  color: var(--color-texto);
+  padding: 2rem 1rem;
+}
+
+.estado-error {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.codigo-error {
+  margin: 0 0 0.25rem;
+  font-weight: 700;
+  color: var(--color-acento);
+}
