@@ -2,7 +2,7 @@ import { protegerRuta } from './sesion.js';
 const rolActual = await protegerRuta(['cliente']);
 import { crearHeaderCliente } from './header-cliente.js';
 import { activarBotonCerrarSesion } from './sesion.js';
-import { ticketsSimulados } from './datos-simulados.js';
+import { supabase } from './supabase-client.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
@@ -23,21 +23,25 @@ const etiquetasPrioridad = {
   critica: "Crítica"
 };
 
-// Mismo criterio que en panel-cliente.js: los más recientes primero
-const ticketsOrdenados = [...ticketsSimulados].sort(
-  (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
-);
+const { data: tickets, error } = await supabase
+  .from('tickets')
+  .select('id, title, status, priority, updated_at')
+  .order('updated_at', { ascending: false });
+
+if (error) {
+  console.error(error);
+}
 
 const listaTickets = document.querySelector('#lista-tickets');
 
-ticketsOrdenados.forEach((ticket) => {
-  const fecha = new Date(ticket.updated_at).toLocaleDateString('es-CL');
+(tickets ?? []).forEach((ticket) => {
+  const fecha = new Date(ticket.updated_at).toLocaleDateString('es-CL', { timeZone: 'America/Santiago' });
 
   const item = document.createElement('li');
   item.classList.add('tarjeta', `tarjeta--prioridad-${ticket.priority}`);
 
-   item.innerHTML = `
-    <p class="ticket-id">N.° ${ticket.id}</p>
+  item.innerHTML = `
+    <p class="ticket-id">N.° ${ticket.id.slice(0, 8)}</p>
     <p class="ticket-titulo">${ticket.title}</p>
     <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]}</p>
     <p class="ticket-fecha">${fecha}</p>
