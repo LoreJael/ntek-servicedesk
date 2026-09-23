@@ -3,6 +3,7 @@ const rolActual = await protegerRuta(['cliente']);
 import { crearHeaderCliente } from './header-cliente.js';
 import { activarBotonCerrarSesion } from './sesion.js';
 import { supabase } from './supabase-client.js';
+import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
@@ -28,11 +29,14 @@ const { data: tickets, error } = await supabase
   .select('id, title, status, priority, updated_at')
   .order('updated_at', { ascending: false });
 
+const listaTickets = document.querySelector('#lista-tickets');
+
 if (error) {
   console.error(error);
+  mostrarErrorRecuperable(listaTickets, 'No pudimos cargar tus tickets.', () => location.reload());
+} else if (tickets.length === 0) {
+  mostrarEstadoVacio(listaTickets, 'Aún no tienes solicitudes. Puedes crear una desde Nueva solicitud.');
 }
-
-const listaTickets = document.querySelector('#lista-tickets');
 
 (tickets ?? []).forEach((ticket) => {
   const fecha = new Date(ticket.updated_at).toLocaleDateString('es-CL', { timeZone: 'America/Santiago' });
