@@ -37,5 +37,7 @@ formNuevaSolicitud.addEventListener('submit', async (evento) => {
 
   const idCorto = data.id.slice(0, 8);
   mostrarNotificacion(`Solicitud creada con el N.° ${idCorto}. Quedó en estado Nuevo.`, 'exito');
-  formNuevaSolicitud.reset();
+    setTimeout(() => {
+    window.location.href = `detalle-ticket.html?id=${data.id}`;
+  }, 2000);
 });

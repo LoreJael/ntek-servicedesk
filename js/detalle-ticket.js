@@ -2,7 +2,8 @@ import { protegerRuta } from './sesion.js';
 const rolActual = await protegerRuta(['cliente']);
 import { crearHeaderCliente } from './header-cliente.js';
 import { activarBotonCerrarSesion } from './sesion.js';
-import { ticketsSimulados, comentariosSimulados, perfilActual } from './datos-simulados.js';
+import { supabase } from './supabase-client.js';
+import { comentariosSimulados, perfilActual } from './datos-simulados.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
@@ -25,23 +26,26 @@ const etiquetasPrioridad = {
 
 // Lee "?id=101" desde la URL actual
 const parametros = new URLSearchParams(window.location.search);
-const idTicket = Number(parametros.get('id'));
+const idTicket = parametros.get('id');
 
-const ticket = ticketsSimulados.find(
-  (t) => t.id === idTicket && t.created_by === perfilActual.id
-);
+const { data: ticket, error } = await supabase
+  .from('tickets')
+  .select('*')
+  .eq('id', idTicket)
+  .maybeSingle();
 
 const contenedorDetalle = document.querySelector('#detalle-ticket');
 
-if (!ticket) {
+if (error || !ticket) {
   contenedorDetalle.innerHTML = '<p>No se encontró el ticket solicitado.</p>';
 } else {
-  const fechaCreacion = new Date(ticket.created_at).toLocaleDateString('es-CL');
-  const fechaActualizacion = new Date(ticket.updated_at).toLocaleDateString('es-CL');
+  const formatoFechaHora = { timeZone: 'America/Santiago', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+  const fechaCreacion = new Date(ticket.created_at).toLocaleString('es-CL', formatoFechaHora);
+  const fechaActualizacion = new Date(ticket.updated_at).toLocaleString('es-CL', formatoFechaHora);
 
   contenedorDetalle.classList.add(`tarjeta--prioridad-${ticket.priority}`);
   contenedorDetalle.innerHTML = `
-    <p class="ticket-id">N.° ${ticket.id}</p>
+  <p class="ticket-id">N.° ${ticket.id.slice(0, 8)}</p>
     <h1>${ticket.title}</h1>
     <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]} · ${ticket.category}</p>
     <p class="ticket-descripcion">${ticket.description}</p>
