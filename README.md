@@ -27,3 +27,5 @@ HTML, CSS, JavaScript (módulos ES, sin framework), Supabase (Auth, Postgres, St
 Pendiente (etapa 7).
 
 Proyecto desarrollado durante la práctica profesional.
+
+Despliegue:    https://ntek-servicedesk.onrender.com
