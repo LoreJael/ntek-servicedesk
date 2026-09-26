@@ -26,6 +26,10 @@
   padding: 1.5rem;
 }
 
+main {
+  padding: 1.5rem;
+}
+
 @media (max-width: 480px) {
   .header {
     flex-direction: column;
@@ -36,4 +40,5 @@
   .nav-principal {
     width: 100%;
   }
+
 }

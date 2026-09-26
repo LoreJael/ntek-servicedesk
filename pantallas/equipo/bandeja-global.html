@@ -12,7 +12,7 @@
 </head>
 
 <body class="verificando">
-  <div class="pantalla-carga">Cargando...</div>
+    <div class="pantalla-carga">Cargando...</div>
 
     <div id="header-placeholder"></div>
 
@@ -20,7 +20,32 @@
         <h1>Bandeja global</h1>
 
         <section class="filtros">
-            <!-- los filtros los armamos en un paso aparte, todavía no -->
+            <input type="search" id="filtro-texto" placeholder="Buscar por título" aria-label="Buscar por título">
+
+            <select id="filtro-estado" aria-label="Filtrar por estado">
+                <option value="">Todos los estados</option>
+                <option value="nuevo">Nuevo</option>
+                <option value="en_revision">En revisión</option>
+                <option value="en_progreso">En progreso</option>
+                <option value="en_espera">En espera</option>
+                <option value="resuelto">Resuelto</option>
+                <option value="cerrado">Cerrado</option>
+            </select>
+
+            <select id="filtro-prioridad" aria-label="Filtrar por prioridad">
+                <option value="">Todas las prioridades</option>
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+                <option value="critica">Crítica</option>
+            </select>
+
+            <select id="filtro-categoria" aria-label="Filtrar por categoría">
+                <option value="">Todas las categorías</option>
+                <option value="Red">Red</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Software">Software</option>
+            </select>
         </section>
 
         <section>

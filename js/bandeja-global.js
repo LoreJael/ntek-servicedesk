@@ -36,13 +36,15 @@ const { data: perfiles, error: errorPerfiles } = await supabase
 
 const listaTickets = document.querySelector('#lista-tickets');
 
-if (errorTickets || errorPerfiles) {
-  console.error(errorTickets || errorPerfiles);
-  mostrarErrorRecuperable(listaTickets, 'No pudimos cargar la bandeja.', () => location.reload());
-} else if (tickets.length === 0) {
-  mostrarEstadoVacio(listaTickets, 'No hay tickets para mostrar.');
-} else {
-  tickets.forEach((ticket) => {
+function dibujarTickets(lista) {
+  listaTickets.innerHTML = '';
+
+  if (lista.length === 0) {
+    mostrarEstadoVacio(listaTickets, 'No hay tickets para mostrar.');
+    return;
+  }
+
+  lista.forEach((ticket) => {
     const cliente = perfiles.find((perfil) => perfil.id === ticket.created_by);
     const tecnico = perfiles.find((perfil) => perfil.id === ticket.assigned_to);
 
@@ -66,4 +68,41 @@ if (errorTickets || errorPerfiles) {
 
     listaTickets.appendChild(item);
   });
+}
+
+const filtroTexto = document.querySelector('#filtro-texto');
+const filtroEstado = document.querySelector('#filtro-estado');
+const filtroPrioridad = document.querySelector('#filtro-prioridad');
+const filtroCategoria = document.querySelector('#filtro-categoria');
+
+function aplicarFiltros() {
+  const texto = filtroTexto.value.toLowerCase();
+  const estado = filtroEstado.value;
+  const prioridad = filtroPrioridad.value;
+  const categoria = filtroCategoria.value;
+
+  const filtrados = tickets.filter((ticket) => {
+    const coincideTexto = ticket.title.toLowerCase().includes(texto);
+    const coincideEstado = estado === '' || ticket.status === estado;
+    const coincidePrioridad = prioridad === '' || ticket.priority === prioridad;
+    const coincideCategoria = categoria === '' || ticket.category === categoria;
+
+    return coincideTexto && coincideEstado && coincidePrioridad && coincideCategoria;
+  });
+
+  dibujarTickets(filtrados);
+}
+
+
+
+if (errorTickets || errorPerfiles) {
+  console.error(errorTickets || errorPerfiles);
+  mostrarErrorRecuperable(listaTickets, 'No pudimos cargar la bandeja.', () => location.reload());
+} else {
+  dibujarTickets(tickets);
+
+  filtroTexto.addEventListener('input', aplicarFiltros);
+  filtroEstado.addEventListener('change', aplicarFiltros);
+  filtroPrioridad.addEventListener('change', aplicarFiltros);
+  filtroCategoria.addEventListener('change', aplicarFiltros);
 }
