@@ -2,6 +2,7 @@ import { protegerRuta } from './sesion.js';
 const rolActual = await protegerRuta(['tecnico', 'admin']);
 import { crearHeaderEquipo } from "./header-equipo.js";
 import { activarBotonCerrarSesion } from "./sesion.js";
+import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
 
 document.getElementById("header-placeholder").innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
@@ -37,6 +38,9 @@ const listaTickets = document.querySelector('#lista-tickets');
 
 if (errorTickets || errorPerfiles) {
   console.error(errorTickets || errorPerfiles);
+  mostrarErrorRecuperable(listaTickets, 'No pudimos cargar la bandeja.', () => location.reload());
+} else if (tickets.length === 0) {
+  mostrarEstadoVacio(listaTickets, 'No hay tickets para mostrar.');
 } else {
   tickets.forEach((ticket) => {
     const cliente = perfiles.find((perfil) => perfil.id === ticket.created_by);

@@ -166,11 +166,13 @@ body.verificando .pantalla-carga {
   text-align: center;
   color: var(--color-texto);
   padding: 2rem 1rem;
+  grid-column: 1 / -1;
 }
 
 .estado-error {
   text-align: center;
   padding: 2rem 1rem;
+  grid-column: 1 / -1;
 }
 
 .codigo-error {
