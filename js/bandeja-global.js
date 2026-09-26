@@ -6,7 +6,7 @@ import { activarBotonCerrarSesion } from "./sesion.js";
 document.getElementById("header-placeholder").innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
 
-import { perfilesSimulados, ticketsEquipoSimulados } from "./datos-simulados-equipo.js";
+import { supabase } from './supabase-client.js';
 
 const etiquetasEstado = {
   nuevo: "Nuevo",
@@ -24,29 +24,42 @@ const etiquetasPrioridad = {
   critica: "Crítica"
 };
 
+const { data: tickets, error: errorTickets } = await supabase
+  .from('tickets')
+  .select('*')
+  .order('updated_at', { ascending: false });
+
+const { data: perfiles, error: errorPerfiles } = await supabase
+  .from('profiles')
+  .select('id, full_name, company');
+
 const listaTickets = document.querySelector('#lista-tickets');
 
-ticketsEquipoSimulados.forEach((ticket) => {
-  const cliente = perfilesSimulados.find((perfil) => perfil.id === ticket.created_by);
-  const tecnico = perfilesSimulados.find((perfil) => perfil.id === ticket.assigned_to);
+if (errorTickets || errorPerfiles) {
+  console.error(errorTickets || errorPerfiles);
+} else {
+  tickets.forEach((ticket) => {
+    const cliente = perfiles.find((perfil) => perfil.id === ticket.created_by);
+    const tecnico = perfiles.find((perfil) => perfil.id === ticket.assigned_to);
 
-  const fecha = new Date(ticket.updated_at).toLocaleDateString('es-CL');
+    const fecha = new Date(ticket.updated_at).toLocaleDateString('es-CL', { timeZone: 'America/Santiago' });
 
-  const botonTomarCaso = ticket.assigned_to === null
-    ? `<button class="boton" data-ticket-id="${ticket.id}">Tomar caso</button>`
-    : '';
+    const botonTomarCaso = ticket.assigned_to === null
+      ? `<button class="boton" data-ticket-id="${ticket.id}">Tomar caso</button>`
+      : '';
 
-  const item = document.createElement('li');
-  item.classList.add('tarjeta', `tarjeta--prioridad-${ticket.priority}`);
+    const item = document.createElement('li');
+    item.classList.add('tarjeta', `tarjeta--prioridad-${ticket.priority}`);
 
-  item.innerHTML = `
-    <p class="ticket-titulo">${ticket.title}</p>
-    <p class="ticket-cliente">${cliente.company}</p>
-    <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]}</p>
-    <p class="ticket-asignado">${tecnico ? 'Asignado a ' + tecnico.full_name : 'Sin asignar'}</p>
-    <p class="ticket-fecha">${fecha}</p>
-    ${botonTomarCaso}
-  `;
+    item.innerHTML = `
+      <p class="ticket-titulo">${ticket.title}</p>
+      <p class="ticket-cliente">${cliente ? cliente.company : 'Cliente no disponible'}</p>
+      <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]}</p>
+      <p class="ticket-asignado">${tecnico ? 'Asignado a ' + tecnico.full_name : 'Sin asignar'}</p>
+      <p class="ticket-fecha">${fecha}</p>
+      ${botonTomarCaso}
+    `;
 
-  listaTickets.appendChild(item);
-});
+    listaTickets.appendChild(item);
+  });
+}
