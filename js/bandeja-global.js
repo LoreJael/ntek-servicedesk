@@ -3,6 +3,7 @@ const rolActual = await protegerRuta(['tecnico', 'admin']);
 import { crearHeaderEquipo } from "./header-equipo.js";
 import { activarBotonCerrarSesion } from "./sesion.js";
 import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
+import { mostrarNotificacion } from './notificaciones.js';
 
 document.getElementById("header-placeholder").innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
@@ -25,16 +26,31 @@ const etiquetasPrioridad = {
   critica: "Crítica"
 };
 
-const { data: tickets, error: errorTickets } = await supabase
-  .from('tickets')
-  .select('*')
-  .order('updated_at', { ascending: false });
-
-const { data: perfiles, error: errorPerfiles } = await supabase
-  .from('profiles')
-  .select('id, full_name, company');
+let tickets = [];
+let perfiles = [];
 
 const listaTickets = document.querySelector('#lista-tickets');
+
+async function cargarTickets() {
+  const { data: datosTickets, error: errorTickets } = await supabase
+    .from('tickets')
+    .select('*')
+    .order('updated_at', { ascending: false });
+
+  const { data: datosPerfiles, error: errorPerfiles } = await supabase
+    .from('profiles')
+    .select('id, full_name, company');
+
+  if (errorTickets || errorPerfiles) {
+    console.error(errorTickets || errorPerfiles);
+    mostrarErrorRecuperable(listaTickets, 'No pudimos cargar la bandeja.', () => location.reload());
+    return;
+  }
+
+  tickets = datosTickets;
+  perfiles = datosPerfiles;
+  aplicarFiltros();
+}
 
 function dibujarTickets(lista) {
   listaTickets.innerHTML = '';
@@ -66,8 +82,40 @@ function dibujarTickets(lista) {
       ${botonTomarCaso}
     `;
 
+        const boton = item.querySelector('button[data-ticket-id]');
+    if (boton) {
+      boton.addEventListener('click', () => tomarCaso(ticket.id));
+    }
+
     listaTickets.appendChild(item);
+   
   });
+}
+
+async function tomarCaso(idTicket) {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { data, error } = await supabase
+    .from('tickets')
+    .update({ assigned_to: user.id })
+    .eq('id', idTicket)
+    .is('assigned_to', null)
+    .select();
+
+  if (error) {
+    mostrarNotificacion('No se pudo tomar el caso. Intenta de nuevo.', 'error');
+    return;
+  }
+
+  if (data.length === 0) {
+    mostrarNotificacion('Este caso ya fue tomado por otro técnico.', 'error');
+    await cargarTickets();
+    return;
+  }
+
+  mostrarNotificacion('Tomaste el caso correctamente.', 'exito');
+  await cargarTickets();
+    
 }
 
 const filtroTexto = document.querySelector('#filtro-texto');
@@ -94,15 +142,11 @@ function aplicarFiltros() {
 }
 
 
+filtroTexto.addEventListener('input', aplicarFiltros);
+filtroEstado.addEventListener('change', aplicarFiltros);
+filtroPrioridad.addEventListener('change', aplicarFiltros);
+filtroCategoria.addEventListener('change', aplicarFiltros);
 
-if (errorTickets || errorPerfiles) {
-  console.error(errorTickets || errorPerfiles);
-  mostrarErrorRecuperable(listaTickets, 'No pudimos cargar la bandeja.', () => location.reload());
-} else {
-  dibujarTickets(tickets);
+await cargarTickets();
 
-  filtroTexto.addEventListener('input', aplicarFiltros);
-  filtroEstado.addEventListener('change', aplicarFiltros);
-  filtroPrioridad.addEventListener('change', aplicarFiltros);
-  filtroCategoria.addEventListener('change', aplicarFiltros);
-}
+ 
