@@ -79,16 +79,18 @@ function dibujarTickets(lista) {
       <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]}</p>
       <p class="ticket-asignado">${tecnico ? 'Asignado a ' + tecnico.full_name : 'Sin asignar'}</p>
       <p class="ticket-fecha">${fecha}</p>
+      <a class="boton" href="detalle-ticket.html?id=${ticket.id}">Ver detalle</a>
       ${botonTomarCaso}
+      
     `;
 
-        const boton = item.querySelector('button[data-ticket-id]');
+    const boton = item.querySelector('button[data-ticket-id]');
     if (boton) {
       boton.addEventListener('click', () => tomarCaso(ticket.id));
     }
 
     listaTickets.appendChild(item);
-   
+
   });
 }
 
@@ -115,7 +117,7 @@ async function tomarCaso(idTicket) {
 
   mostrarNotificacion('Tomaste el caso correctamente.', 'exito');
   await cargarTickets();
-    
+
 }
 
 const filtroTexto = document.querySelector('#filtro-texto');
@@ -149,4 +151,3 @@ filtroCategoria.addEventListener('change', aplicarFiltros);
 
 await cargarTickets();
 
- 
