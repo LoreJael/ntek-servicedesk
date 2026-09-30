@@ -33,6 +33,12 @@ const { data: ticket, error } = await supabase
     .eq('id', idTicket)
     .maybeSingle();
 
+const { data: datosPerfiles } = await supabase
+    .from('profiles')
+    .select('id, full_name, company');
+
+const perfiles = datosPerfiles || []; 
+
 const contenedorDetalle = document.querySelector('#detalle-ticket');
 const contenedorGestion = document.querySelector('#gestion-ticket');
 
@@ -52,12 +58,16 @@ function dibujarDetalle(ticket) {
     const formatoFechaHora = { timeZone: 'America/Santiago', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
     const fechaCreacion = new Date(ticket.created_at).toLocaleString('es-CL', formatoFechaHora);
     const fechaActualizacion = new Date(ticket.updated_at).toLocaleString('es-CL', formatoFechaHora);
+    const cliente = perfiles.find((perfil) => perfil.id === ticket.created_by);
+    const asignado = perfiles.find((perfil) => perfil.id === ticket.assigned_to);
 
     contenedorDetalle.className = `tarjeta tarjeta--prioridad-${ticket.priority}`;
     contenedorDetalle.innerHTML = `
     <p class="ticket-id">N.° ${ticket.id.slice(0, 8)}</p>
     <h1>${ticket.title}</h1>
+    <p class="ticket-cliente">${cliente ? cliente.full_name + ' · ' + cliente.company : 'Cliente no disponible'}</p>
     <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]} · ${ticket.category}</p>
+    <p class="ticket-asignado">${asignado ? 'Asignado a ' + asignado.full_name : 'Sin asignar'}</p>
     <p class="ticket-descripcion">${ticket.description}</p>
     <p class="ticket-fecha">Creado: ${fechaCreacion} · Última actualización: ${fechaActualizacion}</p>
   `;
