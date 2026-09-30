@@ -1,11 +1,15 @@
 import { protegerRuta } from './sesion.js';
-const rolActual = await protegerRuta(['cliente']);
+const rolActual = await protegerRuta(['cliente', 'tecnico', 'admin']);
 import { crearHeaderCliente } from './header-cliente.js';
+import { crearHeaderEquipo } from './header-equipo.js';
 import { activarBotonCerrarSesion } from './sesion.js';
 import { mostrarNotificacion } from './notificaciones.js';
 import { supabase } from './supabase-client.js';
 
-document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
+const esCliente = rolActual === 'cliente';
+document.getElementById('header-placeholder').innerHTML = esCliente
+  ? crearHeaderCliente(rolActual)
+  : crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
 
 const { data: { session } } = await supabase.auth.getSession();

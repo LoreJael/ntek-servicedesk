@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil - NTEK ServiceDesk Lite</title>
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/layout.css">
+  <link rel="stylesheet" href="../../css/componentes.css">
+</head>
+
+<body class="verificando">
+  <div class="pantalla-carga">Cargando...</div>
+
+  <div id="header-placeholder"></div>
+
+  <main class="contenedor">
+    <div class="tarjeta">
+      <h1>Perfil</h1>
+
+      <div id="vista-perfil">
+        <p><strong>Correo electrónico:</strong> <span id="ver-correo"></span></p>
+        <p><strong>Nombre completo:</strong> <span id="ver-nombre"></span></p>
+        <p><strong>Teléfono:</strong> <span id="ver-telefono"></span></p>
+        <p><strong>Empresa:</strong> <span id="ver-empresa"></span></p>
+        <button type="button" class="boton" id="boton-editar">Editar</button>
+      </div>
+
+      <form id="form-perfil" hidden>
+        <div class="form-grupo">
+          <label for="correo">Correo electrónico</label>
+          <input type="email" id="correo" name="correo" disabled>
+        </div>
+
+        <div class="form-grupo">
+          <label for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" name="nombre" required>
+        </div>
+
+        <div class="form-grupo">
+          <label for="telefono">Teléfono</label>
+          <input type="tel" id="telefono" name="telefono" required>
+        </div>
+
+        <div class="form-grupo">
+          <label for="empresa">Empresa</label>
+          <input type="text" id="empresa" name="empresa" required>
+        </div>
+
+        <button type="submit" class="boton">Guardar cambios</button>
+        <button type="button" class="boton" id="boton-cancelar">Cancelar</button>
+      </form>
+    </div>
+  </main>
+
+  <script type="module" src="../../js/perfil.js"></script>
+
+</body>
+
+</html>
