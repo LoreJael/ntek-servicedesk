@@ -149,5 +149,15 @@ filtroEstado.addEventListener('change', aplicarFiltros);
 filtroPrioridad.addEventListener('change', aplicarFiltros);
 filtroCategoria.addEventListener('change', aplicarFiltros);
 
+const botonLimpiar = document.querySelector('#boton-limpiar');
+
+botonLimpiar.addEventListener('click', () => {
+  filtroTexto.value = '';
+  filtroEstado.value = '';
+  filtroPrioridad.value = '';
+  filtroCategoria.value = '';
+  aplicarFiltros();
+});
+
 await cargarTickets();
 
