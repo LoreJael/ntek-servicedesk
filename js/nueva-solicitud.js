@@ -13,12 +13,20 @@ const formNuevaSolicitud = document.getElementById('form-nueva-solicitud');
 formNuevaSolicitud.addEventListener('submit', async (evento) => {
   evento.preventDefault();
 
+  const titulo = document.getElementById('titulo').value.trim();
+  const descripcion = document.getElementById('descripcion').value.trim();
+
+  if (titulo === '' || descripcion === '') {
+    mostrarNotificacion('El título y la descripción no pueden estar vacíos.', 'error');
+    return;
+  }
+
   const { data: datosUsuario } = await supabase.auth.getUser();
 
   const nuevoTicket = {
-    title: document.getElementById('titulo').value,
+    title: titulo,
+    description: descripcion,
     category: document.getElementById('categoria').value,
-    description: document.getElementById('descripcion').value,
     priority: document.getElementById('prioridad').value,
     created_by: datosUsuario.user.id
   };
