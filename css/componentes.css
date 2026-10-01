@@ -88,7 +88,8 @@
   font-size: 0.9rem;
 }
 
-#lista-tickets {
+#lista-tickets,
+#lista-usuarios {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
@@ -100,6 +101,11 @@
 #lista-tickets .tarjeta {
   max-width: none;
   margin: 0;
+}
+
+#lista-usuarios .tarjeta {
+  margin: 0;
+  max-width: none;
 }
 
 .tarjeta--prioridad-baja    { background-color: var(--color-prioridad-baja); }
