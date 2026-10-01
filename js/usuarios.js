@@ -12,9 +12,9 @@ activarBotonCerrarSesion();
 const listaUsuarios = document.querySelector('#lista-usuarios');
 
 const etiquetasRol = {
-  cliente: 'Cliente',
-  tecnico: 'Técnico',
-  admin: 'Administrador'
+    cliente: 'Cliente',
+    tecnico: 'Técnico',
+    admin: 'Administrador'
 };
 
 
@@ -33,9 +33,24 @@ function dibujarUsuarios(lista) {
         item.innerHTML = `
       <h3>${usuario.full_name}</h3>
       <p>Empresa: ${usuario.company || 'Sin empresa'}</p>
-      <p>Rol: ${etiquetasRol[usuario.role]}</p>
+      <div class="form-grupo">
+        <label>Rol</label>
+        <select>
+          <option value="cliente">Cliente</option>
+          <option value="tecnico">Técnico</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+      <button class="boton">Guardar rol</button>
       <p>Estado: ${usuario.active ? 'Activo' : 'Inactivo'}</p>
     `;
+
+        item.querySelector('select').value = usuario.role;
+        const boton = item.querySelector('button');
+        boton.addEventListener('click', () => {
+            const nuevoRol = item.querySelector('select').value;
+            cambiarRol(usuario.id, nuevoRol);
+        });
 
         listaUsuarios.appendChild(item);
     });
@@ -48,12 +63,35 @@ async function traerUsuarios() {
         .order('full_name', { ascending: true });
 
     if (errorUsuarios) {
-    console.error(errorUsuarios);
-    mostrarErrorRecuperable(listaUsuarios, 'No pudimos cargar los usuarios.', () => location.reload());
-    return;
-  }
+        console.error(errorUsuarios);
+        mostrarErrorRecuperable(listaUsuarios, 'No pudimos cargar los usuarios.', () => location.reload());
+        return;
+    }
 
     dibujarUsuarios(datosUsuarios);
+}
+
+async function cambiarRol(idUsuario, nuevoRol) {
+
+    const { data, error } = await supabase
+        .from('profiles')
+        .update({ role: nuevoRol })
+        .eq('id', idUsuario)
+        .select();
+
+    if (error) {
+        mostrarNotificacion('No se pudo cambiar el rol. Intenta de nuevo.', 'error');
+        return;
+    }
+
+
+    if (data.length === 0) {
+        mostrarNotificacion('No se pudo cambiar el rol.', 'error');
+        return;
+    }
+
+    mostrarNotificacion('Rol actualizado correctamente.', 'exito');
+    await traerUsuarios();
 }
 
 await traerUsuarios();
