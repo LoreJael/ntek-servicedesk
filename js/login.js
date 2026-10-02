@@ -1,4 +1,11 @@
 import { supabase } from './supabase-client.js';
+import { mostrarNotificacion } from './notificaciones.js';
+
+const parametros = new URLSearchParams(window.location.search);
+
+if (parametros.get('cuenta') === 'desactivada') {
+  mostrarNotificacion('Lo sentimos, su cuenta se encuentra desactivada. Comuníquese con el administrador.', 'error');
+}
 
 const formLogin = document.getElementById('form-login');
 

@@ -23,16 +23,22 @@ export async function protegerRuta(rolesPermitidos) {
     return;
   }
 
+  const { data: perfil, error } = await supabase
+    .from('profiles')
+    .select('role, active')
+    .eq('id', session.user.id)
+    .single();
+
+  if (perfil && perfil.active === false) {
+    await supabase.auth.signOut();
+    window.location.href = '../publicas/login.html?cuenta=desactivada';
+    return;
+  }
+
   if (!rolesPermitidos) {
     document.body.classList.remove('verificando');
     return;
   }
-
-  const { data: perfil, error } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', session.user.id)
-    .single();
 
   if (error || !perfil || !rolesPermitidos.includes(perfil.role)) {
     window.location.href = '../publicas/login.html';
