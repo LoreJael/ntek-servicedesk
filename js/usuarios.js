@@ -7,6 +7,7 @@ import { supabase } from './supabase-client.js';
 const rolActual = await protegerRuta(['admin']);
 
 document.getElementById("header-placeholder").innerHTML = crearHeaderEquipo(rolActual);
+const { data: { user } } = await supabase.auth.getUser();
 activarBotonCerrarSesion();
 
 const listaUsuarios = document.querySelector('#lista-usuarios');
@@ -47,6 +48,11 @@ function dibujarUsuarios(lista) {
 
         item.querySelector('select').value = usuario.role;
         const boton = item.querySelector('button');
+        if (usuario.id === user.id) {
+            item.querySelector('select').disabled = true;
+            boton.disabled = true;
+            boton.textContent = 'Tu Cuenta';
+        }
         boton.addEventListener('click', () => {
             const nuevoRol = item.querySelector('select').value;
             cambiarRol(usuario.id, nuevoRol);
