@@ -43,19 +43,34 @@ function dibujarUsuarios(lista) {
         </select>
       </div>
       <button class="boton">Guardar rol</button>
+      <button class="boton boton-rol">Guardar rol</button>
       <p>Estado: ${usuario.active ? 'Activo' : 'Inactivo'}</p>
+      <button class="boton boton-estado">${usuario.active ? 'Desactivar' : 'Activar'}</button>
     `;
 
         item.querySelector('select').value = usuario.role;
-        const boton = item.querySelector('button');
+        const boton = item.querySelector('.boton-rol');
+        const botonEstado = item.querySelector('.boton-estado');
         if (usuario.id === user.id) {
             item.querySelector('select').disabled = true;
             boton.disabled = true;
             boton.textContent = 'Tu Cuenta';
+            botonEstado.disabled = true;
         }
         boton.addEventListener('click', () => {
             const nuevoRol = item.querySelector('select').value;
             cambiarRol(usuario.id, nuevoRol);
+        });
+
+        botonEstado.addEventListener('click', () => {
+            const nuevoEstado = !usuario.active;
+
+            if (nuevoEstado === false) {
+                const confirmado = confirm(`¿Seguro que quieres desactivar a ${usuario.full_name}? No podrá iniciar sesión.`);
+                if (!confirmado) return;
+            }
+
+            cambiarEstado(usuario.id, nuevoEstado);
         });
 
         listaUsuarios.appendChild(item);
@@ -101,3 +116,26 @@ async function cambiarRol(idUsuario, nuevoRol) {
 }
 
 await traerUsuarios();
+
+async function cambiarEstado(idUsuario, nuevoEstado) {
+
+    const { data, error } = await supabase
+        .from('profiles')
+        .update({ active: nuevoEstado })
+        .eq('id', idUsuario)
+        .select();
+
+    if (error) {
+        mostrarNotificacion('No se pudo cambiar el estado. Intenta de nuevo.', 'error');
+        return;
+    }
+
+
+    if (data.length === 0) {
+        mostrarNotificacion('No se pudo cambiar el estado.', 'error');
+        return;
+    }
+
+    mostrarNotificacion('Estado actualizado correctamente.', 'exito');
+    await traerUsuarios();
+}
