@@ -16,15 +16,27 @@
 
   <div id="header-placeholder"></div>
 
-  <main class="contenedor">
-    <section class="detalle-ticket-seccion">
-      <div class="tarjeta" id="detalle-ticket"></div>
-    </section>
+    <main class="contenedor">
+    <div class="detalle-layout">
+      <section class="detalle-ticket-seccion">
+        <div class="tarjeta" id="detalle-ticket"></div>
+      </section>
 
-    <section class="comentarios-ticket-seccion">
-      <h2>Comentarios</h2>
-      <ul class="lista-comentarios" id="lista-comentarios-ticket"></ul>
-    </section>
+      <section class="comentarios-ticket-seccion">
+        <h2>Comentarios</h2>
+        <ul class="lista-comentarios" id="lista-comentarios-ticket"></ul>
+
+        <form id="form-comentario" hidden>
+          <div class="form-grupo">
+            <label for="texto-comentario">Escribe una respuesta</label>
+            <textarea id="texto-comentario" rows="4"></textarea>
+          </div>
+          <button type="submit" class="boton">Enviar comentario</button>
+        </form>
+
+        <p class="aviso-ticket-cerrado" id="aviso-ticket-cerrado" hidden>Este ticket está cerrado y ya no admite comentarios.</p>
+      </section>
+    </div>
   </main>
 
   <script type="module" src="../../js/detalle-ticket.js"></script>
