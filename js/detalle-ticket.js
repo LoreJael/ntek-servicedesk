@@ -89,6 +89,8 @@ if (error || !ticket) {
 
       listaComentarios.appendChild(item);
     });
+
+    listaComentarios.scrollTop = listaComentarios.scrollHeight;
   }
 
   await cargarComentarios();
@@ -130,42 +132,6 @@ if (error || !ticket) {
       textoComentario.value = '';
       mostrarNotificacion('Comentario enviado.', 'exito');
       await cargarComentarios();
-
-      async function cargarComentarios() {
-        listaComentarios.innerHTML = '';
-
-        const { data: comentarios, error: errorComentarios } = await supabase
-          .from('comments')
-          .select('id, body, author_id, created_at')
-          .eq('ticket_id', ticket.id)
-          .order('created_at', { ascending: true });
-
-        if (errorComentarios) {
-          listaComentarios.innerHTML = '<li>No se pudieron cargar los comentarios.</li>';
-          return;
-        }
-
-        comentarios.forEach((comentario) => {
-          const item = document.createElement('li');
-          item.classList.add('comentario');
-
-          if (comentario.author_id === idUsuarioActual) {
-            item.classList.add('comentario--propio');
-          }
-
-          const autor = comentario.author_id === idUsuarioActual ? 'Tú' : 'Equipo NTEK';
-          const fechaHora = new Date(comentario.created_at).toLocaleString('es-CL', formatoFechaHora);
-
-          item.innerHTML = `
-        <p class="comentario-texto">${comentario.body}</p>
-        <p class="comentario-meta">${autor} · ${fechaHora}</p>
-      `;
-
-          listaComentarios.appendChild(item);
-        });
-
-        listaComentarios.scrollTop = listaComentarios.scrollHeight;
-      }
 
     });
   }

@@ -33,3 +33,22 @@
 | 7 | Técnico activo no se ve afectado | Diego (técnico) | Abrir bandeja global | La bandeja muestra tickets normal | ✅ |
 | 8 | Último admin protegido | SQL Editor | `update` de Andrea a rol cliente | Error del trigger `proteger_ultimo_admin` | ✅ (01-10) |
 | 9 | Tarjeta propia bloqueada | Andrea (admin) | Revisar su propia tarjeta | Select y botones desactivados ("Tu Cuenta") | ✅ |
+
+
+## RF-08 — Comentarios y notas internas (CA-05)
+
+**Fecha:** 06-10-2026
+**Cuentas:** Diego Muñoz (técnico), Loreto (cliente)
+**Ticket:** 4daf62d9
+
+| # | Prueba | Cómo se hizo | Resultado esperado | Resultado |
+|---|---|---|---|---|
+| 1 | El técnico escribe una respuesta pública | Pantalla de detalle de equipo, sin marcar la casilla | Se guarda y se ve con el formato normal | ✅ |
+| 2 | El técnico escribe una nota interna | Pantalla de detalle de equipo, con la casilla "Nota interna" | Se guarda y se ve con fondo amarillo y la etiqueta "Nota interna" | ✅ |
+| 3 | El equipo ve el nombre del autor | Pantalla de detalle de equipo | Propios como "Tú", clientes con su nombre | ✅ |
+| 4 | El cliente no ve las notas internas en pantalla | Pantalla de detalle de cliente | Solo aparecen las respuestas públicas | ✅ |
+| 5 | El cliente pide todos los comentarios desde la consola | `select` a `comments` del ticket | Ninguna fila con `is_internal: true` | ✅ |
+| 6 | El cliente pide solo las notas internas desde la consola | `select` con `.eq('is_internal', true)` | `[]` (lista vacía, sin error) | ✅ |
+| 7 | El cliente intenta crear una nota interna desde la consola | `insert` con `is_internal: true` | Error 42501 de RLS | ✅ |
+
+**Conclusión:** CA-05 cumplido. Las notas internas se protegen en la pantalla y en la base de datos (RLS).

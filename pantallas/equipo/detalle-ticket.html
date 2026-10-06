@@ -17,13 +17,36 @@
   <div id="header-placeholder"></div>
 
   <main class="contenedor">
-    <section class="detalle-ticket-seccion">
-      <div class="tarjeta" id="detalle-ticket"></div>
-    </section>
+    <div class="detalle-layout">
+      <div>
+        <section class="detalle-ticket-seccion">
+          <div class="tarjeta" id="detalle-ticket"></div>
+        </section>
 
-    <section class="gestion-ticket-seccion">
-      <div class="tarjeta" id="gestion-ticket"></div>
-    </section>
+        <section class="gestion-ticket-seccion">
+          <div class="tarjeta" id="gestion-ticket"></div>
+        </section>
+      </div>
+
+      <section class="comentarios-ticket-seccion">
+        <h2>Comentarios</h2>
+        <ul class="lista-comentarios" id="lista-comentarios-ticket"></ul>
+
+        <form id="form-comentario" hidden>
+          <div class="form-grupo">
+            <label for="texto-comentario">Escribe una respuesta o nota</label>
+            <textarea id="texto-comentario" rows="4"></textarea>
+          </div>
+          <div class="form-grupo form-grupo--casilla">
+            <label>
+              <input type="checkbox" id="casilla-interna">
+              Nota interna (el cliente no la ve)
+            </label>
+          </div>
+          <button type="submit" class="boton">Enviar comentario</button>
+        </form>
+      </section>
+    </div>
   </main>
 
   <script type="module" src="../../js/detalle-ticket-equipo.js"></script>

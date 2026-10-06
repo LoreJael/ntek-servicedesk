@@ -24,6 +24,8 @@ const etiquetasPrioridad = {
     critica: "Crítica"
 };
 
+const formatoFechaHora = { timeZone: 'America/Santiago', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+
 const parametros = new URLSearchParams(window.location.search);
 const idTicket = parametros.get('id');
 
@@ -37,10 +39,20 @@ const { data: datosPerfiles } = await supabase
     .from('profiles')
     .select('id, full_name, company');
 
-const perfiles = datosPerfiles || []; 
+const perfiles = datosPerfiles || [];
 
 const contenedorDetalle = document.querySelector('#detalle-ticket');
 const contenedorGestion = document.querySelector('#gestion-ticket');
+
+
+const listaComentarios = document.querySelector('#lista-comentarios-ticket');
+const formComentario = document.querySelector('#form-comentario');
+const textoComentario = document.querySelector('#texto-comentario');
+const casillaInterna = document.querySelector('#casilla-interna');
+
+
+const { data: datosUsuario } = await supabase.auth.getUser();
+const idUsuarioActual = datosUsuario.user.id;
 
 let tecnicos = [];
 
@@ -55,7 +67,6 @@ if (rolActual === 'admin') {
 }
 
 function dibujarDetalle(ticket) {
-    const formatoFechaHora = { timeZone: 'America/Santiago', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
     const fechaCreacion = new Date(ticket.created_at).toLocaleString('es-CL', formatoFechaHora);
     const fechaActualizacion = new Date(ticket.updated_at).toLocaleString('es-CL', formatoFechaHora);
     const cliente = perfiles.find((perfil) => perfil.id === ticket.created_by);
@@ -171,9 +182,99 @@ function dibujarGestion(ticket) {
     });
 }
 
+async function cargarComentarios() {
+    listaComentarios.innerHTML = '';
+
+    const { data: comentarios, error: errorComentarios } = await supabase
+        .from('comments')
+        .select('id, body, author_id, is_internal, created_at')
+        .eq('ticket_id', ticket.id)
+        .order('created_at', { ascending: true });
+
+    if (errorComentarios) {
+        listaComentarios.innerHTML = '<li>No se pudieron cargar los comentarios.</li>';
+        return;
+    }
+
+    comentarios.forEach((comentario) => {
+        const item = document.createElement('li');
+        item.classList.add('comentario');
+
+        if (comentario.author_id === idUsuarioActual) {
+            item.classList.add('comentario--propio');
+        }
+
+        if (comentario.is_internal) {
+            item.classList.add('comentario--interna');
+        }
+
+        const perfilAutor = perfiles.find((perfil) => perfil.id === comentario.author_id);
+
+        let autor = 'Equipo NTEK';
+        if (comentario.author_id === idUsuarioActual) {
+            autor = 'Tú';
+        } else if (perfilAutor) {
+            autor = perfilAutor.full_name;
+        }
+
+        const etiquetaInterna = comentario.is_internal
+            ? '<span class="comentario-etiqueta-interna">Nota interna</span>'
+            : '';
+
+        const fechaHora = new Date(comentario.created_at).toLocaleString('es-CL', formatoFechaHora);
+
+        item.innerHTML = `
+        ${etiquetaInterna}
+        <p class="comentario-texto">${comentario.body}</p>
+        <p class="comentario-meta">${autor} · ${fechaHora}</p>
+      `;
+
+        listaComentarios.appendChild(item);
+    });
+
+    listaComentarios.scrollTop = listaComentarios.scrollHeight;
+}
+
+
+function activarFormularioComentario() {
+    formComentario.hidden = false;
+
+    formComentario.addEventListener('submit', async (evento) => {
+        evento.preventDefault();
+
+        const texto = textoComentario.value.trim();
+
+        if (texto === '') {
+            mostrarNotificacion('Escribe un comentario antes de enviarlo.', 'error');
+            return;
+        }
+
+        const { error: errorInsert } = await supabase
+            .from('comments')
+            .insert({
+                ticket_id: ticket.id,
+                author_id: idUsuarioActual,
+                body: texto,
+                is_internal: casillaInterna.checked
+            });
+
+        if (errorInsert) {
+            mostrarNotificacion('No se pudo enviar el comentario. Intenta nuevamente.', 'error');
+            return;
+        }
+
+        textoComentario.value = '';
+        casillaInterna.checked = false;
+        mostrarNotificacion('Comentario enviado.', 'exito');
+        await cargarComentarios();
+    });
+}
+
 if (error || !ticket) {
     contenedorDetalle.innerHTML = '<p>No se encontró el ticket solicitado.</p>';
 } else {
     dibujarDetalle(ticket);
     dibujarGestion(ticket);
+    await cargarComentarios();        
+    activarFormularioComentario();    
 }
