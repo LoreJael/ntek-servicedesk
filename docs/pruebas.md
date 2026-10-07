@@ -52,3 +52,15 @@
 | 7 | El cliente intenta crear una nota interna desde la consola | `insert` con `is_internal: true` | Error 42501 de RLS | ✅ |
 
 **Conclusión:** CA-05 cumplido. Las notas internas se protegen en la pantalla y en la base de datos (RLS).
+
+## RF-SEG-03 — Aislamiento entre clientes (CA-03)
+
+**Fecha:** 06-10-2026
+**Cuentas:** Loreto (cliente). Ticket objetivo: uno de Pedro González (otro cliente)
+
+| # | Prueba | Cómo se hizo | Resultado esperado | Resultado |
+|---|---|---|---|---|
+| 1 | El cliente intenta abrir un ticket de otro cliente conociendo su id | Consola: `select` a `tickets` con `.eq('id', uuid de Pedro)` | `[]` sin error | ✅ |
+| 2 | El cliente intenta listar todos los tickets (enumerar) | Consola: `select('*')` a `tickets` sin `.eq` | Solo llegan los tickets de Loreto | ✅ |
+
+**Conclusión:** CA-03 cumplido. Aunque el cliente tenga el id de un ticket ajeno o pida la tabla completa, la RLS solo le entrega sus propios tickets.
