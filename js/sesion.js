@@ -15,7 +15,7 @@ export function activarBotonCerrarSesion() {
   });
 }
 
-export async function protegerRuta(rolesPermitidos) {
+export async function protegerRuta(rolesPermitidos, quitarCarga = true) { 
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
@@ -36,7 +36,9 @@ export async function protegerRuta(rolesPermitidos) {
   }
 
   if (!rolesPermitidos) {
-    document.body.classList.remove('verificando');
+    if (quitarCarga) { 
+      document.body.classList.remove('verificando');
+    }
     return;
   }
 
@@ -45,6 +47,8 @@ export async function protegerRuta(rolesPermitidos) {
     return;
   }
 
-  document.body.classList.remove('verificando');
+  if (quitarCarga) { 
+    document.body.classList.remove('verificando');
+  }
   return perfil.role;
 }
