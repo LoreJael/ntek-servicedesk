@@ -1,5 +1,5 @@
 import { protegerRuta } from './sesion.js';
-const rolActual = await protegerRuta(['cliente', 'tecnico', 'admin']);
+const rolActual = await protegerRuta(['cliente', 'tecnico', 'admin'], false);
 import { crearHeaderCliente } from './header-cliente.js';
 import { crearHeaderEquipo } from './header-equipo.js';
 import { activarBotonCerrarSesion } from './sesion.js';
@@ -47,6 +47,8 @@ if (errorPerfil) {
   verTelefono.textContent = perfil.phone;
   verEmpresa.textContent = perfil.company;
 }
+
+document.body.classList.remove('verificando');
 
 const formPerfil = document.getElementById('form-perfil');
 

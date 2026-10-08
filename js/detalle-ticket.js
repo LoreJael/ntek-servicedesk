@@ -1,5 +1,5 @@
 import { protegerRuta } from './sesion.js';
-const rolActual = await protegerRuta(['cliente']);
+const rolActual = await protegerRuta(['cliente'], false);
 import { crearHeaderCliente } from './header-cliente.js';
 import { activarBotonCerrarSesion } from './sesion.js';
 import { supabase } from './supabase-client.js';
@@ -136,3 +136,4 @@ if (error || !ticket) {
     });
   }
 }
+document.body.classList.remove('verificando');

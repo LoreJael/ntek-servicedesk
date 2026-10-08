@@ -1,5 +1,5 @@
 import { protegerRuta } from './sesion.js';
-const rolActual = await protegerRuta(['tecnico', 'admin']);
+const rolActual = await protegerRuta(['tecnico', 'admin'], false);
 import { crearHeaderEquipo } from "./header-equipo.js";
 import { activarBotonCerrarSesion } from "./sesion.js";
 import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
@@ -160,4 +160,5 @@ botonLimpiar.addEventListener('click', () => {
 });
 
 await cargarTickets();
+document.body.classList.remove('verificando');
 

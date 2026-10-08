@@ -4,7 +4,7 @@ import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
 import { mostrarNotificacion } from './notificaciones.js';
 import { supabase } from './supabase-client.js';
 
-const rolActual = await protegerRuta(['admin']);
+const rolActual = await protegerRuta(['admin'], false);
 
 document.getElementById("header-placeholder").innerHTML = crearHeaderEquipo(rolActual);
 const { data: { user } } = await supabase.auth.getUser();
@@ -116,6 +116,8 @@ async function cambiarRol(idUsuario, nuevoRol) {
 }
 
 await traerUsuarios();
+
+document.body.classList.remove('verificando');
 
 async function cambiarEstado(idUsuario, nuevoEstado) {
 
