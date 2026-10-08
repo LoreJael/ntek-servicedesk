@@ -17,16 +17,27 @@
   <div id="header-placeholder"></div>
 
   <main class="contenedor">
-    <div class="detalle-layout">
-      <div>
-        <section class="detalle-ticket-seccion">
-          <div class="tarjeta" id="detalle-ticket"></div>
-        </section>
+    <div class="detalle-layout detalle-layout--equipo">
+      <section class="detalle-ticket-seccion">
+        <div class="tarjeta" id="detalle-ticket"></div>
+      </section>
 
-        <section class="gestion-ticket-seccion">
-          <div class="tarjeta" id="gestion-ticket"></div>
-        </section>
-      </div>
+      <section class="gestion-ticket-seccion">
+        <div class="tarjeta" id="gestion-ticket"></div>
+      </section>
+
+      <section class="tarjeta adjuntos-ticket">
+        <h2>Archivos adjuntos</h2>
+        <ul class="lista-adjuntos" id="lista-adjuntos"></ul>
+
+        <form id="form-adjunto" hidden>
+          <div class="form-grupo">
+            <label for="input-adjunto">Adjuntar archivo (JPG, PNG o PDF, máximo 5 MB)</label>
+            <input type="file" id="input-adjunto" accept="image/jpeg, image/png, application/pdf">
+          </div>
+          <button type="submit" class="boton">Subir archivo</button>
+        </form>
+      </section>
 
       <section class="comentarios-ticket-seccion">
         <h2>Comentarios</h2>
@@ -47,6 +58,8 @@
         </form>
       </section>
     </div>
+  </div>
+  
   </main>
 
   <script type="module" src="../../js/detalle-ticket-equipo.js"></script>
