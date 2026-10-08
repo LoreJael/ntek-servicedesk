@@ -64,3 +64,23 @@
 | 2 | El cliente intenta listar todos los tickets (enumerar) | Consola: `select('*')` a `tickets` sin `.eq` | Solo llegan los tickets de Loreto | ✅ |
 
 **Conclusión:** CA-03 cumplido. Aunque el cliente tenga el id de un ticket ajeno o pida la tabla completa, la RLS solo le entrega sus propios tickets.
+
+## RF-09 — Archivos adjuntos (CA-06)
+
+**Fecha:** 08-10-2026
+**Cuentas:** Loreto (cliente), Diego Muñoz (técnico), Andrea Soto (admin)
+
+| # | Prueba | Cuenta | Cómo se hizo | Resultado esperado | Resultado |
+|---|---|---|---|---|---|
+| 1 | Subir una imagen válida | Loreto (cliente) | Detalle de un ticket abierto → elegir PNG → "Subir archivo" | Notificación de éxito; el archivo aparece en la lista, en el bucket (carpeta con el id del ticket, nombre aleatorio) y en `attachments` | ✅ |
+| 2 | Subir sin elegir archivo | Loreto (cliente) | "Subir archivo" sin seleccionar nada | Mensaje "Elige un archivo antes de subirlo." | ✅ |
+| 3 | Subir un archivo de más de 5 MB | Loreto (cliente) | Imagen PNG de 6,7 MB | Mensaje "El archivo supera el máximo de 5 MB."; no se sube nada | ✅ |
+| 4 | Subir un tipo no permitido | Loreto (cliente) | En el explorador, "Todos los archivos" → elegir un `.txt` | Mensaje "Solo se permiten archivos JPG, PNG o PDF."; no se sube nada | ⬜ |
+| 5 | Ticket cerrado (cliente) | Loreto (cliente) | Abrir el detalle de un ticket cerrado | Se ve la lista de archivos, pero no el formulario | ✅ |
+| 6 | Descargar un archivo | Loreto (cliente) | Botón "Descargar" | El archivo se descarga sin salir de la página | ✅ |
+| 7 | Link firmado vencido | Loreto (cliente) | Copiar el link de descarga (`Ctrl + J`), esperar más de 20 s y abrirlo en otro navegador | Error de Supabase por token vencido | ✅ |
+| 8 | El equipo ve los archivos del cliente | Diego (técnico) | Detalle de equipo del mismo ticket | Aparecen con el nombre del cliente como autor | ✅ |
+| 9 | El equipo sube un archivo | Diego (técnico) | Detalle de equipo → subir imagen | Aparece como "Tú"; el cliente lo ve como "Equipo NTEK" | ✅ |
+| 10 | El equipo adjunta en ticket cerrado | Diego / Andrea | Detalle de equipo de un ticket cerrado | El formulario aparece y la subida funciona | ✅ |
+
+**Conclusión:** CA-06 cumplido. El tipo y el tamaño se validan en la pantalla (mensaje comprensible) y en el bucket (límite de 5 MB y lista de tipos permitidos). Los archivos se guardan en un bucket privado con nombre no predecible, y se descargan con un link firmado que vence a los 20 segundos.
