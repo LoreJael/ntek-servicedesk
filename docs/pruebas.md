@@ -75,7 +75,7 @@
 | 1 | Subir una imagen válida | Loreto (cliente) | Detalle de un ticket abierto → elegir PNG → "Subir archivo" | Notificación de éxito; el archivo aparece en la lista, en el bucket (carpeta con el id del ticket, nombre aleatorio) y en `attachments` | ✅ |
 | 2 | Subir sin elegir archivo | Loreto (cliente) | "Subir archivo" sin seleccionar nada | Mensaje "Elige un archivo antes de subirlo." | ✅ |
 | 3 | Subir un archivo de más de 5 MB | Loreto (cliente) | Imagen PNG de 6,7 MB | Mensaje "El archivo supera el máximo de 5 MB."; no se sube nada | ✅ |
-| 4 | Subir un tipo no permitido | Loreto (cliente) | En el explorador, "Todos los archivos" → elegir un `.txt` | Mensaje "Solo se permiten archivos JPG, PNG o PDF."; no se sube nada | ⬜ |
+| 4 | Subir un tipo no permitido | Loreto (cliente) | En el explorador, "Todos los archivos" → elegir un `.txt` | Mensaje "Solo se permiten archivos JPG, PNG o PDF."; no se sube nada | ✅ |
 | 5 | Ticket cerrado (cliente) | Loreto (cliente) | Abrir el detalle de un ticket cerrado | Se ve la lista de archivos, pero no el formulario | ✅ |
 | 6 | Descargar un archivo | Loreto (cliente) | Botón "Descargar" | El archivo se descarga sin salir de la página | ✅ |
 | 7 | Link firmado vencido | Loreto (cliente) | Copiar el link de descarga (`Ctrl + J`), esperar más de 20 s y abrirlo en otro navegador | Error de Supabase por token vencido | ✅ |
