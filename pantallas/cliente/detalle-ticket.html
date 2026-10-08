@@ -20,6 +20,22 @@
     <div class="detalle-layout">
       <section class="detalle-ticket-seccion">
         <div class="tarjeta" id="detalle-ticket"></div>
+              <section class="detalle-ticket-seccion">
+        <div class="tarjeta" id="detalle-ticket"></div>
+
+        <div class="tarjeta adjuntos-ticket">
+          <h2>Archivos adjuntos</h2>
+          <ul class="lista-adjuntos" id="lista-adjuntos"></ul>
+
+          <form id="form-adjunto" hidden>
+            <div class="form-grupo">
+              <label for="input-adjunto">Adjuntar archivo (JPG, PNG o PDF, máximo 5 MB)</label>
+              <input type="file" id="input-adjunto" accept="image/jpeg, image/png, application/pdf">
+            </div>
+            <button type="submit" class="boton">Subir archivo</button>
+          </form>
+        </div>
+      </section>
       </section>
 
       <section class="comentarios-ticket-seccion">
