@@ -211,6 +211,7 @@ if (error || !ticket) {
       evento.preventDefault();
 
       const archivo = inputAdjunto.files[0];
+      inputAdjunto.value = '';
 
       if (!archivo) {
         mostrarNotificacion('Elige un archivo antes de subirlo.', 'error');

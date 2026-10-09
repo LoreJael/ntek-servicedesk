@@ -17,6 +17,10 @@
 | 5 | Técnico 2 (Camila) | Cambiar el estado del ticket de Diego | 0 filas | ✅ |
 | 6 | Cliente (dueño del ticket) | Cambiar el estado a `cerrado` | 0 filas | ✅ |
 | 7 | Administrador (Andrea) | Reasignar el ticket a Camila | 1 fila modificada | ✅ |
+| 8 | Técnico 1 (Diego) | Soltar su propio caso (`assigned_to: null`) | Error 42501 (RLS) | ✅ |
+| 9 | Técnico 1 (Diego) | Cambiar el estado de un ticket cerrado | 0 filas | ✅ |
+
+**Corrección (08-10-2026):** las pruebas 8 y 9 detectaron que seguían activas las políticas antiguas `update_ticket_tecnico` y `update_ticket_admin` (22-09), que se sumaban a las nuevas y permitían al técnico soltar casos y modificar tickets cerrados. Se eliminaron y las pruebas pasan.
 
 **Extra:** en las pruebas 1, 3 y 7, `updated_at` se actualizó automáticamente (trigger `tickets_actualizar_updated_at`).
 
@@ -84,3 +88,4 @@
 | 10 | El equipo adjunta en ticket cerrado | Diego / Andrea | Detalle de equipo de un ticket cerrado | El formulario aparece y la subida funciona | ✅ |
 
 **Conclusión:** CA-06 cumplido. El tipo y el tamaño se validan en la pantalla (mensaje comprensible) y en el bucket (límite de 5 MB y lista de tipos permitidos). Los archivos se guardan en un bucket privado con nombre no predecible, y se descargan con un link firmado que vence a los 20 segundos.
+
