@@ -3,6 +3,8 @@ const rolActual = await protegerRuta(['cliente'], false);
 import { crearHeaderCliente } from './header-cliente.js';
 import { activarBotonCerrarSesion } from './sesion.js';
 import { supabase } from './supabase-client.js';
+import { escaparHTML } from './seguridad.js';
+import { mostrarEstadoVacio } from './estados.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
@@ -44,11 +46,14 @@ if (errorTickets) {
   ultimosTickets.forEach((ticket) => {
     const item = document.createElement('li');
     const fecha = new Date(ticket.updated_at).toLocaleDateString('es-CL', { timeZone: 'America/Santiago' });
-    item.classList.add('tarjeta');
-
-    item.innerHTML = `
-      <p class="ticket-titulo">${ticket.title}</p>
-      <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${fecha}</p>
+        item.innerHTML = `
+      <a class="tarjeta-ticket" href="detalle-ticket.html?id=${ticket.id}">
+        <p class="ticket-titulo">${escaparHTML(ticket.title)}</p>
+        <p class="ticket-meta">
+          <span class="badge-estado">${etiquetasEstado[ticket.status]}</span>
+          <span>${fecha}</span>
+        </p>
+      </a>
     `;
 
     listaTickets.appendChild(item);
@@ -59,6 +64,8 @@ const listaComentarios = document.querySelector('#lista-ultimos-comentarios');
 
 if (errorComentarios) {
   listaComentarios.innerHTML = '<li>No se pudieron cargar los comentarios.</li>';
+} else if (ultimosComentarios.length === 0) {
+  mostrarEstadoVacio(listaComentarios, 'Aún no hay comentarios en tus tickets.');
 } else {
   ultimosComentarios.forEach((comentario) => {
     const item = document.createElement('li');
@@ -76,8 +83,8 @@ if (errorComentarios) {
     });
 
     item.innerHTML = `
-      <p class="comentario-ticket">Sobre: <strong>${ticket.title}</strong></p>
-      <p class="comentario-texto">${comentario.body}</p>
+      <p class="comentario-ticket">Sobre: <strong>${escaparHTML(ticket.title)}</strong></p>
+      <p class="comentario-texto">${escaparHTML(comentario.body)}</p>
       <p class="comentario-meta">${autor} · ${fechaHora}</p>
     `;
 

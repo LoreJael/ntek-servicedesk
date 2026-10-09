@@ -4,6 +4,7 @@ import { crearHeaderCliente } from './header-cliente.js';
 import { activarBotonCerrarSesion } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { mostrarNotificacion } from './notificaciones.js';
+import { escaparHTML } from './seguridad.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
@@ -46,9 +47,9 @@ if (error || !ticket) {
   contenedorDetalle.classList.add(`tarjeta--prioridad-${ticket.priority}`);
   contenedorDetalle.innerHTML = `
   <p class="ticket-id">N.° ${ticket.id.slice(0, 8)}</p>
-    <h1>${ticket.title}</h1>
-    <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]} · ${ticket.category}</p>
-    <p class="ticket-descripcion">${ticket.description}</p>
+    <h1>${escaparHTML(ticket.title)}</h1>
+    <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]} · ${escaparHTML(ticket.category)}</p>
+    <p class="ticket-descripcion">${escaparHTML(ticket.description)}</p>
     <p class="ticket-fecha">Creado: ${fechaCreacion} · Última actualización: ${fechaActualizacion}</p>
   `;
 
@@ -83,7 +84,7 @@ if (error || !ticket) {
       const fechaHora = new Date(comentario.created_at).toLocaleString('es-CL', formatoFechaHora);
 
       item.innerHTML = `
-        <p class="comentario-texto">${comentario.body}</p>
+        <p class="comentario-texto">${escaparHTML(comentario.body)}</p>
         <p class="comentario-meta">${autor} · ${fechaHora}</p>
       `;
 

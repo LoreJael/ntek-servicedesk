@@ -4,6 +4,7 @@ import { crearHeaderCliente } from './header-cliente.js';
 import { activarBotonCerrarSesion } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
+import { escaparHTML } from './seguridad.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
@@ -46,7 +47,7 @@ if (error) {
 
   item.innerHTML = `
     <p class="ticket-id">N.° ${ticket.id.slice(0, 8)}</p>
-    <p class="ticket-titulo">${ticket.title}</p>
+    <p class="ticket-titulo">${escaparHTML(ticket.title)}</p>
     <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]}</p>
     <p class="ticket-fecha">${fecha}</p>
     <a href="detalle-ticket.html?id=${ticket.id}" class="boton">Ver detalle</a>

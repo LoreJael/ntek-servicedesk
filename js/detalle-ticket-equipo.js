@@ -4,6 +4,7 @@ import { crearHeaderEquipo } from './header-equipo.js';
 import { activarBotonCerrarSesion } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { mostrarNotificacion } from './notificaciones.js';
+import { escaparHTML } from './seguridad.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
@@ -75,11 +76,11 @@ function dibujarDetalle(ticket) {
     contenedorDetalle.className = `tarjeta tarjeta--prioridad-${ticket.priority}`;
     contenedorDetalle.innerHTML = `
     <p class="ticket-id">N.° ${ticket.id.slice(0, 8)}</p>
-    <h1>${ticket.title}</h1>
-    <p class="ticket-cliente">${cliente ? cliente.full_name + ' · ' + cliente.company : 'Cliente no disponible'}</p>
-    <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]} · ${ticket.category}</p>
-    <p class="ticket-asignado">${asignado ? 'Asignado a ' + asignado.full_name : 'Sin asignar'}</p>
-    <p class="ticket-descripcion">${ticket.description}</p>
+    <h1>${escaparHTML(ticket.title)}</h1>
+    <p class="ticket-cliente">${cliente ? escaparHTML(cliente.full_name) + ' · ' + escaparHTML(cliente.company) : 'Cliente no disponible'}</p>
+    <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]} · ${escaparHTML(ticket.category)}</p>
+    <p class="ticket-asignado">${asignado ? 'Asignado a ' + escaparHTML(asignado.full_name) : 'Sin asignar'}</p>
+    <p class="ticket-descripcion">${escaparHTML(ticket.description)}</p>
     <p class="ticket-fecha">Creado: ${fechaCreacion} · Última actualización: ${fechaActualizacion}</p>
   `;
 }
@@ -98,7 +99,7 @@ function dibujarGestion(ticket) {
     }
 
     const opcionesTecnicos = tecnicos
-        .map((tecnico) => `<option value="${tecnico.id}">${tecnico.full_name}</option>`)
+        .map((tecnico) => `<option value="${tecnico.id}">${escaparHTML(tecnico.full_name)}</option>`)
         .join('');
 
     const campoAsignar = esAdmin && tecnicos.length > 0
@@ -225,8 +226,8 @@ async function cargarComentarios() {
 
         item.innerHTML = `
         ${etiquetaInterna}
-        <p class="comentario-texto">${comentario.body}</p>
-        <p class="comentario-meta">${autor} · ${fechaHora}</p>
+        <p class="comentario-texto">${escaparHTML(comentario.body)}</p>
+        <p class="comentario-meta">${escaparHTML(autor)} · ${fechaHora}</p>
       `;
 
         listaComentarios.appendChild(item);
@@ -320,7 +321,7 @@ async function cargarAdjuntos() {
 
         item.innerHTML = `
         <p class="adjunto-tipo">${etiquetasTipo[adjunto.mime_type]} · ${tamanoKB} KB</p>
-        <p class="adjunto-meta">${autor} · ${fechaHora}</p>
+        <p class="adjunto-meta">${escaparHTML(autor)} · ${fechaHora}</p>
         <button type="button" class="boton">Descargar</button>
       `;
 

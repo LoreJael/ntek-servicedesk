@@ -3,6 +3,7 @@ import { crearHeaderEquipo } from './header-equipo.js';
 import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
 import { mostrarNotificacion } from './notificaciones.js';
 import { supabase } from './supabase-client.js';
+import { escaparHTML } from './seguridad.js';
 
 const rolActual = await protegerRuta(['admin'], false);
 
@@ -32,8 +33,8 @@ function dibujarUsuarios(lista) {
         item.className = 'tarjeta';
 
         item.innerHTML = `
-      <h3>${usuario.full_name}</h3>
-      <p>Empresa: ${usuario.company || 'Sin empresa'}</p>
+      <h3>${escaparHTML(usuario.full_name)}</h3>
+      <p>Empresa: ${escaparHTML(usuario.company) || 'Sin empresa'}</p>
       <div class="form-grupo">
         <label>Rol</label>
         <select>
@@ -42,7 +43,7 @@ function dibujarUsuarios(lista) {
           <option value="admin">Administrador</option>
         </select>
       </div>
-      <button class="boton">Guardar rol</button>
+     
       <button class="boton boton-rol">Guardar rol</button>
       <p>Estado: ${usuario.active ? 'Activo' : 'Inactivo'}</p>
       <button class="boton boton-estado">${usuario.active ? 'Desactivar' : 'Activar'}</button>

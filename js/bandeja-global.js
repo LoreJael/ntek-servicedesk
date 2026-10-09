@@ -4,6 +4,7 @@ import { crearHeaderEquipo } from "./header-equipo.js";
 import { activarBotonCerrarSesion } from "./sesion.js";
 import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
 import { mostrarNotificacion } from './notificaciones.js';
+import { escaparHTML } from './seguridad.js';
 
 document.getElementById("header-placeholder").innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
@@ -74,10 +75,10 @@ function dibujarTickets(lista) {
     item.classList.add('tarjeta', `tarjeta--prioridad-${ticket.priority}`);
 
     item.innerHTML = `
-      <p class="ticket-titulo">${ticket.title}</p>
-      <p class="ticket-cliente">${cliente ? cliente.company : 'Cliente no disponible'}</p>
+      <p class="ticket-titulo">${escaparHTML(ticket.title)}</p>
+      <p class="ticket-cliente">${cliente ? escaparHTML(cliente.company) : 'Cliente no disponible'}</p>
       <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]}</p>
-      <p class="ticket-asignado">${tecnico ? 'Asignado a ' + tecnico.full_name : 'Sin asignar'}</p>
+      <p class="ticket-asignado">${tecnico ? 'Asignado a ' + escaparHTML(tecnico.full_name) : 'Sin asignar'}</p>
       <p class="ticket-fecha">${fecha}</p>
       <a class="boton" href="detalle-ticket.html?id=${ticket.id}">Ver detalle</a>
       ${botonTomarCaso}
