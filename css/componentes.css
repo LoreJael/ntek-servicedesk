@@ -438,6 +438,16 @@ button:disabled {
   font-weight: 600;
 }
 
-.lista-tickets > li {
+.lista-tickets > li,
+.lista-comentarios > li {
   flex: 1 1 260px;
+}
+
+.tarjeta-ticket .comentario-ticket,
+.tarjeta-ticket .comentario-texto {
+  margin: 0 0 0.5rem;
+}
+
+.tarjeta-ticket .comentario-meta {
+  margin: 0;
 }

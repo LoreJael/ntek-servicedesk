@@ -69,8 +69,6 @@ if (errorComentarios) {
 } else {
   ultimosComentarios.forEach((comentario) => {
     const item = document.createElement('li');
-    item.classList.add('tarjeta');
-
     const ticket = tickets.find((t) => t.id === comentario.ticket_id);
     const autor = comentario.author_id === idUsuarioActual ? 'Tú' : 'Equipo NTEK';
     const fechaHora = new Date(comentario.created_at).toLocaleString('es-CL', {
@@ -82,10 +80,12 @@ if (errorComentarios) {
       minute: '2-digit'
     });
 
-    item.innerHTML = `
-      <p class="comentario-ticket">Sobre: <strong>${escaparHTML(ticket.title)}</strong></p>
-      <p class="comentario-texto">${escaparHTML(comentario.body)}</p>
-      <p class="comentario-meta">${autor} · ${fechaHora}</p>
+      item.innerHTML = `
+      <a class="tarjeta-ticket" href="detalle-ticket.html?id=${comentario.ticket_id}">
+        <p class="comentario-ticket">Sobre: <strong>${escaparHTML(ticket.title)}</strong></p>
+        <p class="comentario-texto">${escaparHTML(comentario.body)}</p>
+        <p class="comentario-meta">${autor} · ${fechaHora}</p>
+      </a>
     `;
 
     listaComentarios.appendChild(item);
