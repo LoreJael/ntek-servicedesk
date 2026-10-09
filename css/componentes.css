@@ -374,3 +374,8 @@ body.verificando .pantalla-carga {
 .detalle-layout--equipo .adjuntos-ticket {
   margin-top: 0;
 }
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

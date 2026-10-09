@@ -10,6 +10,9 @@ activarBotonCerrarSesion();
 
 const formNuevaSolicitud = document.getElementById('form-nueva-solicitud');
 
+const botonEnviar = formNuevaSolicitud.querySelector('button[type="submit"]');
+const textoOriginalBoton = botonEnviar.textContent;
+
 formNuevaSolicitud.addEventListener('submit', async (evento) => {
   evento.preventDefault();
 
@@ -20,6 +23,9 @@ formNuevaSolicitud.addEventListener('submit', async (evento) => {
     mostrarNotificacion('El título y la descripción no pueden estar vacíos.', 'error');
     return;
   }
+
+  botonEnviar.disabled = true;
+  botonEnviar.textContent = 'Procesando solicitud...';
 
   const { data: datosUsuario } = await supabase.auth.getUser();
 
@@ -40,6 +46,8 @@ formNuevaSolicitud.addEventListener('submit', async (evento) => {
   if (error) {
     console.error(error);
     mostrarNotificacion('No se pudo crear la solicitud. Inténtalo de nuevo.', 'error');
+    botonEnviar.disabled = false;
+    botonEnviar.textContent = textoOriginalBoton;
     return;
   }
 
