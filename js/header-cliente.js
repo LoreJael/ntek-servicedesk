@@ -2,18 +2,25 @@ const etiquetasRol = {
   cliente: "Cliente"
 };
 
+function crearEnlace(href, texto) {
+  const esPaginaActual = location.pathname.endsWith(href);
+  return `<a href="${href}" ${esPaginaActual ? 'aria-current="page"' : ''}>${texto}</a>`;
+}
+
 export function crearHeaderCliente(rol) {
   return `
     <header class="header">
       <p class="logo">NTEK ServiceDesk Lite</p>
       <nav class="nav-principal" aria-label="Principal">
-        <a href="panel.html">Panel</a>
-        <a href="mis-tickets.html">Mis tickets</a>
-        <a href="nueva-solicitud.html">Nueva solicitud</a>
-        <a href="perfil.html">Perfil</a>
+        ${crearEnlace("panel.html", "Panel")}
+        ${crearEnlace("mis-tickets.html", "Mis tickets")}
+        ${crearEnlace("nueva-solicitud.html", "Nueva solicitud")}
+        ${crearEnlace("perfil.html", "Perfil")}
       </nav>
-      <span class="rol-badge">${etiquetasRol[rol]}</span>
-      <button class="boton">Cerrar sesión</button>
+      <div class="header-usuario">
+        <span class="rol-badge">${etiquetasRol[rol]}</span>
+        <button class="boton">Cerrar sesión</button>
+      </div>
     </header>
   `;
 }

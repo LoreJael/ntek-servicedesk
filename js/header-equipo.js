@@ -3,25 +3,36 @@
   admin: "Administrador"
 };
 
+function crearEnlace(href, texto) {
+  const nombreArchivo = href.split("/").pop();
+  const esPaginaActual = location.pathname.endsWith(nombreArchivo);
+  return `<a href="${href}" ${esPaginaActual ? 'aria-current="page"' : ''}>${texto}</a>`;
+}
+
 export function crearHeaderEquipo(rol) {
   const esAdmin = rol === "admin";
 
   const enlacesAdmin = esAdmin
     ? `
-      <a href="../admin/usuarios.html">Usuarios</a>
-      <a href="../admin/auditoria.html">Auditoría</a>`
+    ${crearEnlace("../admin/usuarios.html", "Usuarios")}
+    ${crearEnlace("../admin/auditoria.html", "Auditoría")}
+      `
     : "";
 
   return `
     <header class="header">
       <p class="logo">NTEK ServiceDesk Lite</p>
       <nav class="nav-principal" aria-label="Principal">
-        <a href="bandeja-global.html">Bandeja global</a>
-        <a href="indicadores.html">Indicadores</a>
-        <a href="perfil.html">Perfil</a>${enlacesAdmin}
+        ${crearEnlace("../equipo/bandeja-global.html", "Bandeja")}
+        ${crearEnlace("../equipo/indicadores.html", "Indicadores")}
+        ${crearEnlace("../equipo/perfil.html", "Perfil")}
+        ${enlacesAdmin}
       </nav>
-      <span class="rol-badge">${etiquetasRol[rol]}</span>
-      <button class="boton">Cerrar sesión</button>
+       <div class="header-usuario">
+        <span class="rol-badge">${etiquetasRol[rol]}</span>
+        <button class="boton">Cerrar sesión</button>
+      </div>
     </header>
+      
   `;
 }
