@@ -5,6 +5,7 @@ import { activarBotonCerrarSesion } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { mostrarNotificacion } from './notificaciones.js';
 import { escaparHTML } from './seguridad.js';
+import { reglasAdjuntos, buscarGrupo } from './reglas-adjuntos.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
@@ -140,16 +141,17 @@ if (error || !ticket) {
   const formAdjunto = document.querySelector('#form-adjunto');
   const inputAdjunto = document.querySelector('#input-adjunto');
 
-  const tiposPermitidos = ['image/jpeg', 'image/png', 'application/pdf'];
-  const tamanoMaximo = 5 * 1024 * 1024;
-
-    const listaAdjuntos = document.querySelector('#lista-adjuntos');
+ 
+  const listaAdjuntos = document.querySelector('#lista-adjuntos');
 
   const etiquetasTipo = {
     'image/jpeg': 'Imagen JPG',
     'image/png': 'Imagen PNG',
-    'application/pdf': 'Documento PDF'
+    'application/pdf': 'Documento PDF',
+    'text/markdown': 'Markdown'
   };
+
+  let adjuntosActuales = [];
 
   async function cargarAdjuntos() {
     listaAdjuntos.innerHTML = '';
@@ -164,6 +166,8 @@ if (error || !ticket) {
       listaAdjuntos.innerHTML = '<li>No se pudieron cargar los archivos.</li>';
       return;
     }
+    
+    adjuntosActuales = adjuntos;
 
     if (adjuntos.length === 0) {
       listaAdjuntos.innerHTML = '<li>Este ticket aún no tiene archivos.</li>';
@@ -219,13 +223,26 @@ if (error || !ticket) {
         return;
       }
 
-      if (!tiposPermitidos.includes(archivo.type)) {
-        mostrarNotificacion('Solo se permiten archivos JPG, PNG o PDF.', 'error');
+           const grupo = buscarGrupo(archivo.type);
+
+      if (!grupo) {
+        mostrarNotificacion('Solo se permiten archivos JPG, PNG, PDF o Markdown (.md).', 'error');
         return;
       }
 
-      if (archivo.size > tamanoMaximo) {
-        mostrarNotificacion('El archivo supera el máximo de 5 MB.', 'error');
+      const regla = reglasAdjuntos[grupo];
+
+      if (archivo.size > regla.maxMB * 1024 * 1024) {
+        mostrarNotificacion(`Este tipo de archivo no puede superar ${regla.maxMB} MB.`, 'error');
+        return;
+      }
+
+      const cantidadEnGrupo = adjuntosActuales.filter(
+        (adjunto) => buscarGrupo(adjunto.mime_type) === grupo
+      ).length;
+
+      if (cantidadEnGrupo >= regla.maxArchivos) {
+        mostrarNotificacion(`Este ticket ya tiene el máximo de ${regla.maxArchivos} archivo(s) de este tipo.`, 'error');
         return;
       }
 
