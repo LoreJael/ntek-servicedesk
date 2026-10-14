@@ -352,6 +352,7 @@ function activarFormularioAdjunto() {
 
     formAdjunto.addEventListener('submit', async (evento) => {
         evento.preventDefault();
+        const botonSubir = formAdjunto.querySelector('button[type="submit"]');
 
         const archivo = inputAdjunto.files[0];
         inputAdjunto.value = '';
@@ -384,6 +385,9 @@ function activarFormularioAdjunto() {
             return;
         }
 
+                  botonSubir.disabled = true;
+          botonSubir.textContent = 'Subiendo archivo...';
+
         const extension = archivo.name.split('.').pop().toLowerCase();
         const ruta = `${ticket.id}/${crypto.randomUUID()}.${extension}`;
 
@@ -406,6 +410,9 @@ function activarFormularioAdjunto() {
                 size_bytes: archivo.size
             });
 
+                 botonSubir.disabled = false;
+          botonSubir.textContent = 'Subir archivo';
+
         if (errorFicha) {
             await supabase.storage.from('adjuntos').remove([ruta]);
             mostrarNotificacion('No se pudo registrar el archivo. Intenta nuevamente.', 'error');
@@ -415,6 +422,9 @@ function activarFormularioAdjunto() {
         inputAdjunto.value = '';
         mostrarNotificacion('Archivo subido correctamente.', 'exito');
         await cargarAdjuntos();
+
+                  botonSubir.disabled = false;
+            botonSubir.textContent = 'Subir archivo';
     });
 }
 

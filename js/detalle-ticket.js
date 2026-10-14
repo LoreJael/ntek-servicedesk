@@ -214,6 +214,7 @@ if (error || !ticket) {
 
     formAdjunto.addEventListener('submit', async (evento) => {
       evento.preventDefault();
+      const botonSubir = formAdjunto.querySelector('button[type="submit"]');
 
       const archivo = inputAdjunto.files[0];
       inputAdjunto.value = '';
@@ -223,7 +224,7 @@ if (error || !ticket) {
         return;
       }
 
-           const grupo = buscarGrupo(archivo.type);
+      const grupo = buscarGrupo(archivo.type);
 
       if (!grupo) {
         mostrarNotificacion('Solo se permiten archivos JPG, PNG, PDF o Markdown (.md).', 'error');
@@ -246,6 +247,9 @@ if (error || !ticket) {
         return;
       }
 
+      botonSubir.disabled = true;
+      botonSubir.textContent = 'Subiendo archivo...';
+
       const extension = archivo.name.split('.').pop().toLowerCase();
       const ruta = `${ticket.id}/${crypto.randomUUID()}.${extension}`;
 
@@ -255,6 +259,8 @@ if (error || !ticket) {
 
       if (errorSubida) {
         mostrarNotificacion('No se pudo subir el archivo. Intenta nuevamente.', 'error');
+        botonSubir.disabled = false;
+        botonSubir.textContent = 'Subir archivo';
         return;
       }
 
@@ -271,13 +277,17 @@ if (error || !ticket) {
       if (errorFicha) {
         await supabase.storage.from('adjuntos').remove([ruta]);
         mostrarNotificacion('No se pudo registrar el archivo. Intenta nuevamente.', 'error');
+        botonSubir.disabled = false;
+        botonSubir.textContent = 'Subir archivo';
         return;
       }
 
       inputAdjunto.value = '';
       mostrarNotificacion('Archivo subido correctamente.', 'exito');
       await cargarAdjuntos();
+
+      botonSubir.disabled = false;
+      botonSubir.textContent = 'Subir archivo';
     });
-  }
-}
+  }}
 document.body.classList.remove('verificando');
