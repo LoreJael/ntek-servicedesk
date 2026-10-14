@@ -89,3 +89,34 @@
 
 **Conclusión:** CA-06 cumplido. El tipo y el tamaño se validan en la pantalla (mensaje comprensible) y en el bucket (límite de 5 MB y lista de tipos permitidos). Los archivos se guardan en un bucket privado con nombre no predecible, y se descargan con un link firmado que vence a los 20 segundos.
 
+## RF-09 — Límites de adjuntos por tipo (13-10 y 14-10)
+
+Reglas: imagen JPG/PNG máx. 3 (5 MB), PDF máx. 1 (5 MB), Markdown `.md` máx. 5 (1 MB) por ticket.
+
+### Interfaz (validación en el navegador)
+
+| # | Vista | Caso | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 11 | Cliente | Subir `.md` | Se sube y aparece como "Markdown" | ✅ |
+| 12 | Cliente | Subir `.txt` | Rechazado: tipo no permitido | ✅ |
+| 13 | Cliente | Subir 2.º PDF en el mismo ticket | Rechazado: máximo de archivos de este tipo | ✅ |
+| 14 | Equipo | Subir `.md` | Se sube y aparece como "Markdown" | ⬜ |
+| 15 | Equipo | Subir `.txt` | Rechazado: tipo no permitido | ⬜ |
+| 16 | Equipo | Subir 2.º PDF en el mismo ticket | Rechazado: máximo de archivos de este tipo | ⬜ |
+
+### Base de datos (trigger `attachments_limitar_por_tipo`)
+
+| # | Quién | Caso | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 17 | Cliente (Loreto) | `insert` directo por consola de un 2.º PDF | `data: null`, error "Se alcanzó el máximo de archivos de este tipo para el ticket" | ✅ |
+| 18 | Cliente (Loreto) | `insert` directo por consola con `mime_type: 'text/plain'` | `data: null`, error "Tipo de archivo no permitido" | ✅ |
+| 19 | Cliente (Loreto) | Dos pestañas del mismo ticket sin PDF; subir un PDF en cada una sin recargar | 1.ª se sube; 2.ª rechazada por la base ("No se pudo registrar el archivo") y el archivo se elimina de Storage | ✅ |
+
+Hallazgo: la primera prueba 17 permitió el insert porque la migración se había creado (`migration new`) pero no aplicado (`db push`). Se detectó con `npx supabase migration list` (columna Remote vacía).
+
+### Limpieza de datos de prueba
+
+- Un adjunto vive en dos lugares: el archivo en Storage (`adjuntos/<ticket_id>/...`) y la ficha en `attachments`. Si se borra uno solo, queda un huérfano.
+- Para revisar: comparar `select id, path from attachments where ticket_id = '...'` con los archivos de la carpeta del ticket en Storage.
+- Siempre usar `delete ... where id = '...'` (nunca `delete` sin `where`).
+- 14-10: se borraron la ficha falsa `prueba/falso.pdf` y 3 fichas sin archivo en el ticket `93f0916e`.

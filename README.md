@@ -23,6 +23,23 @@ HTML, CSS, JavaScript (módulos ES, sin framework), Supabase (Auth, Postgres, St
 - [ ] Etapa 4: Tickets
 ...
 
+## Límites de adjuntos
+
+Cada ticket acepta como máximo:
+
+| Tipo | Formatos | Máx. archivos | Máx. peso por archivo |
+|---|---|---|---|
+| Imagen | JPG, PNG | 3 | 5 MB |
+| PDF | PDF | 1 | 5 MB |
+| Markdown | .md | 5 | 1 MB |
+
+⚠️ Los límites están escritos en **dos lugares** y deben cambiarse en ambos:
+
+- `js/reglas-adjuntos.js` → validación en el navegador (mensajes claros al usuario).
+- Trigger `attachments_limitar_por_tipo` en Supabase (migración `limite_adjuntos_por_tipo`) → validación en la base (no se puede saltar desde la consola).
+
+Si se cambia un número, crear una migración nueva con la función actualizada.
+
 ## Instalación y despliegue
 Pendiente (etapa 7).
 
