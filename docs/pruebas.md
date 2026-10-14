@@ -100,9 +100,9 @@ Reglas: imagen JPG/PNG máx. 3 (5 MB), PDF máx. 1 (5 MB), Markdown `.md` máx. 
 | 11 | Cliente | Subir `.md` | Se sube y aparece como "Markdown" | ✅ |
 | 12 | Cliente | Subir `.txt` | Rechazado: tipo no permitido | ✅ |
 | 13 | Cliente | Subir 2.º PDF en el mismo ticket | Rechazado: máximo de archivos de este tipo | ✅ |
-| 14 | Equipo | Subir `.md` | Se sube y aparece como "Markdown" | ⬜ |
-| 15 | Equipo | Subir `.txt` | Rechazado: tipo no permitido | ⬜ |
-| 16 | Equipo | Subir 2.º PDF en el mismo ticket | Rechazado: máximo de archivos de este tipo | ⬜ |
+| 14 | Equipo | Subir `.md` | Se sube y aparece como "Markdown" | ✅ |
+| 15 | Equipo | Subir `.txt` | Rechazado: tipo no permitido | ✅|
+| 16 | Equipo | Subir 2.º PDF en el mismo ticket | Rechazado: máximo de archivos de este tipo | ✅ |
 
 ### Base de datos (trigger `attachments_limitar_por_tipo`)
 
