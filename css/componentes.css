@@ -451,3 +451,104 @@ button:disabled {
 .tarjeta-ticket .comentario-meta {
   margin: 0;
 }
+
+/* ===== Auditoría ===== */
+.subtitulo {
+  color: #5b6b62;
+  margin-top: -0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.lista-auditoria {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.evento {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  background-color: white;
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+  padding: 0.9rem 1.25rem;
+}
+
+.evento-icono {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 10px;
+  background-color: var(--color-verde-suave);
+  color: var(--color-acento);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.evento--cerrar .evento-icono {
+  background-color: var(--color-verde-oscuro);
+  color: white;
+}
+
+.evento--reabrir .evento-icono {
+  background-color: var(--color-prioridad-media);
+  color: #8a6100;
+}
+
+.evento-titulo {
+  margin: 0 0 0.35rem;
+}
+
+.evento-detalle {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.evento-detalle a {
+  color: var(--color-acento);
+  font-weight: 600;
+  margin-right: 0.35rem;
+}
+
+.pildora {
+  padding: 0.15rem 0.65rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 999px;
+  background-color: var(--color-fondo);
+}
+
+.pildora--nueva {
+  background-color: var(--color-verde-suave);
+  border-color: var(--color-acento);
+  color: var(--color-acento);
+  font-weight: 600;
+}
+
+.flecha {
+  color: #5b6b62;
+}
+
+.evento-fecha {
+  color: #5b6b62;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .evento {
+    grid-template-columns: auto 1fr;
+  }
+
+  .evento-fecha {
+    grid-column: 2;
+  }
+}
