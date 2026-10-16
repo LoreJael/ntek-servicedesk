@@ -146,3 +146,15 @@ Defecto detectado el 14-10: la política `delete_adjuntos_propios` permitía que
 | 9 | Leer `audit_events` desde la consola | Técnico y Cliente | `[]` sin error (la RLS oculta las filas) | ✅ 15-10 — Diego hace `select` en `audit_events` desde la consola → `[] null` (sin política de lectura para técnico) |
 | 10 | Insertar en `audit_events` desde la consola | Técnico | Error de RLS, no se inserta nada | ✅ 15-10 — `select` en `audit_events` desde la consola: Diego (técnico) y Loreto Jael Pradel (cliente) → `[] null` (solo el admin tiene política de lectura) |
 | 11 | Abrir `admin/auditoria.html` | Admin / Técnico | Admin ve la lista; técnico recibe acceso denegado | ✅ 15-10 — Admin ve la lista (prueba 8). Diego abre admin/auditoria.html → redirige al login (no ve datos). Observación: debería ir a una pantalla "Acceso denegado" (inventario de pantallas, "Sistema"), no al login. |
+
+### Defecto 15-10 — Rol no permitido redirige al login (corregido 16-10)
+
+`protegerRuta` trataba igual "no se pudo leer el perfil" y "rol no permitido". Se separaron: el primero va al login y el segundo a Acceso denegado.
+
+| N.º | Prueba | Cuenta | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Abrir `admin/usuarios.html` | Técnico (Diego) | Pantalla Acceso denegado | ✅ |
+| 2 | Abrir `admin/auditoria.html` | Técnico (Diego) | Pantalla Acceso denegado | ✅ |
+| 3 | Abrir `equipo/bandeja-global.html` | Cliente (Pedro) | Pantalla Acceso denegado | ✅ |
+| 4 | Abrir `admin/usuarios.html` | Admin (Andrea) | Entra normalmente | ✅ |
+| 5 | Abrir `admin/usuarios.html` sin sesión (incógnito) | — | Login | ✅ |

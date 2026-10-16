@@ -42,8 +42,13 @@ export async function protegerRuta(rolesPermitidos, quitarCarga = true) {
     return;
   }
 
-  if (error || !perfil || !rolesPermitidos.includes(perfil.role)) {
+  if (error || !perfil) {
     window.location.href = '../publicas/login.html';
+    return;
+  }
+
+  if (!rolesPermitidos.includes(perfil.role)) {
+    window.location.href = '../sistema/acceso-denegado.html';
     return;
   }
 
