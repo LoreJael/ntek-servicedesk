@@ -121,6 +121,15 @@ Hallazgo: la primera prueba 17 permitió el insert porque la migración se habí
 - Siempre usar `delete ... where id = '...'` (nunca `delete` sin `where`).
 - 14-10: se borraron la ficha falsa `prueba/falso.pdf` y 3 fichas sin archivo en el ticket `93f0916e`.
 
+### RF-09 — Borrado de archivos en Storage (16-10-2026)
+
+Defecto detectado el 14-10: la política `delete_adjuntos_propios` permitía que un usuario borrara desde la consola un archivo propio en Storage, dejando su ficha en `attachments` huérfana. Corrección: la política ahora solo permite borrar archivos propios **sin ficha** (función `adjunto_tiene_ficha()`, `security definer`).
+
+| N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 1 | Desde la consola, intentar borrar de Storage un adjunto propio que tiene ficha | Cliente (Loreto) | 0 archivos borrados, sin error; el adjunto sigue descargable desde la app | `data: []`, `error: null`; descarga correcta | ✅ |
+| 2 | Desde la consola, subir a Storage un archivo sin crear ficha y luego borrarlo (simula la limpieza cuando falla el insert) | Cliente (Loreto) | 1 archivo borrado | `data: [1 elemento]`, `error: null`; el archivo ya no está en el panel | ✅ |
+
 
 ## RF-12 — Auditoría (trigger `tickets_auditoria`)
 
