@@ -158,3 +158,13 @@ Defecto detectado el 14-10: la política `delete_adjuntos_propios` permitía que
 | 3 | Abrir `equipo/bandeja-global.html` | Cliente (Pedro) | Pantalla Acceso denegado | ✅ |
 | 4 | Abrir `admin/usuarios.html` | Admin (Andrea) | Entra normalmente | ✅ |
 | 5 | Abrir `admin/usuarios.html` sin sesión (incógnito) | — | Login | ✅ |
+
+### F-03 — Aceptar cierre (cliente) — función `aceptar_cierre` (16-10-2026)
+
+El cliente no tiene permiso de `update` en `tickets`. Acepta el cierre mediante la función `aceptar_cierre(id_ticket)` (`security definer`), que solo cierra si el ticket es suyo, está Resuelto y su cuenta está activa. Ante cualquier fallo devuelve el mismo mensaje genérico, para no revelar si el ticket existe.
+
+| N.º | Prueba (desde la consola) | Cuenta | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 1 | Aceptar cierre de un ticket Resuelto de otro cliente | Cliente (Pedro) | Error genérico, el ticket no cambia | `400`, `P0001`, mensaje genérico | ✅ |
+| 2 | Aceptar cierre de un ticket propio en estado Nuevo | Cliente (Pedro) | Error genérico, el ticket no cambia | | ✅ |
+| 3 | Aceptar cierre de un ticket propio en estado Resuelto | Cliente (Pedro) | Ticket pasa a Cerrado; evento `cerrar` en auditoría con Pedro como actor | `204`; auditoría muestra a Pedro | ✅ |
