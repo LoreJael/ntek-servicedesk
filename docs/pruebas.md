@@ -120,3 +120,20 @@ Hallazgo: la primera prueba 17 permitió el insert porque la migración se habí
 - Para revisar: comparar `select id, path from attachments where ticket_id = '...'` con los archivos de la carpeta del ticket en Storage.
 - Siempre usar `delete ... where id = '...'` (nunca `delete` sin `where`).
 - 14-10: se borraron la ficha falsa `prueba/falso.pdf` y 3 fichas sin archivo en el ticket `93f0916e`.
+
+
+## RF-12 — Auditoría (trigger `tickets_auditoria`)
+
+| # | Escenario | Rol | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Crear ticket desde Nueva solicitud | Cliente | 1 evento `crear`, actor = cliente | ✅ 15-10 — 1 evento `crear`, actor = Loreto Jael Pradel, metadata `{"estado":"nuevo","prioridad":"media"}` |
+| 2 | "Tomar caso" en un ticket sin asignar | Técnico | 1 evento `asignar`, sin asignar → técnico | ✅ 15-10 — 1 evento `asignar`, actor = Diego Muñoz, metadata `{"antes":null,"despues":"<id Diego>"}` |
+| 3 | Cambiar prioridad y estado en un solo guardar | Técnico | 2 eventos: `cambiar_prioridad` y `cambiar_estado` | ✅ 15-10 — 2 eventos con el mismo `created_at`: `cambiar_prioridad` (media → alta) y `cambiar_estado` (nuevo → en_revision), actor = Diego Muñoz |
+| 4 | Guardar sin cambiar nada | Técnico | 0 eventos nuevos | ✅ 15-10 — Guardar sin cambios: `updated_at` cambió (el update llegó), 0 eventos nuevos en `audit_events` |
+| 5 | Marcar Resuelto y luego Cerrado | Técnico | `cambiar_estado` y luego `cerrar` | ✅ 15-10 — 2 eventos con horas distintas: `cambiar_estado` (en_revision → resuelto) y `cerrar` (resuelto → cerrado), actor = Diego Muñoz |
+| 6 | Reabrir un ticket cerrado | Admin | 1 evento `reabrir` | ✅ 15-10 — Diego (técnico asignado) hace `update` de prioridad en ticket cerrado desde la consola → `[] null`; ticket sin cambios; 0 eventos nuevos |
+| 7 | Reasignar de un técnico a otro | Admin | 1 evento `asignar`, técnico A → técnico B | ✅ 15-10 — Admin reasigna en ticket cerrado: 1 evento `asignar`, actor = Andrea Soto, Diego Muñoz → Camila Rojas |
+| 8 | `update` desde el SQL Editor | — | 1 evento con actor `null`, se ve como "Sistema" | ✅ 15-10 — `update` desde el SQL Editor: `cambiar_prioridad` (alta → media) con `actor_id` NULL; auditoria.html lo muestra como "Sistema" |
+| 9 | Leer `audit_events` desde la consola | Técnico y Cliente | `[]` sin error (la RLS oculta las filas) | ✅ 15-10 — Diego hace `select` en `audit_events` desde la consola → `[] null` (sin política de lectura para técnico) |
+| 10 | Insertar en `audit_events` desde la consola | Técnico | Error de RLS, no se inserta nada | ✅ 15-10 — `select` en `audit_events` desde la consola: Diego (técnico) y Loreto Jael Pradel (cliente) → `[] null` (solo el admin tiene política de lectura) |
+| 11 | Abrir `admin/auditoria.html` | Admin / Técnico | Admin ve la lista; técnico recibe acceso denegado | ✅ 15-10 — Admin ve la lista (prueba 8). Diego abre admin/auditoria.html → redirige al login (no ve datos). Observación: debería ir a una pantalla "Acceso denegado" (inventario de pantallas, "Sistema"), no al login. |
