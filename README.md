@@ -20,8 +20,15 @@ HTML, CSS, JavaScript (módulos ES, sin framework), Supabase (Auth, Postgres, St
 - [x] Etapa 1: Descubrimiento y diseño
 - [x] Etapa 2: Base front-end
 - [x] Etapa 3: Supabase y autenticación
-- [ ] Etapa 4: Tickets
-...
+- [x] Etapa 4: Tickets (pendiente: paginación)
+- [ ] Etapa 5: Interacción — comentarios, adjuntos y auditoría listos; en curso: reapertura de tickets e historial
+- [ ] Etapa 6: Panel y calidad
+- [ ] Etapa 7: DevOps — Docker y Render listos; pendiente: Cloudflare
+- [ ] Etapa 8: Cierre
+
+## Validación cruzada
+Guía para probar el sistema como usuario: [docs/guia-validacion.md](docs/guia-validacion.md).
+Las credenciales de prueba se entregan por mensaje privado; nunca se suben al repositorio.
 
 ## Límites de adjuntos
 
