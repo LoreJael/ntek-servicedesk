@@ -1,4 +1,5 @@
 import { supabase } from './supabase-client.js';
+export let nombreUsuario = '';
 
 export function activarBotonCerrarSesion() {
   const boton = document.querySelector('.header .boton');
@@ -27,7 +28,8 @@ export async function protegerRuta(rolesPermitidos, quitarCarga = true) {
     .from('profiles')
     .select('role, active')
     .eq('id', session.user.id)
-    .single();
+    .single()
+    .select('role, active, full_name');
 
   if (perfil && perfil.active === false) {
     await supabase.auth.signOut();
@@ -55,5 +57,7 @@ export async function protegerRuta(rolesPermitidos, quitarCarga = true) {
   if (quitarCarga) { 
     document.body.classList.remove('verificando');
   }
+
+  nombreUsuario = perfil.full_name || 'Usuario';
   return perfil.role;
 }
