@@ -334,6 +334,10 @@ body.verificando .pantalla-carga {
   margin-top: 1.5rem;
 }
 
+.detalle-layout .aviso-resuelto {
+  margin-top: 1.5rem;
+}
+
 .lista-adjuntos {
   list-style: none;
   padding: 0;

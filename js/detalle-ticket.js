@@ -54,6 +54,37 @@ if (error || !ticket) {
     <p class="ticket-fecha">Creado: ${fechaCreacion} · Última actualización: ${fechaActualizacion}</p>
   `;
 
+    // Aceptar cierre (solo si el ticket está Resuelto)
+  const avisoResuelto = document.querySelector('#aviso-resuelto');
+  const botonAceptarCierre = document.querySelector('#boton-aceptar-cierre');
+
+  if (ticket.status === 'resuelto') {
+    avisoResuelto.hidden = false;
+
+    botonAceptarCierre.addEventListener('click', async () => {
+      const confirmado = confirm('¿Seguro que quieres cerrar este ticket? Una vez cerrado ya no podrás comentar ni adjuntar archivos.');
+
+      if (!confirmado) {
+        return;
+      }
+
+      botonAceptarCierre.disabled = true;
+      botonAceptarCierre.textContent = 'Cerrando ticket...';
+
+      const { error: errorCierre } = await supabase.rpc('aceptar_cierre', { id_ticket: ticket.id });
+
+      if (errorCierre) {
+        mostrarNotificacion('No se pudo cerrar el ticket. Intenta nuevamente.', 'error');
+        botonAceptarCierre.disabled = false;
+        botonAceptarCierre.textContent = 'Aceptar cierre';
+        return;
+      }
+
+      mostrarNotificacion('Ticket cerrado. ¡Gracias por confirmar!', 'exito');
+      setTimeout(() => window.location.reload(), 1500);
+    });
+  }
+
   const { data: datosUsuario } = await supabase.auth.getUser();
   const idUsuarioActual = datosUsuario.user.id;
 
