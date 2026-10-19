@@ -4,6 +4,7 @@ import { crearHeaderEquipo } from './header-equipo.js';
 import { activarBotonCerrarSesion } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { escaparHTML } from './seguridad.js';
+import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
@@ -29,47 +30,7 @@ const { data: tickets, error } = await supabase
   .select('id, title, status, priority, created_at')
   .order('created_at', { ascending: false });
 
-const resumenPorEstado = document.querySelector('#resumen-por-estado');
-
-if (error) {
-  resumenPorEstado.innerHTML = '<p>No se pudieron cargar los indicadores.</p>';
-} else {
-  Object.keys(etiquetasEstado).forEach((estado) => {
-    const cantidad = tickets.filter((ticket) => ticket.status === estado).length;
-
-    const item = document.createElement('a');
-    item.href = `bandeja-global.html?estado=${estado}`;
-    item.classList.add('resumen-item');
-    item.innerHTML = `
-      <p class="resumen-numero">${cantidad}</p>
-      <p class="resumen-etiqueta">${etiquetasEstado[estado]}</p>
-    `;
-
-    resumenPorEstado.appendChild(item);
-  });
-}
-
-const resumenPorPrioridad = document.querySelector('#resumen-por-prioridad');
-
-if (error) {
-  resumenPorPrioridad.innerHTML = '<p>No se pudieron cargar los indicadores.</p>';
-} else {
-  Object.keys(etiquetasPrioridad).forEach((prioridad) => {
-    const cantidad = tickets.filter((ticket) => ticket.priority === prioridad).length;
-
-    const item = document.createElement('a');
-    item.href = `bandeja-global.html?prioridad=${prioridad}`;
-    item.classList.add('resumen-item');
-    item.innerHTML = `
-      <p class="resumen-numero">${cantidad}</p>
-      <p class="resumen-etiqueta">${etiquetasPrioridad[prioridad]}</p>
-    `;
-    resumenPorPrioridad.appendChild(item);
-  });
-}
-
-const listaAltaPrioridad = document.querySelector('#lista-alta-prioridad');
-const listaRecientes = document.querySelector('#lista-recientes');
+const contenido = document.querySelector('#indicadores-contenido');
 
 function pintarTickets(contenedor, lista, mensajeVacio) {
   if (lista.length === 0) {
@@ -97,9 +58,46 @@ function pintarTickets(contenedor, lista, mensajeVacio) {
 }
 
 if (error) {
-  listaAltaPrioridad.innerHTML = '<li>No se pudieron cargar los tickets.</li>';
-  listaRecientes.innerHTML = '<li>No se pudieron cargar los tickets.</li>';
+  console.error(error);
+  mostrarErrorRecuperable(contenido, 'No pudimos cargar los indicadores.', () => location.reload());
+} else if (tickets.length === 0) {
+  mostrarEstadoVacio(contenido, 'Aún no hay tickets para mostrar.');
 } else {
+  const resumenPorEstado = document.querySelector('#resumen-por-estado');
+
+  Object.keys(etiquetasEstado).forEach((estado) => {
+    const cantidad = tickets.filter((ticket) => ticket.status === estado).length;
+
+    const item = document.createElement('a');
+    item.href = `bandeja-global.html?estado=${estado}`;
+    item.classList.add('resumen-item');
+    item.innerHTML = `
+      <p class="resumen-numero">${cantidad}</p>
+      <p class="resumen-etiqueta">${etiquetasEstado[estado]}</p>
+    `;
+
+    resumenPorEstado.appendChild(item);
+  });
+
+  const resumenPorPrioridad = document.querySelector('#resumen-por-prioridad');
+
+  Object.keys(etiquetasPrioridad).forEach((prioridad) => {
+    const cantidad = tickets.filter((ticket) => ticket.priority === prioridad).length;
+
+    const item = document.createElement('a');
+    item.href = `bandeja-global.html?prioridad=${prioridad}`;
+    item.classList.add('resumen-item');
+    item.innerHTML = `
+      <p class="resumen-numero">${cantidad}</p>
+      <p class="resumen-etiqueta">${etiquetasPrioridad[prioridad]}</p>
+    `;
+
+    resumenPorPrioridad.appendChild(item);
+  });
+
+  const listaAltaPrioridad = document.querySelector('#lista-alta-prioridad');
+  const listaRecientes = document.querySelector('#lista-recientes');
+
   const altaPrioridad = tickets
     .filter((ticket) => ticket.priority === 'alta' || ticket.priority === 'critica')
     .filter((ticket) => ticket.status !== 'resuelto' && ticket.status !== 'cerrado')
