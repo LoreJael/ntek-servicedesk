@@ -18,20 +18,50 @@
 
   <main class="contenedor">
 
-     <section class="resumen-estados-seccion">
-      <h2>Resumen de tickets</h2>
-      <div class="resumen-estados" id="resumen-estados"></div>
+    <section class="banner">
+      <div class="banner-texto">
+        <p class="eyebrow eyebrow--claro">Panel de soporte</p>
+        <h1 id="saludo">Hola</h1>
+        <p>Aquí ves el estado de tus solicitudes. Si tienes un problema nuevo, créalo y el equipo NTEK te responderá por este mismo medio.</p>
+        <div class="banner-acciones">
+          <a class="boton-pildora boton-pildora--blanco" href="nueva-solicitud.html">Nueva solicitud</a>
+          <a class="boton-pildora boton-pildora--borde" href="mis-tickets.html">Ver mis tickets</a>
+        </div>
+      </div>
+      
     </section>
 
-    <section class="ultimos-tickets">
-      <h2>Últimos tickets</h2>
-      <ul class="lista-tickets" id="lista-ultimos-tickets"></ul>
+    <section class="tarjeta-seccion">
+      <div class="tarjeta-seccion-cabecera">
+        <p class="eyebrow">Resumen</p>
+        <h2>Tus tickets por estado</h2>
+      </div>
+      <div class="tarjeta-seccion-cuerpo">
+        <div class="resumen-estados" id="resumen-estados"></div>
+      </div>
     </section>
 
-    <section class="ultimos-comentarios">
-      <h2>Últimos comentarios</h2>
-      <ul class="lista-comentarios" id="lista-ultimos-comentarios"></ul>
-    </section>
+    <div class="fila-secciones">
+      <section class="tarjeta-seccion">
+        <div class="tarjeta-seccion-cabecera">
+          <p class="eyebrow">Actividad</p>
+          <h2>Últimos tickets</h2>
+        </div>
+        <div class="tarjeta-seccion-cuerpo">
+          <ul class="lista-tickets" id="lista-ultimos-tickets"></ul>
+        </div>
+      </section>
+
+      <section class="tarjeta-seccion">
+        <div class="tarjeta-seccion-cabecera">
+          <p class="eyebrow">Conversación</p>
+          <h2>Últimos comentarios</h2>
+        </div>
+        <div class="tarjeta-seccion-cuerpo">
+          <ul class="lista-comentarios" id="lista-ultimos-comentarios"></ul>
+        </div>
+      </section>
+    </div>
 
   </main>
 

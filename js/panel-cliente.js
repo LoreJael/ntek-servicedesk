@@ -1,13 +1,16 @@
 import { protegerRuta } from './sesion.js';
 const rolActual = await protegerRuta(['cliente'], false); 
 import { crearHeaderCliente } from './header-cliente.js';
-import { activarBotonCerrarSesion } from './sesion.js';
+import { activarBotonCerrarSesion, nombreUsuario } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { escaparHTML } from './seguridad.js';
 import { mostrarEstadoVacio } from './estados.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
+
+const primerNombre = nombreUsuario.split(' ')[0];
+document.querySelector('#saludo').textContent = `Hola, ${primerNombre}`;
 
 const etiquetasEstado = {
   nuevo: "Nuevo",
@@ -50,7 +53,7 @@ if (errorTickets) {
       <a class="tarjeta-ticket" href="detalle-ticket.html?id=${ticket.id}">
         <p class="ticket-titulo">${escaparHTML(ticket.title)}</p>
         <p class="ticket-meta">
-          <span class="badge-estado">${etiquetasEstado[ticket.status]}</span>
+          <span class="badge-estado badge-estado--${ticket.status}">${etiquetasEstado[ticket.status]}</span>
           <span>${fecha}</span>
         </p>
       </a>
@@ -101,7 +104,7 @@ if (errorTickets) {
     const cantidad = tickets.filter((ticket) => ticket.status === estado).length;
 
     const item = document.createElement('div');
-    item.classList.add('resumen-item');
+    item.classList.add('resumen-item', `resumen-item--${estado}`);
     item.innerHTML = `
       <p class="resumen-numero">${cantidad}</p>
       <p class="resumen-etiqueta">${etiquetasEstado[estado]}</p>

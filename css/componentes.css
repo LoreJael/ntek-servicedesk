@@ -641,12 +641,12 @@ a.resumen-item:hover {
   margin-bottom: 0;
 }
 
-a.resumen-item {
+.resumen-item {
   border-top: 1px solid var(--color-borde);
   border-bottom: 4px solid var(--color-indicador, var(--color-acento));
 }
 
-a.resumen-item .resumen-numero {
+.resumen-item .resumen-numero {
   color: var(--color-indicador, var(--color-acento));
 }
 
@@ -661,3 +661,77 @@ a.resumen-item .resumen-numero {
 .resumen-item--media   { --color-indicador: var(--prioridad-media-color); }
 .resumen-item--alta    { --color-indicador: var(--prioridad-alta-color); }
 .resumen-item--critica { --color-indicador: var(--prioridad-critica-color); }
+
+/* ===== Banner del panel de cliente ===== */
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2.25rem;
+  margin-bottom: 1.5rem;
+  border-radius: 22px;
+  background: linear-gradient(120deg, #0b4228 0%, #11834a 100%);
+  color: #ffffff;
+}
+
+.banner-texto {
+  flex: 1 1 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.banner h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.banner-texto > p:not(.eyebrow) {
+  margin: 0;
+  max-width: 560px;
+  color: #d6eadd;
+}
+
+.eyebrow--claro {
+  color: #8cf4ac;
+}
+
+.banner-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.boton-pildora {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.boton-pildora--blanco {
+  background-color: #ffffff;
+  color: #0b4228;
+}
+
+.boton-pildora--borde {
+  border: 1px solid #ffffff;
+  color: #ffffff;
+}
+
+.banner-logo {
+  margin: 0;
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
