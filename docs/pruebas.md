@@ -168,3 +168,16 @@ El cliente no tiene permiso de `update` en `tickets`. Acepta el cierre mediante 
 | 1 | Aceptar cierre de un ticket Resuelto de otro cliente | Cliente (Pedro) | Error genérico, el ticket no cambia | `400`, `P0001`, mensaje genérico | ✅ |
 | 2 | Aceptar cierre de un ticket propio en estado Nuevo | Cliente (Pedro) | Error genérico, el ticket no cambia | | ✅ |
 | 3 | Aceptar cierre de un ticket propio en estado Resuelto | Cliente (Pedro) | Ticket pasa a Cerrado; evento `cerrar` en auditoría con Pedro como actor | `204`; auditoría muestra a Pedro | ✅ |
+
+
+#### Interfaz — botón "Aceptar cierre" en el detalle de cliente (19-10-2026)
+
+La tarjeta "¿Se solucionó tu problema?" solo se muestra si el ticket está Resuelto. El botón pide confirmación, se deshabilita mientras espera la respuesta ("Cerrando ticket...") y recarga la página al terminar.
+
+| N.º | Prueba (desde la pantalla) | Cuenta | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 4 | Abrir el detalle de un ticket propio en estado Resuelto | Loreto Jael Pradel | Aparece la tarjeta con el botón "Aceptar cierre" | Como se esperaba | ✅ |
+| 5 | Abrir el detalle de un ticket propio en estado Nuevo / En progreso | Loreto Jael Pradel | La tarjeta no aparece | Como se esperaba | ✅ |
+| 6 | Apretar "Aceptar cierre" y cancelar la confirmación | Loreto Jael Pradel | No pasa nada; el botón sigue activo | Como se esperaba | ✅ |
+| 7 | Apretar "Aceptar cierre" y confirmar | Loreto Jael Pradel | Notificación de éxito; al recargar, el ticket aparece Cerrado, sin formularios de comentario ni adjuntos y con el aviso de ticket cerrado | Como se esperaba | ✅ |
+| 8 | Revisar la página de auditoría después de la prueba 7 | Admin (Andrea) | Evento `cerrar` con el cliente como actor (no "Sistema") | Como se esperaba | ✅ |
