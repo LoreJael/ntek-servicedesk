@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicadores — NTEK ServiceDesk Lite</title>
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/layout.css">
+    <link rel="stylesheet" href="../../css/componentes.css">
+</head>
+
+<body class="verificando">
+    <div class="pantalla-carga">Cargando...</div>
+
+    <div id="header-placeholder"></div>
+
+    <main class="contenedor">
+        <h1>Indicadores</h1>
+
+        <section class="resumen-estados-seccion">
+            <h2>Tickets por estado</h2>
+            <div class="resumen-estados" id="resumen-por-estado"></div>
+        </section>
+
+        <section class="resumen-estados-seccion">
+            <h2>Tickets por prioridad</h2>
+            <div class="resumen-estados" id="resumen-por-prioridad"></div>
+        </section>
+
+        <section class="ultimos-tickets">
+            <h2>Alta prioridad abiertos</h2>
+            <ul class="lista-tickets" id="lista-alta-prioridad"></ul>
+        </section>
+
+        <section class="ultimos-tickets">
+            <h2>Casos recientes</h2>
+            <ul class="lista-tickets" id="lista-recientes"></ul>
+        </section>
+
+    </main>
+
+    <script type="module" src="../../js/indicadores.js"></script>
+</body>
+
+</html>
