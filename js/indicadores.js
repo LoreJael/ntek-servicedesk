@@ -37,7 +37,8 @@ if (error) {
   Object.keys(etiquetasEstado).forEach((estado) => {
     const cantidad = tickets.filter((ticket) => ticket.status === estado).length;
 
-    const item = document.createElement('div');
+    const item = document.createElement('a');
+    item.href = `bandeja-global.html?estado=${estado}`;
     item.classList.add('resumen-item');
     item.innerHTML = `
       <p class="resumen-numero">${cantidad}</p>
@@ -56,7 +57,8 @@ if (error) {
   Object.keys(etiquetasPrioridad).forEach((prioridad) => {
     const cantidad = tickets.filter((ticket) => ticket.priority === prioridad).length;
 
-    const item = document.createElement('div');
+    const item = document.createElement('a');
+    item.href = `bandeja-global.html?prioridad=${prioridad}`;
     item.classList.add('resumen-item');
     item.innerHTML = `
       <p class="resumen-numero">${cantidad}</p>

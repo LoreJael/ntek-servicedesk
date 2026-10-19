@@ -160,6 +160,10 @@ botonLimpiar.addEventListener('click', () => {
   aplicarFiltros();
 });
 
+const parametros = new URLSearchParams(window.location.search);
+filtroEstado.value = parametros.get('estado') || '';
+filtroPrioridad.value = parametros.get('prioridad') || '';
+
 await cargarTickets();
 document.body.classList.remove('verificando');
 
