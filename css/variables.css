@@ -12,6 +12,25 @@
   --color-verde-oscuro: #0b2015;
   --color-verde-suave: #e4f5e9;
 
+    /* Estados de ticket: fondo suave + texto oscuro del mismo tono */
+  --estado-nuevo-fondo: #e6eef8;
+  --estado-nuevo-texto: #264a7d;
+  --estado-revision-fondo: #efe8f8;
+  --estado-revision-texto: #563a85;
+  --estado-progreso-fondo: #fcf0d4;
+  --estado-progreso-texto: #6e4a00;
+  --estado-espera-fondo: #fde5d3;
+  --estado-espera-texto: #83390c;
+  --estado-resuelto-fondo: #e4f5e9;
+  --estado-resuelto-texto: #0b6b3a;
+  --estado-cerrado-fondo: #eceeed;
+  --estado-cerrado-texto: #46514c;
+
+  --prioridad-baja-color: #8a9a92;
+  --prioridad-media-color: #3d6fb6;
+  --prioridad-alta-color: #d9822b;
+  --prioridad-critica-color: #b8321f;
+
 
   /* Tipografia - valor PROVISORIO */
   --fuente-base: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;

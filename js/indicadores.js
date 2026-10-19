@@ -70,7 +70,7 @@ if (error) {
 
     const item = document.createElement('a');
     item.href = `bandeja-global.html?estado=${estado}`;
-    item.classList.add('resumen-item');
+    item.classList.add('resumen-item', `resumen-item--${estado}`);
     item.innerHTML = `
       <p class="resumen-numero">${cantidad}</p>
       <p class="resumen-etiqueta">${etiquetasEstado[estado]}</p>
@@ -86,7 +86,7 @@ if (error) {
 
     const item = document.createElement('a');
     item.href = `bandeja-global.html?prioridad=${prioridad}`;
-    item.classList.add('resumen-item');
+    item.classList.add('resumen-item', `resumen-item--${prioridad}`);
     item.innerHTML = `
       <p class="resumen-numero">${cantidad}</p>
       <p class="resumen-etiqueta">${etiquetasPrioridad[prioridad]}</p>

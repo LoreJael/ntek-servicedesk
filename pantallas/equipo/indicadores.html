@@ -17,29 +17,56 @@
     <div id="header-placeholder"></div>
 
     <main class="contenedor">
-        <h1>Indicadores</h1>
 
-        <div id="indicadores-contenido">  
+        <div class="encabezado-pagina">
+            <p class="eyebrow">Equipo NTEK</p>
+            <h1>Indicadores</h1>
+            <p class="subtitulo">Resumen de los tickets que puedes gestionar. Haz clic en un indicador para ver la lista filtrada.</p>
+        </div>
 
-        <section class="resumen-estados-seccion">
-            <h2>Tickets por estado</h2>
-            <div class="resumen-estados" id="resumen-por-estado"></div>
-        </section>
+        <div id="indicadores-contenido">
 
-        <section class="resumen-estados-seccion">
-            <h2>Tickets por prioridad</h2>
-            <div class="resumen-estados" id="resumen-por-prioridad"></div>
-        </section>
+            <div class="fila-secciones">
+                <section class="tarjeta-seccion">
+                    <div class="tarjeta-seccion-cabecera">
+                        <p class="eyebrow">Distribución</p>
+                        <h2>Tickets por estado</h2>
+                    </div>
+                    <div class="tarjeta-seccion-cuerpo">
+                        <div class="resumen-estados" id="resumen-por-estado"></div>
+                    </div>
+                </section>
 
-        <section class="ultimos-tickets">
-            <h2>Alta prioridad abiertos</h2>
-            <ul class="lista-tickets" id="lista-alta-prioridad"></ul>
-        </section>
+                <section class="tarjeta-seccion">
+                    <div class="tarjeta-seccion-cabecera">
+                        <p class="eyebrow">Urgencia</p>
+                        <h2>Tickets por prioridad</h2>
+                    </div>
+                    <div class="tarjeta-seccion-cuerpo">
+                        <div class="resumen-estados" id="resumen-por-prioridad"></div>
+                    </div>
+                </section>
+            </div>
 
-        <section class="ultimos-tickets">
-            <h2>Casos recientes</h2>
-            <ul class="lista-tickets" id="lista-recientes"></ul>
-        </section>
+            <section class="tarjeta-seccion">
+                <div class="tarjeta-seccion-cabecera">
+                    <p class="eyebrow">Atención inmediata</p>
+                    <h2>Alta prioridad abiertos</h2>
+                </div>
+                <div class="tarjeta-seccion-cuerpo">
+                    <ul class="lista-tickets" id="lista-alta-prioridad"></ul>
+                </div>
+            </section>
+
+            <section class="tarjeta-seccion">
+                <div class="tarjeta-seccion-cabecera">
+                    <p class="eyebrow">Actividad</p>
+                    <h2>Casos recientes</h2>
+                </div>
+                <div class="tarjeta-seccion-cuerpo">
+                    <ul class="lista-tickets" id="lista-recientes"></ul>
+                </div>
+            </section>
 
         </div>
 
