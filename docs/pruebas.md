@@ -181,3 +181,24 @@ La tarjeta "¿Se solucionó tu problema?" solo se muestra si el ticket está Res
 | 6 | Apretar "Aceptar cierre" y cancelar la confirmación | Loreto Jael Pradel | No pasa nada; el botón sigue activo | Como se esperaba | ✅ |
 | 7 | Apretar "Aceptar cierre" y confirmar | Loreto Jael Pradel | Notificación de éxito; al recargar, el ticket aparece Cerrado, sin formularios de comentario ni adjuntos y con el aviso de ticket cerrado | Como se esperaba | ✅ |
 | 8 | Revisar la página de auditoría después de la prueba 7 | Admin (Andrea) | Evento `cerrar` con el cliente como actor (no "Sistema") | Como se esperaba | ✅ |
+
+
+## RF-10 — Panel de indicadores (19-10-2026)
+
+Página `equipo/indicadores.html`. Una sola consulta a `tickets`; la RLS decide qué tickets llegan (admin: todos; técnico: asignados a él y sin asignar). Los totales se calculan en el navegador y cada tarjeta enlaza a la bandeja con el filtro aplicado (`?estado=` o `?prioridad=`).
+
+| N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 1 | Abrir Indicadores desde el header | Admin (Andrea) | Página carga sin 404; link marcado como página actual | Como se esperaba | ✅ |
+| 2 | Sumar las tarjetas por estado y por prioridad | Admin (Andrea) | Ambos grupos suman el total de tickets (23) | 23 y 23 | ✅ |
+| 3 | Sumar las tarjetas por estado y por prioridad | Técnico (Diego) | Ambos grupos suman solo sus tickets + los sin asignar (15) | 15 y 15; coincide con el conteo en el SQL Editor | ✅ |
+| 4 | "Alta prioridad abiertos" | Admin (Andrea) | Máximo 5; solo Alta o Crítica; ninguno Resuelto ni Cerrado | Como se esperaba | ✅ |
+| 5 | "Casos recientes" | Admin (Andrea) | Los 5 tickets más nuevos | Como se esperaba | ✅ |
+| 6 | Clic en una tarjeta de lista | Admin (Andrea) | Abre el detalle de equipo de ese ticket | Como se esperaba | ✅ |
+| 7 | Clic en una tarjeta de estado | Admin / Técnico | Bandeja abre con el filtro de estado aplicado y la misma cantidad | Como se esperaba | ✅ |
+| 8 | Clic en una tarjeta de prioridad | Admin / Técnico | Bandeja abre con el filtro de prioridad aplicado y la misma cantidad | Como se esperaba | ✅ |
+| 9 | "Limpiar filtros" en la bandeja después del clic | Admin | Vuelven a aparecer todos los tickets | Como se esperaba | ✅ |
+| 10 | Entrar a la bandeja desde el header (sin parámetros) | Admin | Sin filtros, igual que antes | Como se esperaba | ✅ |
+| 11 | Error forzado (`.from('ticketz')`, revertido) | Admin | Un solo mensaje con "Reintentar"; detalle solo en la consola | Como se esperaba | ✅ |
+| 12 | Vacío forzado (`.eq('status', 'inexistente')`, revertido) | Admin | Mensaje "Aún no hay tickets para mostrar." | Como se esperaba | ✅ |
+| 13 | Vista en 360 px | Admin | Tarjetas se acomodan sin desplazamiento horizontal | Como se esperaba | ✅ |
