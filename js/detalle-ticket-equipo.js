@@ -6,6 +6,7 @@ import { supabase } from './supabase-client.js';
 import { mostrarNotificacion } from './notificaciones.js';
 import { escaparHTML } from './seguridad.js';
 import { reglasAdjuntos, buscarGrupo } from './reglas-adjuntos.js';
+import { crearItemEvento } from './eventos-auditoria.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
@@ -51,7 +52,12 @@ const listaComentarios = document.querySelector('#lista-comentarios-ticket');
 const formComentario = document.querySelector('#form-comentario');
 const textoComentario = document.querySelector('#texto-comentario');
 const casillaInterna = document.querySelector('#casilla-interna');
+const listaHistorial = document.querySelector('#lista-historial');
 
+function nombreEnHistorial(id) {
+    const perfil = perfiles.find((p) => p.id === id);
+    return perfil ? perfil.full_name : 'Equipo NTEK';
+}
 
 const { data: datosUsuario } = await supabase.auth.getUser();
 const idUsuarioActual = datosUsuario.user.id;
@@ -181,6 +187,31 @@ function dibujarGestion(ticket) {
         mostrarNotificacion('Cambios guardados correctamente.', 'exito');
         dibujarDetalle(data[0]);
         dibujarGestion(data[0]);
+        await cargarHistorial();
+    });
+}
+async function cargarHistorial() {
+    listaHistorial.innerHTML = '';
+
+    const { data: eventos, error: errorEventos } = await supabase
+        .from('audit_events')
+        .select('id, actor_id, action, entity_id, metadata, created_at')
+        .eq('entity', 'ticket')
+        .eq('entity_id', ticket.id)
+        .order('created_at', { ascending: true });
+
+    if (errorEventos) {
+        listaHistorial.innerHTML = '<li>No se pudo cargar el historial.</li>';
+        return;
+    }
+
+    if (eventos.length === 0) {
+        listaHistorial.innerHTML = '<li>Este ticket aún no tiene cambios registrados.</li>';
+        return;
+    }
+
+    eventos.forEach((evento) => {
+        listaHistorial.appendChild(crearItemEvento(evento, nombreEnHistorial, false));
     });
 }
 
@@ -385,7 +416,7 @@ function activarFormularioAdjunto() {
             return;
         }
 
-                  botonSubir.disabled = true;
+          botonSubir.disabled = true;
           botonSubir.textContent = 'Subiendo archivo...';
 
         const extension = archivo.name.split('.').pop().toLowerCase();
@@ -437,6 +468,7 @@ if (error || !ticket) {
     activarFormularioComentario();
     await cargarAdjuntos();
     activarFormularioAdjunto();
+    await cargarHistorial();
 }
 
 document.body.classList.remove('verificando');

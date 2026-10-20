@@ -337,8 +337,13 @@ body.verificando .pantalla-carga {
     grid-template-areas:
       "detalle     gestion"
       "adjuntos    adjuntos"
-      "comentarios comentarios";
+      "comentarios comentarios"
+      "historial   historial";
   }
+
+  .detalle-layout--equipo .historial-ticket-seccion { 
+  grid-area: historial; 
+}
 
   .detalle-layout--equipo .detalle-ticket-seccion { grid-area: detalle; }
   .detalle-layout--equipo .gestion-ticket-seccion { grid-area: gestion; }
@@ -350,6 +355,13 @@ body.verificando .pantalla-carga {
     height: 100%;
     box-sizing: border-box;
   }
+}
+
+
+.lista-historial {
+  max-height: 360px;
+  margin: 0;
+  overflow-y: auto;
 }
 
 .detalle-layout--equipo .adjuntos-ticket {
