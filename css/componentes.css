@@ -58,7 +58,7 @@
 
 .comentario-ticket {
   font-size: 0.85rem;
-  color: var(--color-texto-secundario, #666);
+  color: var(--color-texto-secundario);
   margin-bottom: 0.5rem;
 }
 
@@ -137,7 +137,7 @@
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
-  color: var(--color-texto-secundario, #666);
+  color: var(--color-texto-secundario);
 }
 
 .notificacion--exito {
@@ -194,7 +194,7 @@ body.verificando .pantalla-carga {
 .filtros select {
   font: inherit;
   padding: 0.75rem 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-borde);
   border-radius: 8px;
   min-width: 200px;
 }
@@ -326,7 +326,7 @@ body.verificando .pantalla-carga {
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.75rem 1rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-borde);
   border-radius: 8px;
 }
 
@@ -341,7 +341,7 @@ body.verificando .pantalla-carga {
 
 .adjunto-meta {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-texto-secundario);
 }
 
 @media (min-width: 800px) {
@@ -449,7 +449,7 @@ button:disabled {
   padding: 0.75rem 1rem;
   background-color: var(--color-fondo);
   border-bottom: 1px solid var(--color-borde);
-  color: #5b6b62;
+  color: var(--color-texto-secundario);
   font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-align: left;
@@ -472,7 +472,7 @@ button:disabled {
 }
 
 .celda-id {
-  color: #5b6b62;
+  color: var(--color-texto-secundario);
   font-family: monospace;
 }
 
@@ -512,7 +512,7 @@ button:disabled {
 
 /* ===== Auditoría ===== */
 .subtitulo {
-  color: #5b6b62;
+  color: var(--color-texto-secundario);
   margin-top: -0.5rem;
   margin-bottom: 1.5rem;
 }
@@ -592,11 +592,11 @@ button:disabled {
 }
 
 .flecha {
-  color: #5b6b62;
+  color: var(--color-texto-secundario);
 }
 
 .evento-fecha {
-  color: #5b6b62;
+  color: var(--color-texto-secundario);
   font-size: 0.85rem;
   white-space: nowrap;
 }
@@ -699,10 +699,10 @@ a.resumen-item:hover {
 .resumen-item--resuelto    { --color-indicador: var(--estado-resuelto-texto); }
 .resumen-item--cerrado     { --color-indicador: var(--estado-cerrado-texto); }
 
-.resumen-item--baja    { --color-indicador: var(--prioridad-baja-color); }
-.resumen-item--media   { --color-indicador: var(--prioridad-media-color); }
-.resumen-item--alta    { --color-indicador: var(--prioridad-alta-color); }
-.resumen-item--critica { --color-indicador: var(--prioridad-critica-color); }
+.resumen-item--baja    { --color-indicador: var(--prioridad-baja-texto); }
+.resumen-item--media   { --color-indicador: var(--prioridad-media-texto); }
+.resumen-item--alta    { --color-indicador: var(--prioridad-alta-texto); }
+.resumen-item--critica { --color-indicador: var(--prioridad-critica-texto); }
 
 /* ===== Banner del panel de cliente ===== */
 .banner {
@@ -809,7 +809,7 @@ a.resumen-item:hover {
 
   .tabla td::before {
     content: attr(data-label);
-    color: #5b6b62;
+    color: var(--color-texto-secundario);
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
