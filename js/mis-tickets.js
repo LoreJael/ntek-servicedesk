@@ -39,22 +39,48 @@ function mostrarPagina(numeroPagina) {
 
   const ticketsDeLaPagina = obtenerPagina(tickets, numeroPagina);
 
+  const tabla = document.createElement('table');
+  tabla.classList.add('tabla');
+  tabla.innerHTML = `
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Título</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Prioridad</th>
+        <th scope="col">Actualizado</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+
+  const cuerpoTabla = tabla.querySelector('tbody');
+
   ticketsDeLaPagina.forEach((ticket) => {
     const fecha = new Date(ticket.updated_at).toLocaleDateString('es-CL', { timeZone: 'America/Santiago' });
 
-    const item = document.createElement('li');
-    item.classList.add('tarjeta', `tarjeta--prioridad-${ticket.priority}`);
+    const fila = document.createElement('tr');
 
-    item.innerHTML = `
-      <p class="ticket-id">N.° ${ticket.id.slice(0, 8)}</p>
-      <p class="ticket-titulo">${escaparHTML(ticket.title)}</p>
-      <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]}</p>
-      <p class="ticket-fecha">${fecha}</p>
-      <a href="detalle-ticket.html?id=${ticket.id}" class="boton">Ver detalle</a>
+    fila.innerHTML = `
+      <td data-label="ID" class="celda-id">${ticket.id.slice(0, 8)}</td>
+      <td data-label="Título" class="celda-titulo">${escaparHTML(ticket.title)}</td>
+      <td data-label="Estado">
+        <span class="badge-estado badge-estado--${ticket.status}">${etiquetasEstado[ticket.status]}</span>
+      </td>
+      <td data-label="Prioridad">
+        <span class="badge-prioridad badge-prioridad--${ticket.priority}">${etiquetasPrioridad[ticket.priority]}</span>
+      </td>
+      <td data-label="Actualizado">${fecha}</td>
+      <td data-label="Acciones" class="celda-acciones">
+        <a href="detalle-ticket.html?id=${ticket.id}" class="boton">Ver detalle</a>
+      </td>
     `;
 
-    listaTickets.appendChild(item);
+    cuerpoTabla.appendChild(fila);
   });
+
+  listaTickets.appendChild(tabla);
 
   pintarPaginacion(contenedorPaginacion, tickets.length, numeroPagina, mostrarPagina);
 }
