@@ -28,38 +28,62 @@ function dibujarUsuarios(lista) {
         return;
     }
 
-    lista.forEach(usuario => {
-        const item = document.createElement('li');
-        item.className = 'tarjeta';
-
-        item.innerHTML = `
-      <h3>${escaparHTML(usuario.full_name)}</h3>
-      <p>Empresa: ${escaparHTML(usuario.company) || 'Sin empresa'}</p>
-      <div class="form-grupo">
-        <label>Rol</label>
-        <select>
-          <option value="cliente">Cliente</option>
-          <option value="tecnico">Técnico</option>
-          <option value="admin">Administrador</option>
-        </select>
-      </div>
-     
-      <button class="boton boton-rol">Guardar rol</button>
-      <p>Estado: ${usuario.active ? 'Activo' : 'Inactivo'}</p>
-      <button class="boton boton-estado">${usuario.active ? 'Desactivar' : 'Activar'}</button>
+    const tabla = document.createElement('table');
+    tabla.classList.add('tabla');
+    tabla.innerHTML = `
+      <thead>
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Empresa</th>
+          <th scope="col">Teléfono</th>
+          <th scope="col">Rol</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
     `;
 
-        item.querySelector('select').value = usuario.role;
-        const boton = item.querySelector('.boton-rol');
-        const botonEstado = item.querySelector('.boton-estado');
+    const cuerpoTabla = tabla.querySelector('tbody');
+
+        lista.forEach(usuario => {
+        const fila = document.createElement('tr');
+
+        fila.innerHTML = `
+          <td data-label="Nombre" class="celda-titulo">${escaparHTML(usuario.full_name)}</td>
+          <td data-label="Empresa">${escaparHTML(usuario.company) || 'Sin empresa'}</td>
+          <td data-label="Teléfono">${usuario.phone ? escaparHTML(usuario.phone) : 'Sin teléfono'}</td>
+          <td data-label="Rol">
+            <div class="celda-rol">
+              <select aria-label="Rol de ${escaparHTML(usuario.full_name)}">
+                <option value="cliente">Cliente</option>
+                <option value="tecnico">Técnico</option>
+                <option value="admin">Administrador</option>
+              </select>
+              <button class="boton boton-rol">Guardar rol</button>
+            </div>
+          </td>
+          <td data-label="Estado">
+            <span class="badge-estado ${usuario.active ? 'badge-estado--resuelto' : 'badge-estado--cerrado'}">
+              ${usuario.active ? 'Activo' : 'Inactivo'}
+            </span>
+          </td>
+          <td data-label="Acciones" class="celda-acciones">
+            <button class="boton boton-estado">${usuario.active ? 'Desactivar' : 'Activar'}</button>
+          </td>
+        `;
+
+                fila.querySelector('select').value = usuario.role;
+        const boton = fila.querySelector('.boton-rol');
+        const botonEstado = fila.querySelector('.boton-estado');
         if (usuario.id === user.id) {
-            item.querySelector('select').disabled = true;
+            fila.querySelector('select').disabled = true;
             boton.disabled = true;
             boton.textContent = 'Tu Cuenta';
             botonEstado.disabled = true;
         }
         boton.addEventListener('click', () => {
-            const nuevoRol = item.querySelector('select').value;
+            const nuevoRol = fila.querySelector('select').value;
             cambiarRol(usuario.id, nuevoRol);
         });
 
@@ -74,8 +98,10 @@ function dibujarUsuarios(lista) {
             cambiarEstado(usuario.id, nuevoEstado);
         });
 
-        listaUsuarios.appendChild(item);
+        cuerpoTabla.appendChild(fila);
     });
+
+    listaUsuarios.appendChild(tabla);
 }
 
 async function traerUsuarios() {
