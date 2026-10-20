@@ -40,8 +40,7 @@
   border-radius: 10px;
 }
 
-.lista-tickets,
-.lista-comentarios {
+.lista-tickets {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -91,18 +90,12 @@
   font-size: 0.9rem;
 }
 
-ul#lista-tickets,
 #lista-usuarios {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
   padding: 1.5rem;
   list-style: none;
-  margin: 0;
-}
-
-#lista-tickets .tarjeta {
-  max-width: none;
   margin: 0;
 }
 
@@ -774,14 +767,6 @@ a.resumen-item:hover {
 .boton-pildora--borde {
   border: 1px solid #ffffff;
   color: #ffffff;
-}
-
-.banner-logo {
-  margin: 0;
-  font-size: clamp(3rem, 8vw, 5rem);
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.9);
 }
 
 .paginacion {
