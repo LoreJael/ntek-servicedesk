@@ -5,6 +5,7 @@ import { activarBotonCerrarSesion } from "./sesion.js";
 import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
 import { mostrarNotificacion } from './notificaciones.js';
 import { escaparHTML } from './seguridad.js';
+import { obtenerPagina, pintarPaginacion } from './paginacion.js';
 
 document.getElementById("header-placeholder").innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
@@ -31,6 +32,8 @@ let tickets = [];
 let perfiles = [];
 
 const listaTickets = document.querySelector('#lista-tickets');
+const contenedorPaginacion = document.querySelector('#paginacion');
+let ticketsFiltrados = [];
 
 async function cargarTickets() {
   const { data: datosTickets, error: errorTickets } = await supabase
@@ -95,6 +98,10 @@ function dibujarTickets(lista) {
   });
 }
 
+function mostrarPagina(numeroPagina) {
+  dibujarTickets(obtenerPagina(ticketsFiltrados, numeroPagina));
+  pintarPaginacion(contenedorPaginacion, ticketsFiltrados.length, numeroPagina, mostrarPagina);
+}
 async function tomarCaso(idTicket) {
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -141,7 +148,8 @@ function aplicarFiltros() {
     return coincideTexto && coincideEstado && coincidePrioridad && coincideCategoria;
   });
 
-  dibujarTickets(filtrados);
+  ticketsFiltrados = filtrados;
+  mostrarPagina(1);
 }
 
 
