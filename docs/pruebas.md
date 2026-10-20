@@ -202,3 +202,23 @@ Página `equipo/indicadores.html`. Una sola consulta a `tickets`; la RLS decide 
 | 11 | Error forzado (`.from('ticketz')`, revertido) | Admin | Un solo mensaje con "Reintentar"; detalle solo en la consola | Como se esperaba | ✅ |
 | 12 | Vacío forzado (`.eq('status', 'inexistente')`, revertido) | Admin | Mensaje "Aún no hay tickets para mostrar." | Como se esperaba | ✅ |
 | 13 | Vista en 360 px | Admin | Tarjetas se acomodan sin desplazamiento horizontal | Como se esperaba | ✅ |
+
+## RF-12 — Lectura de auditoría por rol (política del técnico, 20-10)
+
+| N.º | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Diego (técnico) | Consola: `select('entity_id, action')` en `audit_events` | Solo eventos de tickets asignados a él o sin asignar | ✅ |
+| 2 | Diego (técnico) | Comparar los `entity_id` con `select('id, assigned_to')` en `tickets` | Todos los `entity_id` están entre sus tickets visibles; no aparecen tickets de Camila | ✅ |
+| 3 | Loreto (cliente) | Consola: `select('entity_id, action')` en `audit_events` | `data = []`, `error = null` (la RLS no entrega filas, sin error) | ✅ |
+| 4 | Andrea (admin) | Abrir Auditoría después de mover el dibujo de eventos a un módulo reutilizable | Se ve igual que antes: íconos, píldoras antes → después, nombres, fechas y links | ✅ |
+
+## RF-05 / CA-07 — Historial en el detalle de equipo (20-10)
+
+| N.º | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Andrea (admin) | Abrir el detalle de un ticket con cambios | Historial en orden cronológico con actor, píldoras antes → después y fecha | ✅ |
+| 2 | Andrea (admin) | Cambiar estado y prioridad en un solo "Guardar cambios" | Aparecen 2 eventos nuevos al final, sin recargar la página | ✅ |
+| 3 | Diego (técnico) | Abrir uno de sus tickets con cambios hechos por Andrea | Los cambios de Andrea dicen "Equipo NTEK"; los suyos, "Diego Muñoz" | ✅ |
+| 4 | Diego (técnico) | Cambiar el estado de su ticket | El evento nuevo aparece con su nombre y la hora actual | ✅ |
+| 5 | Andrea (admin) | Abrir un ticket creado antes del 14-10 (sin trigger) | "Este ticket aún no tiene cambios registrados." (esperado: no hay eventos antiguos) | ✅ |
+| 6 | Andrea (admin) | Detalle en 360 px | Historial al final, en una columna, sin desplazamiento horizontal | ✅ |

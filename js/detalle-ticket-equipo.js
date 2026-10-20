@@ -198,7 +198,7 @@ async function cargarHistorial() {
         .select('id, actor_id, action, entity_id, metadata, created_at')
         .eq('entity', 'ticket')
         .eq('entity_id', ticket.id)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: false });
 
     if (errorEventos) {
         listaHistorial.innerHTML = '<li>No se pudo cargar el historial.</li>';
