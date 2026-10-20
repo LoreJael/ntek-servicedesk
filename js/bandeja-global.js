@@ -64,7 +64,27 @@ function dibujarTickets(lista) {
     return;
   }
 
-  lista.forEach((ticket) => {
+  const tabla = document.createElement('table');
+  tabla.classList.add('tabla');
+  tabla.innerHTML = `
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Título</th>
+        <th scope="col">Cliente</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Prioridad</th>
+        <th scope="col">Asignado a</th>
+        <th scope="col">Actualizado</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+
+  const cuerpoTabla = tabla.querySelector('tbody');
+
+    lista.forEach((ticket) => {
     const cliente = perfiles.find((perfil) => perfil.id === ticket.created_by);
     const tecnico = perfiles.find((perfil) => perfil.id === ticket.assigned_to);
 
@@ -74,28 +94,35 @@ function dibujarTickets(lista) {
       ? `<button class="boton" data-ticket-id="${ticket.id}">Tomar caso</button>`
       : '';
 
-    const item = document.createElement('li');
-    item.classList.add('tarjeta', `tarjeta--prioridad-${ticket.priority}`);
+    const fila = document.createElement('tr');
 
-    item.innerHTML = `
-      <p class="ticket-titulo">${escaparHTML(ticket.title)}</p>
-      <p class="ticket-cliente">${cliente ? escaparHTML(cliente.company) : 'Cliente no disponible'}</p>
-      <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]}</p>
-      <p class="ticket-asignado">${tecnico ? 'Asignado a ' + escaparHTML(tecnico.full_name) : 'Sin asignar'}</p>
-      <p class="ticket-fecha">${fecha}</p>
-      <a class="boton" href="detalle-ticket.html?id=${ticket.id}">Ver detalle</a>
-      ${botonTomarCaso}
-      
+    fila.innerHTML = `
+      <td data-label="ID" class="celda-id">${ticket.id.slice(0, 8)}</td>
+      <td data-label="Título" class="celda-titulo">${escaparHTML(ticket.title)}</td>
+      <td data-label="Cliente">${cliente ? escaparHTML(cliente.company) : 'Cliente no disponible'}</td>
+      <td data-label="Estado">
+        <span class="badge-estado badge-estado--${ticket.status}">${etiquetasEstado[ticket.status]}</span>
+      </td>
+      <td data-label="Prioridad">
+        <span class="badge-prioridad badge-prioridad--${ticket.priority}">${etiquetasPrioridad[ticket.priority]}</span>
+      </td>
+      <td data-label="Asignado a">${tecnico ? escaparHTML(tecnico.full_name) : 'Sin asignar'}</td>
+      <td data-label="Actualizado">${fecha}</td>
+      <td data-label="Acciones" class="celda-acciones">
+        <a class="boton" href="detalle-ticket.html?id=${ticket.id}">Ver detalle</a>
+        ${botonTomarCaso}
+      </td>
     `;
 
-    const boton = item.querySelector('button[data-ticket-id]');
+    const boton = fila.querySelector('button[data-ticket-id]');
     if (boton) {
       boton.addEventListener('click', () => tomarCaso(ticket.id));
     }
 
-    listaTickets.appendChild(item);
-
+    cuerpoTabla.appendChild(fila);
   });
+
+  listaTickets.appendChild(tabla);
 }
 
 function mostrarPagina(numeroPagina) {

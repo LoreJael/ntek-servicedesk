@@ -31,6 +31,16 @@
   --prioridad-alta-color: #d9822b;
   --prioridad-critica-color: #b8321f;
 
+  --prioridad-baja-fondo: #eef2ef;
+  --prioridad-baja-texto: #4a5a50;
+  --prioridad-media-fondo: #fff4cc;
+  --prioridad-media-texto: #7a5a00;
+  --prioridad-alta-fondo: #ffe4cc;
+  --prioridad-alta-texto: #9a4a00;
+  --prioridad-critica-fondo: #fde0df;
+  --prioridad-critica-texto: #b42318;
+
+  
 
   /* Tipografia - valor PROVISORIO */
   --fuente-base: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
