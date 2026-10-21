@@ -33,28 +33,52 @@ const { data: tickets, error } = await supabase
 const contenido = document.querySelector('#indicadores-contenido');
 
 function pintarTickets(contenedor, lista, mensajeVacio) {
+  contenedor.innerHTML = '';
+
   if (lista.length === 0) {
-    contenedor.innerHTML = `<li>${mensajeVacio}</li>`;
+    mostrarEstadoVacio(contenedor, mensajeVacio);
     return;
   }
 
+  const tabla = document.createElement('table');
+  tabla.classList.add('tabla', 'tabla--compacta');
+  tabla.innerHTML = `
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Título</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Prioridad</th>
+        <th scope="col">Creado</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+
+  const cuerpoTabla = tabla.querySelector('tbody');
+
   lista.forEach((ticket) => {
-    const item = document.createElement('li');
     const fecha = new Date(ticket.created_at).toLocaleDateString('es-CL', { timeZone: 'America/Santiago' });
 
-    item.innerHTML = `
-      <a class="tarjeta-ticket" href="detalle-ticket.html?id=${ticket.id}">
-        <p class="ticket-titulo">${escaparHTML(ticket.title)}</p>
-        <p class="ticket-meta">
-          <span class="badge-estado">${etiquetasEstado[ticket.status]}</span>
-          <span>${etiquetasPrioridad[ticket.priority]}</span>
-          <span>${fecha}</span>
-        </p>
-      </a>
+    const fila = document.createElement('tr');
+    fila.innerHTML = `
+      <td data-label="ID" class="celda-id">${ticket.id.slice(0, 8)}</td>
+      <td data-label="Título" class="celda-titulo">
+        <a class="enlace-ticket" href="detalle-ticket.html?id=${ticket.id}">${escaparHTML(ticket.title)}</a>
+      </td>
+      <td data-label="Estado">
+        <span class="badge-estado badge-estado--${ticket.status}">${etiquetasEstado[ticket.status]}</span>
+      </td>
+      <td data-label="Prioridad">
+        <span class="badge-prioridad badge-prioridad--${ticket.priority}">${etiquetasPrioridad[ticket.priority]}</span>
+      </td>
+      <td data-label="Creado">${fecha}</td>
     `;
 
-    contenedor.appendChild(item);
+    cuerpoTabla.appendChild(fila);
   });
+
+  contenedor.appendChild(tabla);
 }
 
 if (error) {

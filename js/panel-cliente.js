@@ -41,26 +41,48 @@ const ultimosComentarios = datosComentarios || [];
 
 const listaTickets = document.querySelector('#lista-ultimos-tickets');
 
-const ultimosTickets = tickets.slice(0, 2);
+const ultimosTickets = tickets.slice(0, 5);
 
 if (errorTickets) {
-  listaTickets.innerHTML = '<li>No se pudieron cargar tus tickets.</li>';
+  listaTickets.innerHTML = '<p>No se pudieron cargar tus tickets.</p>';
+} else if (ultimosTickets.length === 0) {
+  mostrarEstadoVacio(listaTickets, 'Aún no tienes solicitudes.');
 } else {
+  const tabla = document.createElement('table');
+  tabla.classList.add('tabla', 'tabla--compacta');
+  tabla.innerHTML = `
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Título</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Actualizado</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+
+  const cuerpoTabla = tabla.querySelector('tbody');
+
   ultimosTickets.forEach((ticket) => {
-    const item = document.createElement('li');
     const fecha = new Date(ticket.updated_at).toLocaleDateString('es-CL', { timeZone: 'America/Santiago' });
-        item.innerHTML = `
-      <a class="tarjeta-ticket" href="detalle-ticket.html?id=${ticket.id}">
-        <p class="ticket-titulo">${escaparHTML(ticket.title)}</p>
-        <p class="ticket-meta">
-          <span class="badge-estado badge-estado--${ticket.status}">${etiquetasEstado[ticket.status]}</span>
-          <span>${fecha}</span>
-        </p>
-      </a>
+
+    const fila = document.createElement('tr');
+    fila.innerHTML = `
+      <td data-label="ID" class="celda-id">${ticket.id.slice(0, 8)}</td>
+      <td data-label="Título" class="celda-titulo">
+        <a class="enlace-ticket" href="detalle-ticket.html?id=${ticket.id}">${escaparHTML(ticket.title)}</a>
+      </td>
+      <td data-label="Estado">
+        <span class="badge-estado badge-estado--${ticket.status}">${etiquetasEstado[ticket.status]}</span>
+      </td>
+      <td data-label="Actualizado">${fecha}</td>
     `;
 
-    listaTickets.appendChild(item);
+    cuerpoTabla.appendChild(fila);
   });
+
+  listaTickets.appendChild(tabla);
 }
 
 const listaComentarios = document.querySelector('#lista-ultimos-comentarios');
