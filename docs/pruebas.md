@@ -245,3 +245,17 @@ Defecto: la bandeja mostraba "Tomar caso" en tickets Cerrados sin asignar. La RL
 | 1 | Diego (técnico) | Bandeja después del arreglo: "mouse malo" | Sin botón "Tomar caso" | ✅ |
 | 2 | Andrea (admin) | Bandeja después del arreglo: "mouse malo" | Sin botón "Tomar caso" | ✅ |
 | 3 | Diego (técnico) | Ticket Nuevo sin asignar | "Tomar caso" visible y funcional | ✅ |
+
+## RF-05 / CA-07 — Historial y nombres del equipo en el detalle de cliente (21-10)
+
+Cambios: función `nombres_equipo(ids)` (`security definer`, entrega solo `id` y `full_name` de técnicos y admins) y política "Cliente ve historial de sus tickets" en `audit_events` (sin `cambiar_prioridad`).
+
+| N.º | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Loreto (cliente) | Abrir un ticket asignado | "Atendido por" con el nombre del técnico; sus mensajes con nombre + etiqueta "Equipo NTEK" | ✅ |
+| 2 | Loreto (cliente) | Ver el Historial de un ticket con cambios | Creación, asignación y estados; sin cambios de prioridad | ✅ |
+| 3 | Loreto (cliente) | Consola: contar eventos de prioridad y de tickets ajenos en `audit_events` | `0` y `0` | ✅ |
+| 4 | Pedro (cliente) | Consola: mismo conteo | `0` y `0` (no ve eventos de Loreto) | ✅ |
+| 5 | Loreto (cliente) | Consola: `rpc('nombres_equipo')` con el id de Pedro | `data: []` (no entrega nombres de clientes) | ✅ |
+| 6 | Loreto (cliente) | Consola: `rpc('nombres_equipo')` con el id de Diego | Solo `id` y `full_name` | ✅ |
+| 7 | Diego (técnico) | Abrir el detalle de equipo | Sin cambios | ✅ |

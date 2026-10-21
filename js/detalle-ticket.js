@@ -6,6 +6,7 @@ import { supabase } from './supabase-client.js';
 import { mostrarNotificacion } from './notificaciones.js';
 import { escaparHTML } from './seguridad.js';
 import { reglasAdjuntos, buscarGrupo } from './reglas-adjuntos.js';
+import { crearItemEvento } from './eventos-auditoria.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
@@ -78,9 +79,42 @@ if (error || !ticket) {
 
   document.querySelector('#descripcion-ticket').textContent = ticket.description;
 
+  const { data: datosUsuario } = await supabase.auth.getUser();
+  const idUsuarioActual = datosUsuario.user.id;
+
+  // Nombres del equipo NTEK (solo el nombre, mediante la función nombres_equipo)
+  const nombresEquipo = {};
+
+  async function cargarNombresEquipo(ids) {
+    const idsNuevos = [...new Set(ids)].filter((id) => id && !(id in nombresEquipo));
+
+    if (idsNuevos.length === 0) {
+      return;
+    }
+
+    idsNuevos.forEach((id) => {
+      nombresEquipo[id] = null;
+    });
+
+    const { data: personas } = await supabase.rpc('nombres_equipo', { ids: idsNuevos });
+
+    (personas || []).forEach((persona) => {
+      nombresEquipo[persona.id] = persona.full_name;
+    });
+  }
+
+  function nombreEquipo(id) {
+    return nombresEquipo[id] || 'Equipo NTEK';
+  }
+
+  await cargarNombresEquipo([ticket.assigned_to]);
+
+  const atendidoPor = ticket.assigned_to ? escaparHTML(nombreEquipo(ticket.assigned_to)) : 'Aún sin asignar';
+
   document.querySelector('#detalles-ticket').innerHTML = `
     <div><dt>Estado</dt><dd>${pildoraEstado}</dd></div>
     <div><dt>Prioridad</dt><dd>${pildoraPrioridad}</dd></div>
+    <div><dt>Atendido por</dt><dd>${atendidoPor}</dd></div>
     <div><dt>Categoría</dt><dd>${escaparHTML(ticket.category)}</dd></div>
     <div><dt>Creado</dt><dd>${fechaCreacion}</dd></div>
     <div><dt>Actualizado</dt><dd>${fechaActualizacion}</dd></div>
@@ -117,9 +151,6 @@ if (error || !ticket) {
     });
   }
 
-  const { data: datosUsuario } = await supabase.auth.getUser();
-  const idUsuarioActual = datosUsuario.user.id;
-
   const listaComentarios = document.querySelector('#lista-comentarios-ticket');
 
   async function cargarComentarios() {
@@ -143,10 +174,18 @@ if (error || !ticket) {
       return;
     }
 
+    await cargarNombresEquipo(
+      comentarios
+        .map((comentario) => comentario.author_id)
+        .filter((id) => id !== idUsuarioActual)
+    );
+
     comentarios.forEach((comentario) => {
       const esPropio = comentario.author_id === idUsuarioActual;
-      const autor = esPropio ? 'Tú' : 'Equipo NTEK';
-      const iniciales = esPropio ? obtenerIniciales(nombreUsuario) : 'NT';
+      const nombreAutor = esPropio ? nombreUsuario : nombreEquipo(comentario.author_id);
+      const autor = esPropio ? 'Tú' : nombreAutor;
+      const iniciales = nombreAutor === 'Equipo NTEK' ? 'NT' : obtenerIniciales(nombreAutor);
+      const etiquetaEquipo = esPropio ? '' : '<span class="mensaje-rol">Equipo NTEK</span>';
       const fechaHora = new Date(comentario.created_at).toLocaleString('es-CL', formatoFechaHora);
 
       const item = document.createElement('li');
@@ -156,7 +195,8 @@ if (error || !ticket) {
         <span class="avatar ${esPropio ? '' : 'avatar--equipo'}" aria-hidden="true">${escaparHTML(iniciales)}</span>
         <div class="mensaje-cuerpo">
           <p class="mensaje-cabecera">
-            <span class="mensaje-autor">${autor}</span>
+            <span class="mensaje-autor">${escaparHTML(autor)}</span>
+            ${etiquetaEquipo}
             <span class="mensaje-fecha">${fechaHora}</span>
           </p>
           <p class="mensaje-texto">${escaparHTML(comentario.body)}</p>
@@ -169,6 +209,53 @@ if (error || !ticket) {
   }
 
   await cargarComentarios();
+
+  // Historial (RF-05 / CA-07): el cliente ve creación, asignación, estado, cierre y reapertura
+  const listaHistorial = document.querySelector('#lista-historial');
+
+  function nombreEnHistorial(id) {
+    if (id === idUsuarioActual) {
+      return nombreUsuario;
+    }
+    return nombreEquipo(id);
+  }
+
+  async function cargarHistorial() {
+    listaHistorial.innerHTML = '';
+
+    const { data: eventos, error: errorEventos } = await supabase
+      .from('audit_events')
+      .select('id, actor_id, action, entity_id, metadata, created_at')
+      .eq('entity', 'ticket')
+      .eq('entity_id', ticket.id)
+      .order('created_at', { ascending: false });
+
+    if (errorEventos) {
+      listaHistorial.innerHTML = '<li class="historial-vacio">No se pudo cargar el historial.</li>';
+      return;
+    }
+
+    if (eventos.length === 0) {
+      listaHistorial.innerHTML = '<li class="historial-vacio">Este ticket aún no tiene cambios registrados.</li>';
+      return;
+    }
+
+    const ids = [];
+    eventos.forEach((evento) => {
+      ids.push(evento.actor_id);
+      if (evento.action === 'asignar') {
+        ids.push(evento.metadata.antes, evento.metadata.despues);
+      }
+    });
+
+    await cargarNombresEquipo(ids.filter((id) => id !== idUsuarioActual));
+
+    eventos.forEach((evento) => {
+      listaHistorial.appendChild(crearItemEvento(evento, nombreEnHistorial, false));
+    });
+  }
+
+  await cargarHistorial();
 
   // Formulario para responder
   const formComentario = document.querySelector('#form-comentario');
@@ -250,6 +337,7 @@ if (error || !ticket) {
     }
 
     adjuntosActuales = adjuntos;
+    await cargarNombresEquipo(adjuntos.map((adjunto) => adjunto.uploaded_by).filter((id) => id !== idUsuarioActual));
     document.querySelector('#contador-adjuntos').textContent = adjuntos.length;
 
     if (adjuntos.length === 0) {
@@ -264,7 +352,7 @@ if (error || !ticket) {
       const icono = iconosTipo[adjunto.mime_type];
       const tamanoKB = Math.ceil(adjunto.size_bytes / 1024);
       const fechaHora = new Date(adjunto.created_at).toLocaleString('es-CL', formatoFechaHora);
-      const autor = adjunto.uploaded_by === idUsuarioActual ? 'Tú' : 'Equipo NTEK';
+      const autor = adjunto.uploaded_by === idUsuarioActual ? 'Tú' : escaparHTML(nombreEquipo(adjunto.uploaded_by));
 
       item.innerHTML = `
         <span class="archivo-icono ${icono.clase}" aria-hidden="true">${icono.texto}</span>

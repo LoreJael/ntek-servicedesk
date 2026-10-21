@@ -316,6 +316,15 @@
   font-weight: 700;
 }
 
+.mensaje-rol {
+  padding: 0.05rem 0.55rem;
+  border-radius: 999px;
+  background-color: var(--color-verde-suave);
+  color: var(--estado-resuelto-texto);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
 .mensaje-fecha {
   font-size: 0.8rem;
   color: var(--color-texto-secundario);
