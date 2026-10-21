@@ -28,16 +28,23 @@ const etiquetasPrioridad = {
 
 const { data: tickets, error } = await supabase
   .from('tickets')
-  .select('id, title, status, priority, updated_at')
+  .select('id, title, status, priority, category, updated_at')
   .order('updated_at', { ascending: false });
 
 const listaTickets = document.querySelector('#lista-tickets');
 const contenedorPaginacion = document.querySelector('#paginacion');
+let ticketsFiltrados = [];
 
 function mostrarPagina(numeroPagina) {
   listaTickets.innerHTML = '';
 
-  const ticketsDeLaPagina = obtenerPagina(tickets, numeroPagina);
+  if (ticketsFiltrados.length === 0) {
+    mostrarEstadoVacio(listaTickets, 'No hay tickets que coincidan con los filtros.');
+    contenedorPaginacion.innerHTML = '';
+    return;
+  }
+
+  const ticketsDeLaPagina = obtenerPagina(ticketsFiltrados, numeroPagina);
 
   const tabla = document.createElement('table');
   tabla.classList.add('tabla');
@@ -82,8 +89,45 @@ function mostrarPagina(numeroPagina) {
 
   listaTickets.appendChild(tabla);
 
-  pintarPaginacion(contenedorPaginacion, tickets.length, numeroPagina, mostrarPagina);
+  pintarPaginacion(contenedorPaginacion, ticketsFiltrados.length, numeroPagina, mostrarPagina);
 }
+
+const filtroTexto = document.querySelector('#filtro-texto');
+const filtroEstado = document.querySelector('#filtro-estado');
+const filtroPrioridad = document.querySelector('#filtro-prioridad');
+const filtroCategoria = document.querySelector('#filtro-categoria');
+const botonLimpiar = document.querySelector('#boton-limpiar');
+
+function aplicarFiltros() {
+  const texto = filtroTexto.value.toLowerCase();
+  const estado = filtroEstado.value;
+  const prioridad = filtroPrioridad.value;
+  const categoria = filtroCategoria.value;
+
+  ticketsFiltrados = tickets.filter((ticket) => {
+    const coincideTexto = ticket.title.toLowerCase().includes(texto);
+    const coincideEstado = estado === '' || ticket.status === estado;
+    const coincidePrioridad = prioridad === '' || ticket.priority === prioridad;
+    const coincideCategoria = categoria === '' || ticket.category === categoria;
+
+    return coincideTexto && coincideEstado && coincidePrioridad && coincideCategoria;
+  });
+
+  mostrarPagina(1);
+}
+
+filtroTexto.addEventListener('input', aplicarFiltros);
+filtroEstado.addEventListener('change', aplicarFiltros);
+filtroPrioridad.addEventListener('change', aplicarFiltros);
+filtroCategoria.addEventListener('change', aplicarFiltros);
+
+botonLimpiar.addEventListener('click', () => {
+  filtroTexto.value = '';
+  filtroEstado.value = '';
+  filtroPrioridad.value = '';
+  filtroCategoria.value = '';
+  aplicarFiltros();
+});
 
 if (error) {
   console.error(error);
@@ -91,7 +135,7 @@ if (error) {
 } else if (tickets.length === 0) {
   mostrarEstadoVacio(listaTickets, 'Aún no tienes solicitudes. Puedes crear una desde Nueva solicitud.');
 } else {
-  mostrarPagina(1);
+  aplicarFiltros();
 }
 
 document.body.classList.remove('verificando');

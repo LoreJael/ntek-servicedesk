@@ -19,6 +19,38 @@
   <main class="contenedor">
     <section class="mis-tickets-seccion">
       <h1>Mis tickets</h1>
+       <section class="filtros">
+            <input type="search" id="filtro-texto" placeholder="Buscar por título" aria-label="Buscar por título">
+
+            <select id="filtro-estado" aria-label="Filtrar por estado">
+                <option value="">Todos los estados</option>
+                <option value="nuevo">Nuevo</option>
+                <option value="en_revision">En revisión</option>
+                <option value="en_progreso">En progreso</option>
+                <option value="en_espera">En espera</option>
+                <option value="resuelto">Resuelto</option>
+                <option value="cerrado">Cerrado</option>
+            </select>
+
+            <select id="filtro-prioridad" aria-label="Filtrar por prioridad">
+                <option value="">Todas las prioridades</option>
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+                <option value="critica">Crítica</option>
+            </select>
+
+
+            <select id="filtro-categoria" aria-label="Filtrar por categoría">
+                <option value="">Todas las categorías</option>
+                <option value="Red">Red</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Software">Software</option>
+            </select>
+
+            <button type="button" class="boton" id="boton-limpiar">Limpiar filtros</button>
+            
+        </section>
       <div id="lista-tickets" class="tabla-contenedor"></div>
       <nav id="paginacion" class="paginacion" aria-label="Paginación"></nav>
     </section>
