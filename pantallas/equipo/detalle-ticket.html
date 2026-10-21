@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/layout.css">
   <link rel="stylesheet" href="../../css/componentes.css">
+  <link rel="stylesheet" href="../../css/detalle-ticket.css">
 </head>
 
 <body class="verificando">
@@ -16,55 +17,89 @@
 
   <div id="header-placeholder"></div>
 
-  <main class="contenedor">
-    <div class="detalle-layout detalle-layout--equipo">
-      <section class="detalle-ticket-seccion">
-        <div class="tarjeta" id="detalle-ticket"></div>
-      </section>
+  <main class="contenedor detalle-pagina">
+    <a href="bandeja-global.html" class="ruta-volver">← Volver a la bandeja</a>
 
-      <section class="gestion-ticket-seccion">
-        <div class="tarjeta" id="gestion-ticket"></div>
-      </section>
+    <header class="ticket-cabecera" id="detalle-ticket"></header>
 
-      <section class="tarjeta adjuntos-ticket">
-        <h2>Archivos adjuntos</h2>
-        <ul class="lista-adjuntos" id="lista-adjuntos"></ul>
-
-        <form id="form-adjunto" hidden>
-          <div class="form-grupo">
-            <label for="input-adjunto">Adjuntar archivo (JPG, PNG, PDF o Markdown máximo 5 MB)</label>
-            <input type="file" id="input-adjunto" accept="image/jpeg, image/png, application/pdf, .md">
+    <div class="ticket-layout">
+      <aside class="ticket-lateral">
+        <section class="panel">
+          <div class="panel-cabecera">
+            <h2>Gestionar ticket</h2>
           </div>
-          <button type="submit" class="boton">Subir archivo</button>
-        </form>
-      </section>
+          <div class="panel-cuerpo" id="gestion-ticket"></div>
+        </section>
 
-      <section class="comentarios-ticket-seccion">
-        <h2>Comentarios</h2>
-        <ul class="lista-comentarios" id="lista-comentarios-ticket"></ul>
-
-        <form id="form-comentario" hidden>
-          <div class="form-grupo">
-            <label for="texto-comentario">Escribe una respuesta o nota</label>
-            <textarea id="texto-comentario" rows="4" maxlength="2000"></textarea>
+        <section class="panel">
+          <div class="panel-cabecera">
+            <h2>Detalles</h2>
           </div>
-          <div class="form-grupo form-grupo--casilla">
-            <label>
-              <input type="checkbox" id="casilla-interna">
-              Nota interna (el cliente no la ve)
-            </label>
+          <div class="panel-cuerpo">
+            <dl class="lista-detalles" id="detalles-ticket"></dl>
           </div>
-          <button type="submit" class="boton">Enviar comentario</button>
-        </form>
-      </section>
+        </section>
 
-      <section class="tarjeta historial-ticket-seccion">
-        <h2>Historial</h2>
-        <ul class="lista-auditoria lista-historial" id="lista-historial"></ul>
-      </section>
+        <section class="panel">
+          <div class="panel-cabecera">
+            <h2>Adjuntos</h2>
+            <span class="panel-contador" id="contador-adjuntos">0</span>
+          </div>
+          <div class="panel-cuerpo">
+            <ul class="lista-archivos" id="lista-adjuntos"></ul>
 
+            <form class="subir-archivo" id="form-adjunto" hidden>
+              <label for="input-adjunto">Adjuntar archivo</label>
+              <input type="file" id="input-adjunto" accept="image/jpeg, image/png, application/pdf, .md">
+              <p class="subir-archivo-ayuda">JPG o PNG (máx. 3), PDF (máx. 1) o Markdown (máx. 5). Hasta 5 MB.</p>
+              <button type="submit" class="boton boton--secundario boton--ancho">Subir archivo</button>
+            </form>
+          </div>
+        </section>
+      </aside>
+
+      <div class="ticket-principal">
+        <section class="panel">
+          <div class="panel-cabecera">
+            <h2>Descripción</h2>
+          </div>
+          <div class="panel-cuerpo">
+            <p class="ticket-descripcion" id="descripcion-ticket"></p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-cabecera">
+            <h2>Conversación</h2>
+            <span class="panel-contador" id="contador-comentarios">0</span>
+          </div>
+          <div class="panel-cuerpo">
+            <ul class="hilo" id="lista-comentarios-ticket"></ul>
+
+            <form class="respuesta" id="form-comentario" hidden>
+              <label for="texto-comentario">Escribe una respuesta o nota</label>
+              <textarea id="texto-comentario" rows="3" maxlength="2000" placeholder="Responde al cliente o deja una nota para el equipo"></textarea>
+              <div class="respuesta-pie">
+                <label class="casilla">
+                  <input type="checkbox" id="casilla-interna">
+                  Nota interna (el cliente no la ve)
+                </label>
+                <button type="submit" class="boton">Enviar</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel historial">
+          <div class="panel-cabecera">
+            <h2>Historial</h2>
+          </div>
+          <div class="panel-cuerpo">
+            <ul class="lista-auditoria" id="lista-historial"></ul>
+          </div>
+        </section>
+      </div>
     </div>
-   
   </main>
 
   <script type="module" src="../../js/detalle-ticket-equipo.js"></script>

@@ -1,7 +1,7 @@
 import { protegerRuta } from './sesion.js';
 const rolActual = await protegerRuta(['tecnico', 'admin'], false);
 import { crearHeaderEquipo } from './header-equipo.js';
-import { activarBotonCerrarSesion } from './sesion.js';
+import { activarBotonCerrarSesion, nombreUsuario } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { mostrarNotificacion } from './notificaciones.js';
 import { escaparHTML } from './seguridad.js';
@@ -27,6 +27,17 @@ const etiquetasPrioridad = {
     critica: "Crítica"
 };
 
+function obtenerIniciales(nombre) {
+    return nombre
+        .split(' ')
+        .filter((parte) => parte !== '')
+        .slice(0, 2)
+        .map((parte) => parte[0])
+        .join('')
+        .toUpperCase();
+}
+
+const formatoFecha = { timeZone: 'America/Santiago', day: '2-digit', month: '2-digit', year: 'numeric' };
 const formatoFechaHora = { timeZone: 'America/Santiago', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
 
 const parametros = new URLSearchParams(window.location.search);
@@ -77,18 +88,55 @@ if (rolActual === 'admin') {
 function dibujarDetalle(ticket) {
     const fechaCreacion = new Date(ticket.created_at).toLocaleString('es-CL', formatoFechaHora);
     const fechaActualizacion = new Date(ticket.updated_at).toLocaleString('es-CL', formatoFechaHora);
+    const diaCreacion = new Date(ticket.created_at).toLocaleDateString('es-CL', formatoFecha);
     const cliente = perfiles.find((perfil) => perfil.id === ticket.created_by);
     const asignado = perfiles.find((perfil) => perfil.id === ticket.assigned_to);
 
-    contenedorDetalle.className = `tarjeta tarjeta--prioridad-${ticket.priority}`;
+    const pildoraEstado = `<span class="badge-estado badge-estado--${ticket.status}">${etiquetasEstado[ticket.status]}</span>`;
+    const pildoraPrioridad = `<span class="badge-prioridad badge-prioridad--${ticket.priority}">${etiquetasPrioridad[ticket.priority]}</span>`;
+
+    let textoAsignado = 'Sin asignar';
+    if (asignado) {
+        textoAsignado = escaparHTML(asignado.full_name);
+    } else if (ticket.assigned_to !== null) {
+        textoAsignado = 'Equipo NTEK';
+    }
+
+    const tarjetaCliente = cliente
+        ? `<div class="persona">
+            <span class="avatar" aria-hidden="true">${escaparHTML(obtenerIniciales(cliente.full_name))}</span>
+            <div>
+              <p class="persona-nombre">${escaparHTML(cliente.full_name)}</p>
+              <p class="persona-empresa">${escaparHTML(cliente.company)}</p>
+            </div>
+          </div>`
+        : '';
+
     contenedorDetalle.innerHTML = `
-    <p class="ticket-id">N.° ${ticket.id.slice(0, 8)}</p>
-    <h1>${escaparHTML(ticket.title)}</h1>
-    <p class="ticket-cliente">${cliente ? escaparHTML(cliente.full_name) + ' · ' + escaparHTML(cliente.company) : 'Cliente no disponible'}</p>
-    <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]} · ${escaparHTML(ticket.category)}</p>
-    <p class="ticket-asignado">${asignado ? 'Asignado a ' + escaparHTML(asignado.full_name) : 'Sin asignar'}</p>
-    <p class="ticket-descripcion">${escaparHTML(ticket.description)}</p>
-    <p class="ticket-fecha">Creado: ${fechaCreacion} · Última actualización: ${fechaActualizacion}</p>
+    <div class="ticket-cabecera-texto">
+      <p class="eyebrow">Ticket N.° ${ticket.id.slice(0, 8)}</p>
+      <h1>${escaparHTML(ticket.title)}</h1>
+      <p class="ticket-cabecera-meta">
+        ${pildoraEstado}
+        ${pildoraPrioridad}
+        <span class="separador" aria-hidden="true">|</span>
+        <span>${escaparHTML(ticket.category)}</span>
+        <span class="separador" aria-hidden="true">|</span>
+        <span>Creado el ${diaCreacion}</span>
+      </p>
+    </div>
+    ${tarjetaCliente}
+  `;
+
+    document.querySelector('#descripcion-ticket').textContent = ticket.description;
+
+    document.querySelector('#detalles-ticket').innerHTML = `
+    <div><dt>Cliente</dt><dd>${cliente ? escaparHTML(cliente.full_name) : 'No disponible'}</dd></div>
+    <div><dt>Empresa</dt><dd>${cliente ? escaparHTML(cliente.company) : 'No disponible'}</dd></div>
+    <div><dt>Asignado a</dt><dd>${textoAsignado}</dd></div>
+    <div><dt>Categoría</dt><dd>${escaparHTML(ticket.category)}</dd></div>
+    <div><dt>Creado</dt><dd>${fechaCreacion}</dd></div>
+    <div><dt>Actualizado</dt><dd>${fechaActualizacion}</dd></div>
   `;
 }
 
@@ -96,12 +144,12 @@ function dibujarGestion(ticket) {
     const esAdmin = rolActual === 'admin';
 
     if (!esAdmin && ticket.assigned_to === null) {
-        contenedorGestion.innerHTML = '<p>Toma este caso desde la bandeja para poder gestionarlo.</p>';
+        contenedorGestion.innerHTML = '<p class="gestion-aviso">Toma este caso desde la bandeja para poder gestionarlo.</p>';
         return;
     }
 
     if (!esAdmin && ticket.status === 'cerrado') {
-        contenedorGestion.innerHTML = '<p>Este ticket está cerrado y no se puede modificar.</p>';
+        contenedorGestion.innerHTML = '<p class="gestion-aviso">Este ticket está cerrado y no se puede modificar.</p>';
         return;
     }
 
@@ -110,7 +158,7 @@ function dibujarGestion(ticket) {
         .join('');
 
     const campoAsignar = esAdmin && tecnicos.length > 0
-        ? `<div class="form-grupo">
+        ? `<div class="campo">
         <label for="select-asignado">Asignar a</label>
         <select id="select-asignado">
           <option value="">Sin asignar</option>
@@ -120,9 +168,8 @@ function dibujarGestion(ticket) {
         : '';
 
     contenedorGestion.innerHTML = `
-    <h2>Gestionar ticket</h2>
     <form id="form-gestion">
-      <div class="form-grupo">
+      <div class="campo">
         <label for="select-estado">Estado</label>
         <select id="select-estado">
           <option value="nuevo">Nuevo</option>
@@ -134,7 +181,7 @@ function dibujarGestion(ticket) {
         </select>
       </div>
 
-      <div class="form-grupo">
+      <div class="campo">
         <label for="select-prioridad">Prioridad</label>
         <select id="select-prioridad">
           <option value="baja">Baja</option>
@@ -146,7 +193,7 @@ function dibujarGestion(ticket) {
 
       ${campoAsignar}
 
-      <button class="boton" type="submit">Guardar cambios</button>
+      <button class="boton boton--ancho" type="submit">Guardar cambios</button>
     </form>
   `;
     const selectEstado = contenedorGestion.querySelector('#select-estado');
@@ -201,12 +248,12 @@ async function cargarHistorial() {
         .order('created_at', { ascending: false });
 
     if (errorEventos) {
-        listaHistorial.innerHTML = '<li>No se pudo cargar el historial.</li>';
+        listaHistorial.innerHTML = '<li class="historial-vacio">No se pudo cargar el historial.</li>';
         return;
     }
 
     if (eventos.length === 0) {
-        listaHistorial.innerHTML = '<li>Este ticket aún no tiene cambios registrados.</li>';
+        listaHistorial.innerHTML = '<li class="historial-vacio">Este ticket aún no tiene cambios registrados.</li>';
         return;
     }
 
@@ -225,48 +272,63 @@ async function cargarComentarios() {
         .order('created_at', { ascending: true });
 
     if (errorComentarios) {
-        listaComentarios.innerHTML = '<li>No se pudieron cargar los comentarios.</li>';
+        listaComentarios.innerHTML = '<li class="hilo-vacio">No se pudieron cargar los mensajes. Recarga la página para intentarlo de nuevo.</li>';
+        return;
+    }
+
+    document.querySelector('#contador-comentarios').textContent = comentarios.length;
+
+    if (comentarios.length === 0) {
+        listaComentarios.innerHTML = '<li class="hilo-vacio">Aún no hay mensajes en este ticket.</li>';
         return;
     }
 
     comentarios.forEach((comentario) => {
-        const item = document.createElement('li');
-        item.classList.add('comentario');
-
-        if (comentario.author_id === idUsuarioActual) {
-            item.classList.add('comentario--propio');
-        }
-
-        if (comentario.is_internal) {
-            item.classList.add('comentario--interna');
-        }
-
+        const esPropio = comentario.author_id === idUsuarioActual;
+        const esDelCliente = comentario.author_id === ticket.created_by;
         const perfilAutor = perfiles.find((perfil) => perfil.id === comentario.author_id);
 
         let autor = 'Equipo NTEK';
-        if (comentario.author_id === idUsuarioActual) {
+        let iniciales = 'NT';
+        if (esPropio) {
             autor = 'Tú';
+            iniciales = obtenerIniciales(nombreUsuario);
         } else if (perfilAutor) {
             autor = perfilAutor.full_name;
+            iniciales = obtenerIniciales(perfilAutor.full_name);
         }
-
-        const etiquetaInterna = comentario.is_internal
-            ? '<span class="comentario-etiqueta-interna">Nota interna</span>'
-            : '';
 
         const fechaHora = new Date(comentario.created_at).toLocaleString('es-CL', formatoFechaHora);
 
+        const item = document.createElement('li');
+        item.className = 'mensaje';
+        if (esPropio) {
+            item.classList.add('mensaje--propio');
+        }
+        if (comentario.is_internal) {
+            item.classList.add('mensaje--interna');
+        }
+
+        const etiquetaInterna = comentario.is_internal
+            ? '<span class="mensaje-etiqueta">Nota interna</span>'
+            : '';
+
         item.innerHTML = `
-        ${etiquetaInterna}
-        <p class="comentario-texto">${escaparHTML(comentario.body)}</p>
-        <p class="comentario-meta">${escaparHTML(autor)} · ${fechaHora}</p>
+        <span class="avatar ${esDelCliente ? '' : 'avatar--equipo'}" aria-hidden="true">${escaparHTML(iniciales)}</span>
+        <div class="mensaje-cuerpo">
+          <p class="mensaje-cabecera">
+            <span class="mensaje-autor">${escaparHTML(autor)}</span>
+            <span class="mensaje-fecha">${fechaHora}</span>
+            ${etiquetaInterna}
+          </p>
+          <p class="mensaje-texto">${escaparHTML(comentario.body)}</p>
+        </div>
       `;
 
         listaComentarios.appendChild(item);
     });
-
-    listaComentarios.scrollTop = listaComentarios.scrollHeight;
 }
+
 
 
 function activarFormularioComentario() {
@@ -313,7 +375,14 @@ const etiquetasTipo = {
     'image/jpeg': 'Imagen JPG',
     'image/png': 'Imagen PNG',
     'application/pdf': 'Documento PDF',
-    'text/markdown': 'Markdown'
+    'text/markdown': 'Archivo Markdown'
+};
+
+const iconosTipo = {
+    'image/jpeg': { texto: 'JPG', clase: '' },
+    'image/png': { texto: 'PNG', clase: '' },
+    'application/pdf': { texto: 'PDF', clase: 'archivo-icono--pdf' },
+    'text/markdown': { texto: 'MD', clase: 'archivo-icono--md' }
 };
 
 let adjuntosActuales = [];
@@ -328,20 +397,23 @@ async function cargarAdjuntos() {
         .order('created_at', { ascending: true });
 
     if (errorAdjuntos) {
-        listaAdjuntos.innerHTML = '<li>No se pudieron cargar los archivos.</li>';
+        listaAdjuntos.innerHTML = '<li class="archivos-vacio">No se pudieron cargar los archivos.</li>';
         return;
     }
 
     adjuntosActuales = adjuntos;
+    document.querySelector('#contador-adjuntos').textContent = adjuntos.length;
 
     if (adjuntos.length === 0) {
-        listaAdjuntos.innerHTML = '<li>Este ticket aún no tiene archivos.</li>';
+        listaAdjuntos.innerHTML = '<li class="archivos-vacio">Este ticket aún no tiene archivos.</li>';
         return;
     }
 
     adjuntos.forEach((adjunto) => {
         const item = document.createElement('li');
-        item.classList.add('adjunto');
+        item.classList.add('archivo');
+
+        const icono = iconosTipo[adjunto.mime_type];
 
         const perfilAutor = perfiles.find((perfil) => perfil.id === adjunto.uploaded_by);
 
@@ -356,9 +428,12 @@ async function cargarAdjuntos() {
         const fechaHora = new Date(adjunto.created_at).toLocaleString('es-CL', formatoFechaHora);
 
         item.innerHTML = `
-        <p class="adjunto-tipo">${etiquetasTipo[adjunto.mime_type]} · ${tamanoKB} KB</p>
-        <p class="adjunto-meta">${escaparHTML(autor)} · ${fechaHora}</p>
-        <button type="button" class="boton">Descargar</button>
+        <span class="archivo-icono ${icono.clase}" aria-hidden="true">${icono.texto}</span>
+        <div class="archivo-datos">
+          <p class="archivo-nombre">${etiquetasTipo[adjunto.mime_type]}</p>
+          <p class="archivo-meta">${tamanoKB} KB · ${escaparHTML(autor)} · ${fechaHora}</p>
+        </div>
+        <button type="button" class="archivo-descargar" aria-label="Descargar ${etiquetasTipo[adjunto.mime_type]}" title="Descargar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M5 21h14"></path></svg></button>
       `;
 
         item.querySelector('button').addEventListener('click', () => descargarAdjunto(adjunto.path));
@@ -462,7 +537,8 @@ function activarFormularioAdjunto() {
 }
 
 if (error || !ticket) {
-    contenedorDetalle.innerHTML = '<p>No se encontró el ticket solicitado.</p>';
+    contenedorDetalle.innerHTML = '<div class="ticket-cabecera-texto"><h1>No se encontró el ticket solicitado</h1></div>';
+    document.querySelector('.ticket-layout').hidden = true;
 } else {
     dibujarDetalle(ticket);
     dibujarGestion(ticket);

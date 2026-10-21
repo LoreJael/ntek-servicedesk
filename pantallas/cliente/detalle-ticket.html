@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/layout.css">
   <link rel="stylesheet" href="../../css/componentes.css">
+  <link rel="stylesheet" href="../../css/detalle-ticket.css">
 </head>
 
 <body class="verificando">
@@ -16,48 +17,82 @@
 
   <div id="header-placeholder"></div>
 
-  <main class="contenedor">
-    <div class="detalle-layout">
-      <section class="detalle-ticket-seccion">
-        <div class="tarjeta" id="detalle-ticket"></div>
+  <main class="contenedor detalle-pagina">
+    <a href="mis-tickets.html" class="ruta-volver">← Volver a Mis tickets</a>
 
-        <div class="tarjeta aviso-resuelto" id="aviso-resuelto" hidden>
-          <h2>¿Se solucionó tu problema?</h2>
-          <p>El equipo NTEK marcó este ticket como resuelto. Si estás conforme, puedes cerrarlo.</p>
-          <button type="button" class="boton" id="boton-aceptar-cierre">Aceptar cierre</button>
+    <header class="ticket-cabecera" id="encabezado-ticket"></header>
+
+    <div class="aviso-resuelto" id="aviso-resuelto" hidden>
+      <div class="aviso-resuelto-texto">
+        <span class="aviso-resuelto-icono" aria-hidden="true">✓</span>
+        <div>
+          <p class="aviso-resuelto-titulo">El equipo NTEK marcó este ticket como resuelto</p>
+          <p class="aviso-resuelto-subtitulo">Si se solucionó tu problema, puedes cerrarlo.</p>
         </div>
+      </div>
+      <button type="button" class="boton" id="boton-aceptar-cierre">Aceptar cierre</button>
+    </div>
 
-
-        <div class="tarjeta adjuntos-ticket">
-          <h2>Archivos adjuntos</h2>
-          <ul class="lista-adjuntos" id="lista-adjuntos"></ul>
-
-          <form id="form-adjunto" hidden>
-            <div class="form-grupo">
-              <label for="input-adjunto">Adjuntar archivo (JPG, PNG, PDF o Markdown, máximo 5 MB)</label>
-              <input type="file" id="input-adjunto" accept="image/jpeg, image/png, application/pdf, .md">
-            </div>
-            <button type="submit" class="boton">Subir archivo</button>
-          </form>
-        </div>
-      </section>
-
-
-      <section class="comentarios-ticket-seccion">
-        <h2>Comentarios</h2>
-        <ul class="lista-comentarios" id="lista-comentarios-ticket"></ul>
-
-        <form id="form-comentario" hidden>
-          <div class="form-grupo">
-            <label for="texto-comentario">Escribe una respuesta</label>
-            <textarea id="texto-comentario" rows="4" maxlength="2000"></textarea>
+    <div class="ticket-layout">
+      <aside class="ticket-lateral">
+        <section class="panel">
+          <div class="panel-cabecera">
+            <h2>Detalles</h2>
           </div>
-          <button type="submit" class="boton">Enviar comentario</button>
-        </form>
+          <div class="panel-cuerpo">
+            <dl class="lista-detalles" id="detalles-ticket"></dl>
+          </div>
+        </section>
 
-        <p class="aviso-ticket-cerrado" id="aviso-ticket-cerrado" hidden>Este ticket está cerrado y ya no admite
-          comentarios.</p>
-      </section>
+        <section class="panel">
+          <div class="panel-cabecera">
+            <h2>Adjuntos</h2>
+            <span class="panel-contador" id="contador-adjuntos">0</span>
+          </div>
+          <div class="panel-cuerpo">
+            <ul class="lista-archivos" id="lista-adjuntos"></ul>
+
+            <form class="subir-archivo" id="form-adjunto" hidden>
+              <label for="input-adjunto">Adjuntar archivo</label>
+              <input type="file" id="input-adjunto" accept="image/jpeg, image/png, application/pdf, .md">
+              <p class="subir-archivo-ayuda">JPG o PNG (máx. 3), PDF (máx. 1) o Markdown (máx. 5). Hasta 5 MB.</p>
+              <button type="submit" class="boton boton--secundario boton--ancho">Subir archivo</button>
+            </form>
+          </div>
+        </section>
+      </aside>
+
+      <div class="ticket-principal">
+        <section class="panel">
+          <div class="panel-cabecera">
+            <h2>Descripción</h2>
+          </div>
+          <div class="panel-cuerpo">
+            <p class="ticket-descripcion" id="descripcion-ticket"></p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-cabecera">
+            <h2>Conversación</h2>
+            <span class="panel-contador" id="contador-comentarios">0</span>
+          </div>
+          <div class="panel-cuerpo">
+            <ul class="hilo" id="lista-comentarios-ticket"></ul>
+
+            <form class="respuesta" id="form-comentario" hidden>
+              <label for="texto-comentario">Escribe una respuesta</label>
+              <textarea id="texto-comentario" rows="3" maxlength="2000" placeholder="Cuéntale al equipo cualquier novedad sobre tu caso"></textarea>
+              <div class="respuesta-pie">
+                <p class="respuesta-ayuda">Mínimo 10 caracteres.</p>
+                <button type="submit" class="boton">Enviar respuesta</button>
+              </div>
+            </form>
+
+            <p class="aviso-cerrado" id="aviso-ticket-cerrado" hidden>Este ticket está cerrado y ya no admite respuestas.</p>
+          </div>
+        </section>
+      </div>
     </div>
   </main>
 

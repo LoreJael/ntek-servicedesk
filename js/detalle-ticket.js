@@ -1,7 +1,7 @@
 import { protegerRuta } from './sesion.js';
 const rolActual = await protegerRuta(['cliente'], false);
 import { crearHeaderCliente } from './header-cliente.js';
-import { activarBotonCerrarSesion } from './sesion.js';
+import { activarBotonCerrarSesion, nombreUsuario } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { mostrarNotificacion } from './notificaciones.js';
 import { escaparHTML } from './seguridad.js';
@@ -26,6 +26,16 @@ const etiquetasPrioridad = {
   critica: "Crítica"
 };
 
+function obtenerIniciales(nombre) {
+  return nombre
+    .split(' ')
+    .filter((parte) => parte !== '')
+    .slice(0, 2)
+    .map((parte) => parte[0])
+    .join('')
+    .toUpperCase();
+}
+
 
 const parametros = new URLSearchParams(window.location.search);
 const idTicket = parametros.get('id');
@@ -36,22 +46,44 @@ const { data: ticket, error } = await supabase
   .eq('id', idTicket)
   .maybeSingle();
 
-const contenedorDetalle = document.querySelector('#detalle-ticket');
+const encabezadoTicket = document.querySelector('#encabezado-ticket');
 
 if (error || !ticket) {
-  contenedorDetalle.innerHTML = '<p>No se encontró el ticket solicitado.</p>';
+  encabezadoTicket.innerHTML = '<div class="ticket-cabecera-texto"><h1>No se encontró el ticket solicitado</h1></div>';
+  document.querySelector('.ticket-layout').hidden = true;
 } else {
   const formatoFechaHora = { timeZone: 'America/Santiago', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+  const formatoFecha = { timeZone: 'America/Santiago', day: '2-digit', month: '2-digit', year: 'numeric' };
   const fechaCreacion = new Date(ticket.created_at).toLocaleString('es-CL', formatoFechaHora);
   const fechaActualizacion = new Date(ticket.updated_at).toLocaleString('es-CL', formatoFechaHora);
+  const diaCreacion = new Date(ticket.created_at).toLocaleDateString('es-CL', formatoFecha);
 
-  contenedorDetalle.classList.add(`tarjeta--prioridad-${ticket.priority}`);
-  contenedorDetalle.innerHTML = `
-  <p class="ticket-id">N.° ${ticket.id.slice(0, 8)}</p>
-    <h1>${escaparHTML(ticket.title)}</h1>
-    <p class="ticket-estado">${etiquetasEstado[ticket.status]} · ${etiquetasPrioridad[ticket.priority]} · ${escaparHTML(ticket.category)}</p>
-    <p class="ticket-descripcion">${escaparHTML(ticket.description)}</p>
-    <p class="ticket-fecha">Creado: ${fechaCreacion} · Última actualización: ${fechaActualizacion}</p>
+  const pildoraEstado = `<span class="badge-estado badge-estado--${ticket.status}">${etiquetasEstado[ticket.status]}</span>`;
+  const pildoraPrioridad = `<span class="badge-prioridad badge-prioridad--${ticket.priority}">${etiquetasPrioridad[ticket.priority]}</span>`;
+
+  encabezadoTicket.innerHTML = `
+    <div class="ticket-cabecera-texto">
+      <p class="eyebrow">Ticket N.° ${ticket.id.slice(0, 8)}</p>
+      <h1>${escaparHTML(ticket.title)}</h1>
+      <p class="ticket-cabecera-meta">
+        ${pildoraEstado}
+        ${pildoraPrioridad}
+        <span class="separador" aria-hidden="true">|</span>
+        <span>${escaparHTML(ticket.category)}</span>
+        <span class="separador" aria-hidden="true">|</span>
+        <span>Creado el ${diaCreacion}</span>
+      </p>
+    </div>
+  `;
+
+  document.querySelector('#descripcion-ticket').textContent = ticket.description;
+
+  document.querySelector('#detalles-ticket').innerHTML = `
+    <div><dt>Estado</dt><dd>${pildoraEstado}</dd></div>
+    <div><dt>Prioridad</dt><dd>${pildoraPrioridad}</dd></div>
+    <div><dt>Categoría</dt><dd>${escaparHTML(ticket.category)}</dd></div>
+    <div><dt>Creado</dt><dd>${fechaCreacion}</dd></div>
+    <div><dt>Actualizado</dt><dd>${fechaActualizacion}</dd></div>
   `;
 
   // Aceptar cierre (solo si el ticket está Resuelto)
@@ -100,30 +132,40 @@ if (error || !ticket) {
       .order('created_at', { ascending: true });
 
     if (errorComentarios) {
-      listaComentarios.innerHTML = '<li>No se pudieron cargar los comentarios.</li>';
+      listaComentarios.innerHTML = '<li class="hilo-vacio">No se pudieron cargar los mensajes. Recarga la página para intentarlo de nuevo.</li>';
+      return;
+    }
+
+    document.querySelector('#contador-comentarios').textContent = comentarios.length;
+
+    if (comentarios.length === 0) {
+      listaComentarios.innerHTML = '<li class="hilo-vacio">Aún no hay mensajes. Si tienes novedades sobre tu caso, escríbelas abajo.</li>';
       return;
     }
 
     comentarios.forEach((comentario) => {
-      const item = document.createElement('li');
-      item.classList.add('comentario');
-
-      if (comentario.author_id === idUsuarioActual) {
-        item.classList.add('comentario--propio');
-      }
-
-      const autor = comentario.author_id === idUsuarioActual ? 'Tú' : 'Equipo NTEK';
+      const esPropio = comentario.author_id === idUsuarioActual;
+      const autor = esPropio ? 'Tú' : 'Equipo NTEK';
+      const iniciales = esPropio ? obtenerIniciales(nombreUsuario) : 'NT';
       const fechaHora = new Date(comentario.created_at).toLocaleString('es-CL', formatoFechaHora);
 
+      const item = document.createElement('li');
+      item.className = esPropio ? 'mensaje mensaje--propio' : 'mensaje';
+
       item.innerHTML = `
-        <p class="comentario-texto">${escaparHTML(comentario.body)}</p>
-        <p class="comentario-meta">${autor} · ${fechaHora}</p>
+        <span class="avatar ${esPropio ? '' : 'avatar--equipo'}" aria-hidden="true">${escaparHTML(iniciales)}</span>
+        <div class="mensaje-cuerpo">
+          <p class="mensaje-cabecera">
+            <span class="mensaje-autor">${autor}</span>
+            <span class="mensaje-fecha">${fechaHora}</span>
+          </p>
+          <p class="mensaje-texto">${escaparHTML(comentario.body)}</p>
+        </div>
       `;
 
       listaComentarios.appendChild(item);
     });
 
-    listaComentarios.scrollTop = listaComentarios.scrollHeight;
   }
 
   await cargarComentarios();
@@ -181,7 +223,14 @@ if (error || !ticket) {
     'image/jpeg': 'Imagen JPG',
     'image/png': 'Imagen PNG',
     'application/pdf': 'Documento PDF',
-    'text/markdown': 'Markdown'
+    'text/markdown': 'Archivo Markdown'
+  };
+
+  const iconosTipo = {
+    'image/jpeg': { texto: 'JPG', clase: '' },
+    'image/png': { texto: 'PNG', clase: '' },
+    'application/pdf': { texto: 'PDF', clase: 'archivo-icono--pdf' },
+    'text/markdown': { texto: 'MD', clase: 'archivo-icono--md' }
   };
 
   let adjuntosActuales = [];
@@ -196,29 +245,34 @@ if (error || !ticket) {
       .order('created_at', { ascending: true });
 
     if (errorAdjuntos) {
-      listaAdjuntos.innerHTML = '<li>No se pudieron cargar los archivos.</li>';
+      listaAdjuntos.innerHTML = '<li class="archivos-vacio">No se pudieron cargar los archivos.</li>';
       return;
     }
 
     adjuntosActuales = adjuntos;
+    document.querySelector('#contador-adjuntos').textContent = adjuntos.length;
 
     if (adjuntos.length === 0) {
-      listaAdjuntos.innerHTML = '<li>Este ticket aún no tiene archivos.</li>';
+      listaAdjuntos.innerHTML = '<li class="archivos-vacio">Este ticket aún no tiene archivos.</li>';
       return;
     }
 
     adjuntos.forEach((adjunto) => {
       const item = document.createElement('li');
-      item.classList.add('adjunto');
+      item.classList.add('archivo');
 
+      const icono = iconosTipo[adjunto.mime_type];
       const tamanoKB = Math.ceil(adjunto.size_bytes / 1024);
       const fechaHora = new Date(adjunto.created_at).toLocaleString('es-CL', formatoFechaHora);
       const autor = adjunto.uploaded_by === idUsuarioActual ? 'Tú' : 'Equipo NTEK';
 
       item.innerHTML = `
-        <p class="adjunto-tipo">${etiquetasTipo[adjunto.mime_type]} · ${tamanoKB} KB</p>
-        <p class="adjunto-meta">${autor} · ${fechaHora}</p>
-        <button type="button" class="boton">Descargar</button>
+        <span class="archivo-icono ${icono.clase}" aria-hidden="true">${icono.texto}</span>
+        <div class="archivo-datos">
+          <p class="archivo-nombre">${etiquetasTipo[adjunto.mime_type]}</p>
+          <p class="archivo-meta">${tamanoKB} KB · ${autor} · ${fechaHora}</p>
+        </div>
+        <button type="button" class="archivo-descargar" aria-label="Descargar ${etiquetasTipo[adjunto.mime_type]}" title="Descargar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M5 21h14"></path></svg></button>
       `;
 
       item.querySelector('button').addEventListener('click', () => descargarAdjunto(adjunto.path));
