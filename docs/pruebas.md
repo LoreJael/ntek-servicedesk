@@ -234,3 +234,14 @@ Página `equipo/indicadores.html`. Una sola consulta a `tickets`; la RLS decide 
 | 5 | localhost:8080 | Agregar `Permissions-Policy` y revisar Response Headers | `permissions-policy: camera=(), microphone=(), geolocation=()`; la app funciona igual | ✅ |
 | 6 | localhost:8080 | Agregar `X-Frame-Options` y revisar Response Headers | `x-frame-options: DENY`; la app funciona igual | ✅ |
 | 7 | Render | Response Headers en producción + análisis en securityheaders.com | Las cinco cabeceras presentes (CSP, nosniff, Referrer-Policy, Permissions-Policy, X-Frame-Options); solo falta HSTS, que queda para Cloudflare | ✅ |
+
+## RF-07 — "Tomar caso" en tickets cerrados (21-10)
+
+Defecto: la bandeja mostraba "Tomar caso" en tickets Cerrados sin asignar. La RLS ya bloqueaba el cambio para técnicos (`status <> 'cerrado'`), pero el técnico recibía el mensaje equivocado "Este caso ya fue tomado por otro técnico".
+
+| N.º | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 0 | Diego (técnico) | Antes del arreglo: "Tomar caso" en "mouse malo" | 0 filas por RLS → mensaje "ya fue tomado" (defecto) | ✅ reproducido |
+| 1 | Diego (técnico) | Bandeja después del arreglo: "mouse malo" | Sin botón "Tomar caso" | ✅ |
+| 2 | Andrea (admin) | Bandeja después del arreglo: "mouse malo" | Sin botón "Tomar caso" | ✅ |
+| 3 | Diego (técnico) | Ticket Nuevo sin asignar | "Tomar caso" visible y funcional | ✅ |

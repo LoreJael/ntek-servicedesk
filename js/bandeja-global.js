@@ -90,7 +90,7 @@ function dibujarTickets(lista) {
 
     const fecha = new Date(ticket.updated_at).toLocaleDateString('es-CL', { timeZone: 'America/Santiago' });
 
-    const botonTomarCaso = ticket.assigned_to === null
+      const botonTomarCaso = ticket.assigned_to === null && ticket.status !== 'cerrado'
       ? `<button class="boton" data-ticket-id="${ticket.id}">Tomar caso</button>`
       : '';
 
