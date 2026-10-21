@@ -222,3 +222,13 @@ Página `equipo/indicadores.html`. Una sola consulta a `tickets`; la RLS decide 
 | 4 | Diego (técnico) | Cambiar el estado de su ticket | El evento nuevo aparece con su nombre y la hora actual | ✅ |
 | 5 | Andrea (admin) | Abrir un ticket creado antes del 14-10 (sin trigger) | "Este ticket aún no tiene cambios registrados." (esperado: no hay eventos antiguos) | ✅ |
 | 6 | Andrea (admin) | Detalle en 360 px | Historial al final, en una columna, sin desplazamiento horizontal | ✅ |
+
+## RNF-05 — Cabeceras de seguridad en nginx (21-10)
+
+| N.º | Dónde | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | localhost:8080 | Network → documento → Response Headers | Aparecen `content-security-policy`, `x-content-type-options: nosniff` y `referrer-policy: strict-origin-when-cross-origin` | ✅ |
+| 2 | localhost:8080 | Recorrer login, Mis tickets, detalle, adjuntos, bandeja y Tomar caso | Todo funciona; la CSP no bloquea nada de la app | ✅ |
+| 3 | localhost:8080 | Consola: insertar `<img src=x onerror="alert(1)">` con `insertAdjacentHTML` | La imagen se crea (404), pero la CSP bloquea el `onerror`: no hay alert | ✅ |
+| 4 | localhost:8080 | Abrir la consola con DevTools después de agregar jsDelivr a `connect-src` | Ya no aparecen los errores de los archivos `.map` | ✅ |
+| 5 | Render | Response Headers en producción después del despliegue | Las mismas tres cabeceras del punto 1 | ⬜ |
