@@ -231,4 +231,6 @@ Página `equipo/indicadores.html`. Una sola consulta a `tickets`; la RLS decide 
 | 2 | localhost:8080 | Recorrer login, Mis tickets, detalle, adjuntos, bandeja y Tomar caso | Todo funciona; la CSP no bloquea nada de la app | ✅ |
 | 3 | localhost:8080 | Consola: insertar `<img src=x onerror="alert(1)">` con `insertAdjacentHTML` | La imagen se crea (404), pero la CSP bloquea el `onerror`: no hay alert | ✅ |
 | 4 | localhost:8080 | Abrir la consola con DevTools después de agregar jsDelivr a `connect-src` | Ya no aparecen los errores de los archivos `.map` | ✅ |
-| 5 | Render | Response Headers en producción después del despliegue | Las mismas tres cabeceras del punto 1 | ⬜ |
+| 5 | localhost:8080 | Agregar `Permissions-Policy` y revisar Response Headers | `permissions-policy: camera=(), microphone=(), geolocation=()`; la app funciona igual | ✅ |
+| 6 | localhost:8080 | Agregar `X-Frame-Options` y revisar Response Headers | `x-frame-options: DENY`; la app funciona igual | ✅ |
+| 7 | Render | Response Headers en producción + análisis en securityheaders.com | Las cinco cabeceras presentes (CSP, nosniff, Referrer-Policy, Permissions-Policy, X-Frame-Options); solo falta HSTS, que queda para Cloudflare | ✅ |
