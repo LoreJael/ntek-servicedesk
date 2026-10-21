@@ -509,8 +509,7 @@ button:disabled {
   font-size: 0.9rem;
 }
 
-.lista-tickets > li,
-.lista-comentarios > li {
+.lista-tickets > li {
   flex: 1 1 260px;
 }
 

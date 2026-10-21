@@ -54,7 +54,7 @@ if (error || !ticket) {
     <p class="ticket-fecha">Creado: ${fechaCreacion} · Última actualización: ${fechaActualizacion}</p>
   `;
 
-    // Aceptar cierre (solo si el ticket está Resuelto)
+  // Aceptar cierre (solo si el ticket está Resuelto)
   const avisoResuelto = document.querySelector('#aviso-resuelto');
   const botonAceptarCierre = document.querySelector('#boton-aceptar-cierre');
 
@@ -144,8 +144,10 @@ if (error || !ticket) {
 
       const texto = textoComentario.value.trim();
 
-      if (texto === '') {
-        mostrarNotificacion('Escribe un comentario antes de enviarlo.', 'error');
+      const largoTexto = [...texto].length;
+
+      if (largoTexto < 10 || largoTexto > 2000) {
+        mostrarNotificacion('El comentario debe tener entre 10 y 2000 caracteres.', 'error');
         return;
       }
 
@@ -168,11 +170,11 @@ if (error || !ticket) {
 
     });
   }
-    
+
   const formAdjunto = document.querySelector('#form-adjunto');
   const inputAdjunto = document.querySelector('#input-adjunto');
 
- 
+
   const listaAdjuntos = document.querySelector('#lista-adjuntos');
 
   const etiquetasTipo = {
@@ -197,7 +199,7 @@ if (error || !ticket) {
       listaAdjuntos.innerHTML = '<li>No se pudieron cargar los archivos.</li>';
       return;
     }
-    
+
     adjuntosActuales = adjuntos;
 
     if (adjuntos.length === 0) {
@@ -320,5 +322,6 @@ if (error || !ticket) {
       botonSubir.disabled = false;
       botonSubir.textContent = 'Subir archivo';
     });
-  }}
+  }
+}
 document.body.classList.remove('verificando');

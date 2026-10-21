@@ -277,8 +277,10 @@ function activarFormularioComentario() {
 
         const texto = textoComentario.value.trim();
 
-        if (texto === '') {
-            mostrarNotificacion('Escribe un comentario antes de enviarlo.', 'error');
+        const largoTexto = [...texto].length;
+
+        if (largoTexto < 10 || largoTexto > 2000) {
+            mostrarNotificacion('El comentario debe tener entre 10 y 2000 caracteres.', 'error');
             return;
         }
 

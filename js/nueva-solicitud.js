@@ -19,11 +19,19 @@ formNuevaSolicitud.addEventListener('submit', async (evento) => {
   const titulo = document.getElementById('titulo').value.trim();
   const descripcion = document.getElementById('descripcion').value.trim();
 
-  if (titulo === '' || descripcion === '') {
-    mostrarNotificacion('El título y la descripción no pueden estar vacíos.', 'error');
+    const largoTitulo = [...titulo].length;
+  const largoDescripcion = [...descripcion].length;
+
+  if (largoTitulo < 5 || largoTitulo > 120) {
+    mostrarNotificacion('El título debe tener entre 5 y 120 caracteres.', 'error');
     return;
   }
 
+  if (largoDescripcion < 10 || largoDescripcion > 2000) {
+    mostrarNotificacion('La descripción debe tener entre 10 y 2000 caracteres.', 'error');
+    return;
+  }
+  
   botonEnviar.disabled = true;
   botonEnviar.textContent = 'Procesando solicitud...';
 
