@@ -40,22 +40,6 @@
   border-radius: 10px;
 }
 
-.lista-tickets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.lista-tickets .tarjeta,
-.lista-comentarios .tarjeta {
-  margin: 0;
-  max-width: none;
-  flex: 1 1 260px;
-}
-
 .comentario-ticket {
   font-size: 0.85rem;
   color: var(--color-texto-secundario);
@@ -89,11 +73,6 @@
   margin: 0;
   font-size: 0.9rem;
 }
-
-.tarjeta--prioridad-baja    { background-color: var(--color-prioridad-baja); }
-.tarjeta--prioridad-media   { background-color: var(--color-prioridad-media); }
-.tarjeta--prioridad-alta    { background-color: var(--color-prioridad-alta); }
-.tarjeta--prioridad-critica { background-color: var(--color-prioridad-critica); }
 
 .notificacion {
   position: fixed;
@@ -185,40 +164,6 @@ body.verificando .pantalla-carga {
   min-width: 200px;
 }
 
-
-.detalle-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  max-width: 1000px;
-  margin: 2rem auto;
-  align-items: start;
-}
-
-@media (min-width: 800px) {
-  .detalle-layout {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.detalle-layout .tarjeta {
-  max-width: none;
-  margin: 0;
-}
-
-
-.comentarios-ticket-seccion {
-  padding: 1.5rem;
-  background-color: #ffffff;
-  border: 1px solid var(--color-borde);
-  border-radius: 10px;
-}
-
-.comentarios-ticket-seccion h2 {
-  margin: 0 0 1rem;
-  font-size: 1.25rem;
-}
-
 .lista-comentarios {
   list-style: none;
   margin: 0 0 1.5rem;
@@ -230,17 +175,6 @@ body.verificando .pantalla-carga {
   max-height: 400px;
   overflow-y: auto;
   overflow-x: hidden;
-}
-
-.comentario {
-  padding: 0.75rem 1rem;
-  background-color: var(--color-fondo);
-  border-left: 4px solid var(--color-borde);
-  border-radius: 6px;
-}
-
-.comentario--propio {
-  border-left-color: var(--color-acento);
 }
 
 .comentario-texto {
@@ -256,116 +190,6 @@ body.verificando .pantalla-carga {
 
 .form-grupo textarea {
   resize: vertical;
-}
-
-.aviso-ticket-cerrado {
-  margin: 0;
-  padding: 0.75rem 1rem;
-  background-color: var(--color-fondo);
-  border: 1px dashed var(--color-borde);
-  border-radius: 6px;
-}
-
-.comentario--interna {
-  background-color: #fff6db;
-}
-
-.comentario-etiqueta-interna {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #8a6100;
-}
-
-.form-grupo--casilla label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
-
-.form-grupo--casilla input[type="checkbox"] {
-  width: auto;
-  margin: 0;
-}
-
-.detalle-layout .adjuntos-ticket {
-  margin-top: 1.5rem;
-}
-
-.detalle-layout .aviso-resuelto {
-  margin-top: 1.5rem;
-}
-
-.lista-adjuntos {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0.75rem;
-  max-height: 260px;
-  overflow-y: auto;
-}
-
-.adjunto {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--color-borde);
-  border-radius: 8px;
-}
-
-.adjunto p {
-  margin: 0;
-}
-
-.adjunto .boton {
-  margin-top: 0.5rem;
-  align-self: flex-start;
-}
-
-.adjunto-meta {
-  font-size: 0.85rem;
-  color: var(--color-texto-secundario);
-}
-
-@media (min-width: 800px) {
-  .detalle-layout--equipo {
-    max-width: 1100px;
-    align-items: stretch;
-    grid-template-areas:
-      "detalle     gestion"
-      "adjuntos    adjuntos"
-      "comentarios comentarios"
-      "historial   historial";
-  }
-
-  .detalle-layout--equipo .historial-ticket-seccion { 
-  grid-area: historial; 
-}
-
-  .detalle-layout--equipo .detalle-ticket-seccion { grid-area: detalle; }
-  .detalle-layout--equipo .gestion-ticket-seccion { grid-area: gestion; }
-  .detalle-layout--equipo .adjuntos-ticket { grid-area: adjuntos; }
-  .detalle-layout--equipo .comentarios-ticket-seccion { grid-area: comentarios; }
-
-  .detalle-layout--equipo .detalle-ticket-seccion .tarjeta,
-  .detalle-layout--equipo .gestion-ticket-seccion .tarjeta {
-    height: 100%;
-    box-sizing: border-box;
-  }
-}
-
-
-.lista-historial {
-  max-height: 360px;
-  margin: 0;
-  overflow-y: auto;
-}
-
-.detalle-layout--equipo .adjuntos-ticket {
-  margin-top: 0;
 }
 
 button:disabled {
@@ -387,20 +211,6 @@ button:disabled {
 .tarjeta-ticket:hover {
   border-color: var(--color-acento);
   box-shadow: 0 4px 12px rgba(13, 129, 72, 0.12);
-}
-
-.tarjeta-ticket .ticket-titulo {
-  margin: 0 0 0.75rem;
-  font-size: 1.05rem;
-  font-weight: 600;
-}
-
-.ticket-meta {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.9rem;
 }
 
 .badge-estado {
@@ -507,10 +317,6 @@ button:disabled {
   background-color: #ffffff;
   font: inherit;
   font-size: 0.9rem;
-}
-
-.lista-tickets > li {
-  flex: 1 1 260px;
 }
 
 .tarjeta-ticket .comentario-ticket,
@@ -685,10 +491,6 @@ a.resumen-item:hover {
   padding: 1.25rem 1.5rem;
 }
 
-.tarjeta-seccion-cuerpo .lista-tickets {
-  margin: 0;
-}
-
 .fila-secciones {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -837,7 +639,6 @@ a.resumen-item:hover {
   }
 }
 
-.tarjeta-seccion-cuerpo .lista-tickets,
 .tarjeta-seccion-cuerpo .lista-comentarios {
   flex-direction: column;
   flex-wrap: nowrap;
@@ -845,7 +646,6 @@ a.resumen-item:hover {
   margin: 0;
 }
 
-.tarjeta-seccion-cuerpo .lista-tickets > li,
 .tarjeta-seccion-cuerpo .lista-comentarios > li {
   flex: none;
 }
@@ -866,38 +666,12 @@ a.resumen-item:hover {
   box-shadow: none;
 }
 
-.tarjeta-seccion-cuerpo .lista-tickets .tarjeta-ticket {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.tarjeta-seccion-cuerpo .lista-tickets .ticket-titulo {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.tarjeta-seccion-cuerpo .lista-tickets .ticket-meta {
-  flex-shrink: 0;
-  gap: 0.75rem;
-  color: var(--color-texto-secundario);
-}
-
 .tarjeta-seccion-cuerpo .lista-comentarios .comentario-texto {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-@media (max-width: 480px) {
-  .tarjeta-seccion-cuerpo .lista-tickets .tarjeta-ticket {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
 }
 
 .tabla--compacta th,
