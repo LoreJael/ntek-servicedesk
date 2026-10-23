@@ -542,11 +542,9 @@ if (error || !ticket) {
 } else {
     dibujarDetalle(ticket);
     dibujarGestion(ticket);
-    await cargarComentarios();
+    await Promise.all([cargarComentarios(), cargarAdjuntos(), cargarHistorial()]);
     activarFormularioComentario();
-    await cargarAdjuntos();
     activarFormularioAdjunto();
-    await cargarHistorial();
 }
 
 document.body.classList.remove('verificando');
