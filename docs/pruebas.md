@@ -259,3 +259,30 @@ Cambios: función `nombres_equipo(ids)` (`security definer`, entrega solo `id` y
 | 5 | Loreto (cliente) | Consola: `rpc('nombres_equipo')` con el id de Pedro | `data: []` (no entrega nombres de clientes) | ✅ |
 | 6 | Loreto (cliente) | Consola: `rpc('nombres_equipo')` con el id de Diego | Solo `id` y `full_name` | ✅ |
 | 7 | Diego (técnico) | Abrir el detalle de equipo | Sin cambios | ✅ |
+
+### Defecto 15-10 — Header se desborda a ~960 px (RNF-01) (corregido con la barra lateral, 19-10)
+
+El header horizontal no cabía a anchos intermedios y generaba desplazamiento horizontal en la página. Con el rediseño (barra lateral) el menú ya no compite por el ancho. En las tablas el desplazamiento queda dentro de `.tabla-contenedor` (`overflow-x: auto`), no en la página.
+
+| N.º | Prueba | Cuenta | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | `admin/auditoria.html` a 960 px | Admin (Andrea) | Sin desplazamiento horizontal de la página; textos completos | ✅ 23-10 |
+| 2 | `equipo/bandeja-global.html` a 960 px | Admin (Andrea) | Solo la tabla se desplaza dentro de su caja; la página no | ✅ 23-10 |
+
+## RNF-02 / RNF-03 — Lighthouse en Render (23-10)
+
+Medido en ventana de incógnito, modo Navigation, dispositivo Mobile, con la simulación de red por defecto. Objetivos: Performance ≥ 80 y Accessibility ≥ 90.
+
+| N.º | Pantalla | Cuenta | Performance | Accessibility | Best Practices | Estado |
+|---|---|---|---|---|---|---|
+| 1 | Login | __ | 99 | 100 | 100 | 90 |
+| 2 | Bandeja global | Admin (Andrea) | 81 | 96 | 100 | 90 |
+| 3 | Detalle de equipo | Admin (Andrea) | 77 | 96 | 100 | 90 |
+
+Defecto corregido: el link activo de la barra lateral (`aria-current="page"`) tenía un contraste justo (4,74:1, fondo `#11844c`). Se cambió a `--color-acento` (`#0d8148`, 4,94:1).
+
+Falso positivo: Lighthouse marca los botones "Ver detalle" de la Bandeja por contraste bajo. Revisado con el selector de color de DevTools: 4,94:1 (cumple AA). La columna Acciones queda dentro del scroll horizontal de la tabla a 960 px y Lighthouse no detecta su fondo.
+
+Detalle de equipo: Performance entre 77 y 80 (bajo el objetivo de 80). El `<h1>` aparece tarde porque la página hace 6 esperas seguidas a Supabase antes de mostrarse. Se pasaron comentarios, adjuntos e historial a `Promise.all`, sin mejora medible: la espera principal está antes (`getUser()` y las consultas iniciales). Pendiente para la semana 11: revisar la cadena de consultas, `preconnect` al CDN y caché con Cloudflare.
+
+Pendiente para la etapa de Cloudflare: compresión de archivos y caché de CSS/JS. Para la semana de calidad: `preconnect` al CDN de Supabase.
