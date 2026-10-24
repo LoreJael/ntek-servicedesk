@@ -278,7 +278,7 @@ Medido en ventana de incógnito, modo Navigation, dispositivo Mobile, con la sim
 | 1 | Login | __ | 99 | 100 | 100 | 90 |
 | 2 | Bandeja global | Admin (Andrea) | 81 | 96 | 100 | 90 |
 | 3 | Detalle de equipo | Admin (Andrea) | 77 | 96 | 100 | 90 |
-| 4 | Detalle de cliente | Cliente (Loreto Jael Pradel) | 81 antes / __ después | 96 | 100 | 90 |
+| 4 | Detalle de cliente | Cliente (Loreto Jael Pradel) | Mobile: 81 antes / 90 después (Desktop: 96) | 96 | 100 | 90 |
 
 Defecto corregido: el link activo de la barra lateral (`aria-current="page"`) tenía un contraste justo (4,74:1, fondo `#11844c`). Se cambió a `--color-acento` (`#0d8148`, 4,94:1).
 
@@ -299,4 +299,4 @@ Cambio: comentarios, historial y adjuntos se cargan con `Promise.all` en vez de 
 | 3 | Loreto (cliente) | Enviar una respuesta y subir un archivo | La lista se recarga y el contador se actualiza | ✅ |
 | 4 | Loreto (cliente) | Network → Fetch/XHR → Waterfall | `comments`, `audit_events` y `attachments` salen al mismo tiempo, no en escalera | ✅ |
 | 5 | Loreto (cliente) | Consola durante los flujos anteriores | Sin errores | ✅ |
-| 6 | Loreto (cliente) | Lighthouse en Render (antes: 81) | Performance ≥ 80 | ✅ |
+| 6 | Loreto (cliente) | Lighthouse en Render, Mobile, mismo ticket (antes: 81) | Performance ≥ 80 → 90 | ✅ |
