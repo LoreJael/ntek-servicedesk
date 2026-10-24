@@ -84,23 +84,28 @@ if (error || !ticket) {
 
   // Nombres del equipo NTEK (solo el nombre, mediante la función nombres_equipo)
   const nombresEquipo = {};
+  const consultasNombres = [];
 
-  async function cargarNombresEquipo(ids) {
-    const idsNuevos = [...new Set(ids)].filter((id) => id && !(id in nombresEquipo));
-
-    if (idsNuevos.length === 0) {
-      return;
-    }
-
-    idsNuevos.forEach((id) => {
-      nombresEquipo[id] = null;
-    });
-
+  async function pedirNombres(idsNuevos) {
     const { data: personas } = await supabase.rpc('nombres_equipo', { ids: idsNuevos });
 
     (personas || []).forEach((persona) => {
       nombresEquipo[persona.id] = persona.full_name;
     });
+  }
+
+  async function cargarNombresEquipo(ids) {
+    const idsNuevos = [...new Set(ids)].filter((id) => id && !(id in nombresEquipo));
+
+    if (idsNuevos.length > 0) {
+      idsNuevos.forEach((id) => {
+        nombresEquipo[id] = null;
+      });
+
+      consultasNombres.push(pedirNombres(idsNuevos));
+    }
+
+    await Promise.all(consultasNombres);
   }
 
   function nombreEquipo(id) {
@@ -208,7 +213,6 @@ if (error || !ticket) {
 
   }
 
-  await cargarComentarios();
 
   // Historial (RF-05 / CA-07): el cliente ve creación, asignación, estado, cierre y reapertura
   const listaHistorial = document.querySelector('#lista-historial');
@@ -254,8 +258,6 @@ if (error || !ticket) {
       listaHistorial.appendChild(crearItemEvento(evento, nombreEnHistorial, false));
     });
   }
-
-  await cargarHistorial();
 
   // Formulario para responder
   const formComentario = document.querySelector('#form-comentario');
@@ -382,7 +384,7 @@ if (error || !ticket) {
     window.location.href = data.signedUrl;
   }
 
-  await cargarAdjuntos();
+  await Promise.all([cargarComentarios(), cargarHistorial(), cargarAdjuntos()]);
 
   if (ticket.status !== 'cerrado') {
     formAdjunto.hidden = false;

@@ -273,11 +273,12 @@ El header horizontal no cabía a anchos intermedios y generaba desplazamiento ho
 
 Medido en ventana de incógnito, modo Navigation, dispositivo Mobile, con la simulación de red por defecto. Objetivos: Performance ≥ 80 y Accessibility ≥ 90.
 
-| N.º | Pantalla | Cuenta | Performance | Accessibility | Best Practices | Estado |
+| N.º | Pantalla | Cuenta | Performance | Accessibility | Best Practices | SEO |
 |---|---|---|---|---|---|---|
 | 1 | Login | __ | 99 | 100 | 100 | 90 |
 | 2 | Bandeja global | Admin (Andrea) | 81 | 96 | 100 | 90 |
 | 3 | Detalle de equipo | Admin (Andrea) | 77 | 96 | 100 | 90 |
+| 4 | Detalle de cliente | Cliente (Loreto Jael Pradel) | 81 antes / __ después | 96 | 100 | 90 |
 
 Defecto corregido: el link activo de la barra lateral (`aria-current="page"`) tenía un contraste justo (4,74:1, fondo `#11844c`). Se cambió a `--color-acento` (`#0d8148`, 4,94:1).
 
@@ -286,3 +287,16 @@ Falso positivo: Lighthouse marca los botones "Ver detalle" de la Bandeja por con
 Detalle de equipo: Performance entre 77 y 80 (bajo el objetivo de 80). El `<h1>` aparece tarde porque la página hace 6 esperas seguidas a Supabase antes de mostrarse. Se pasaron comentarios, adjuntos e historial a `Promise.all`, sin mejora medible: la espera principal está antes (`getUser()` y las consultas iniciales). Pendiente para la semana 11: revisar la cadena de consultas, `preconnect` al CDN y caché con Cloudflare.
 
 Pendiente para la etapa de Cloudflare: compresión de archivos y caché de CSS/JS. Para la semana de calidad: `preconnect` al CDN de Supabase.
+
+## RNF-02 — Carga en paralelo en el detalle de cliente (24-10)
+
+Cambio: comentarios, historial y adjuntos se cargan con `Promise.all` en vez de uno tras otro. Las tres cargas comparten `cargarNombresEquipo`, que marcaba cada id como pedido antes de recibir la respuesta. En paralelo, una carga podía encontrar el id marcado, seguir sin esperar y mostrar "Equipo NTEK" en vez del nombre. Se corrigió guardando cada consulta de nombres en curso en `consultasNombres` y esperándolas todas con `Promise.all` antes de dibujar.
+
+| N.º | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Loreto (cliente) | Abrir un ticket con mensajes y adjuntos del técnico | El nombre del técnico aparece en la conversación, el historial, los adjuntos y "Atendido por" (no "Equipo NTEK") | ✅ |
+| 2 | Loreto (cliente) | Abrir un ticket sin mensajes ni adjuntos | Estados vacíos de Conversación y Adjuntos visibles | ✅ |
+| 3 | Loreto (cliente) | Enviar una respuesta y subir un archivo | La lista se recarga y el contador se actualiza | ✅ |
+| 4 | Loreto (cliente) | Network → Fetch/XHR → Waterfall | `comments`, `audit_events` y `attachments` salen al mismo tiempo, no en escalera | ✅ |
+| 5 | Loreto (cliente) | Consola durante los flujos anteriores | Sin errores | ✅ |
+| 6 | Loreto (cliente) | Lighthouse en Render (antes: 81) | Performance ≥ 80 | ✅ |

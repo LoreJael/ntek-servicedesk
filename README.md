@@ -20,11 +20,11 @@ HTML, CSS, JavaScript (módulos ES, sin framework), Supabase (Auth, Postgres, St
 - [x] Etapa 1: Descubrimiento y diseño
 - [x] Etapa 2: Base front-end
 - [x] Etapa 3: Supabase y autenticación
-- [x] Etapa 4: Tickets (pendiente: paginación)
-- [ ] Etapa 5: Interacción — comentarios, adjuntos y auditoría listos; en curso: reapertura de tickets e historial
-- [ ] Etapa 6: Panel y calidad
-- [ ] Etapa 7: DevOps — Docker y Render listos; pendiente: Cloudflare
-- [ ] Etapa 8: Cierre
+- [x] Etapa 4: Tickets — creación, listado con paginación de 10, detalle, filtros, gestión y "Tomar caso"
+- [ ] Etapa 5: Interacción — listos: comentarios y notas internas, adjuntos con límites por tipo, auditoría (RF-12), historial en ambos detalles y "Aceptar cierre" (F-03). Pendiente: reapertura mediante subticket vinculado (CA-08), a la espera de la definición de NTEK
+- [ ] Etapa 6: Panel y calidad — listos: indicadores (RF-10), estados de carga/vacío/error, validación en formularios y en la base, rediseño con identidad NTEK. En curso: Lighthouse y revisión responsive (360 / 768 / 1280 px)
+- [ ] Etapa 7: DevOps — listos: Docker, Render y cabeceras de seguridad en nginx (nota A en securityheaders.com). Pendiente: Cloudflare (dominio, HSTS, caché) y documentar el despliegue
+- [ ] Etapa 8: Cierre — manual de usuario, memoria técnica y respaldo SQL
 
 ## Validación cruzada
 Guía para probar el sistema como usuario: [docs/guia-validacion.md](docs/guia-validacion.md).
