@@ -300,3 +300,30 @@ Cambio: comentarios, historial y adjuntos se cargan con `Promise.all` en vez de 
 | 4 | Loreto (cliente) | Network → Fetch/XHR → Waterfall | `comments`, `audit_events` y `attachments` salen al mismo tiempo, no en escalera | ✅ |
 | 5 | Loreto (cliente) | Consola durante los flujos anteriores | Sin errores | ✅ |
 | 6 | Loreto (cliente) | Lighthouse en Render, Mobile, mismo ticket (antes: 81) | Performance ≥ 80 → 90 | ✅ |
+
+## F-03 / CA-08 — Subticket (27-10)
+
+Si el cliente no está conforme con un ticket Resuelto, abre un subticket vinculado al original. Reglas: solo desde Resuelto, dentro de 7 días desde `resuelto_at`, motivo de 15 a 2000 caracteres, máximo un subticket por ticket (`unique` en `ticket_origen_id`) y sin subticket de un subticket. El original pasa a Cerrado y la atención sigue en el subticket.
+
+El subticket guarda en `contexto_origen` una copia del original (título, descripción, eventos y comentarios públicos), para que el técnico que lo atienda tenga el contexto aunque el original lo haya trabajado otro técnico. Como la RLS limita filas y no columnas, el cliente también puede leer esa copia: por eso no incluye notas internas ni cambios de prioridad.
+
+### Trigger `tickets_resuelto_at`
+
+| N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 1 | Cambiar un ticket de En progreso a Resuelto desde la app | Técnico (Diego) | `resuelto_at` con la fecha del cambio | `resuelto_at` con la hora del cambio (UTC) | ✅ |
+| 2 | Cambiar solo la prioridad de un ticket que ya está Resuelto | Técnico (Diego) | `updated_at` cambia; `resuelto_at` se mantiene | `resuelto_at` sin cambios | ✅ |
+
+### Función `abrir_subticket` (desde la consola)
+
+| N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 3 | Abrir subticket de un ticket Resuelto de otro cliente | Cliente (Pedro) | Error genérico; el ticket no cambia | Error "No se puede abrir un subticket para este ticket." | ✅ |
+| 4 | Abrir subticket con motivo de menos de 15 caracteres | Cliente (Loreto Jael Pradel) | Error de validación del motivo | Error "El motivo debe tener entre 15 y 2000 caracteres." | ✅ |
+| 5 | Abrir subticket de un ticket propio Resuelto con motivo válido | Cliente (Loreto Jael Pradel) | Devuelve el `id` del subticket; original en Cerrado; subticket en Nuevo con `ticket_origen_id` y `contexto_origen` | Original "VPN no conecta desde casa" en Cerrado; "Subticket: VPN no conecta desde casa" en Nuevo, vinculado al original | ✅ |
+| 6 | Repetir la prueba 5 sobre el mismo ticket | Cliente (Loreto Jael Pradel) | Error genérico (el original ya está Cerrado) | Error genérico | ✅ |
+| 7 | Revisar `contexto_origen` del subticket | — | Incluye el evento `cerrar` del original con la clienta como actor | Eventos `cambiar_estado` (Diego) y `cerrar` (Loreto Jael Pradel) | ✅ |
+| 8 | Abrir subticket de un ticket con nota interna y respuesta pública | Cliente | La copia trae solo la respuesta pública | | ⬜ |
+| 9 | Abrir subticket de un subticket Resuelto | Cliente | Error genérico | | ⬜ |
+
+Nota: el ticket de la prueba 5 fue creado el 24-09, antes del trigger de auditoría (14-10), por eso su copia no incluye el evento `crear`.
