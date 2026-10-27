@@ -691,6 +691,30 @@
   color: var(--color-texto-secundario);
 }
 
+/* Copia del ticket original en un subticket */
+.contexto-origen[hidden] {
+  display: none;
+}
+
+.contexto-origen-aviso {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-verde-suave);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: var(--color-texto-secundario);
+}
+
+.contexto-origen-titulo {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+}
+
+.contexto-origen-subtitulo {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 0.95rem;
+}
+
 /* Celular */
 @media (max-width: 600px) {
   .ticket-cabecera {

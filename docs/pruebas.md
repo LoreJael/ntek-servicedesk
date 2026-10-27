@@ -323,8 +323,35 @@ El subticket guarda en `contexto_origen` una copia del original (título, descri
 | 5 | Abrir subticket de un ticket propio Resuelto con motivo válido | Cliente (Loreto Jael Pradel) | Devuelve el `id` del subticket; original en Cerrado; subticket en Nuevo con `ticket_origen_id` y `contexto_origen` | Original "VPN no conecta desde casa" en Cerrado; "Subticket: VPN no conecta desde casa" en Nuevo, vinculado al original | ✅ |
 | 6 | Repetir la prueba 5 sobre el mismo ticket | Cliente (Loreto Jael Pradel) | Error genérico (el original ya está Cerrado) | Error genérico | ✅ |
 | 7 | Revisar `contexto_origen` del subticket | — | Incluye el evento `cerrar` del original con la clienta como actor | Eventos `cambiar_estado` (Diego) y `cerrar` (Loreto Jael Pradel) | ✅ |
-| 8 | Abrir subticket de un ticket con nota interna y respuesta pública | Cliente | La copia trae solo la respuesta pública | | ⬜ |
-| 9 | Abrir subticket de un subticket Resuelto | Cliente | Error genérico | | ⬜ |
+| 8 | Abrir subticket de un ticket con nota interna y respuesta pública | Cliente | Cubierta por la prueba 14 | | ✅ |
+| 9 | Abrir subticket de un subticket Resuelto | Cliente | Error genérico | | ✅ |
 
 
 Nota: el ticket de la prueba 5 fue creado el 24-09, antes del trigger de auditoría (14-10), por eso su copia no incluye el evento `crear`.
+
+### Interfaz — "No estoy conforme" en el detalle de cliente (27-10)
+
+La tarjeta de ticket Resuelto muestra la fecha límite (7 días desde `resuelto_at`) y dos botones: "Aceptar cierre" y "No estoy conforme". Este último despliega un formulario con el motivo (mínimo 15 caracteres), pide confirmación, se deshabilita mientras espera la respuesta ("Abriendo subticket...") y redirige al detalle del subticket. El botón no aparece si el plazo venció o si el ticket ya es un subticket.
+
+| N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 10 | Abrir un ticket propio en estado Resuelto | Cliente (Loreto Jael Pradel) | Tarjeta con la fecha límite y los botones "No estoy conforme" y "Aceptar cierre" | Tarjeta con fecha límite y ambos botones | ✅ |
+| 11 | "No estoy conforme" → "Cancelar" | Cliente (Loreto Jael Pradel) | El formulario se oculta y se borra lo escrito | Formulario oculto y vacío | ✅ |
+| 12 | Enviar el formulario con un motivo de 5 caracteres | Cliente (Loreto Jael Pradel) | Notificación de error; el botón no queda deshabilitado | Notificación de error; botón activo | ✅ |
+| 13 | Enviar con motivo válido y aceptar la confirmación | Cliente (Loreto Jael Pradel) | "Abriendo subticket...", notificación de éxito y redirección al detalle del subticket | Redirección al subticket nuevo | ✅ |
+| 14 | Revisar `contexto_origen` del subticket en el SQL Editor (el original tenía una respuesta pública y una nota interna de Diego) | — | La copia trae la respuesta pública y no la nota interna | Solo la respuesta pública | ✅ |
+| 15 | Volver al ticket original desde Mis tickets | Cliente (Loreto Jael Pradel) | Estado Cerrado y sin la tarjeta de Resuelto | Cerrado, sin tarjeta | ✅ |
+| 16 | Abrir un segundo subticket de un ticket que ya tiene uno (el admin lo había vuelto a dejar Resuelto) | Cliente (Loreto Jael Pradel) | Rechazado por el `unique`; el original no cambia (la transacción se deshace) | Notificación de error; el ticket sigue Resuelto | ✅ |
+
+Limitación conocida: en el caso de la prueba 16 el botón "No estoy conforme" se muestra igual, porque el vínculo se guarda en el subticket y el original no lo consulta. Se corrige al agregar el vínculo entre tickets en el detalle de cliente.
+
+### Interfaz — panel "Ticket original" en el detalle de equipo (27-10)
+
+En un subticket, el detalle de equipo muestra la copia guardada en `contexto_origen`: título, descripción, conversación pública e historial del original. No consulta el ticket original, así que el técnico ve el contexto aunque el original lo haya atendido otro técnico, sin ampliar la RLS.
+
+| N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 17 | Abrir un ticket normal | Técnico (Diego) | No aparece el panel "Ticket original" | Panel oculto | ✅ |
+| 18 | Tomar el subticket de la prueba 13 (original atendido por Diego) y abrirlo | Técnico (Camila) | Panel con el N.° del original, título, descripción, la respuesta pública de Diego (sin la nota interna) y el historial con el cierre de la clienta | Panel completo, sin la nota interna | ✅ |
+| 19 | Revisar la consola durante la prueba 18 | Técnico (Camila) | Sin errores | Sin errores | ✅ |
+| 20 | Abrir el mismo subticket | Admin (Andrea) | Mismo panel, con los nombres del equipo completos | Panel completo con nombres | ✅ |

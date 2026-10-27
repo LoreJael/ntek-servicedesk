@@ -237,6 +237,67 @@ function dibujarGestion(ticket) {
         await cargarHistorial();
     });
 }
+
+function dibujarContextoOrigen(ticket) {
+    if (!ticket.ticket_origen_id || !ticket.contexto_origen) {
+        return;
+    }
+
+    const contexto = ticket.contexto_origen;
+
+    document.querySelector('#panel-contexto-origen').hidden = false;
+    document.querySelector('#numero-ticket-origen').textContent = ticket.ticket_origen_id.slice(0, 8);
+    document.querySelector('#titulo-ticket-origen').textContent = contexto.titulo;
+    document.querySelector('#descripcion-ticket-origen').textContent = contexto.descripcion;
+
+    // Conversación del original (solo comentarios públicos)
+    const listaComentariosOrigen = document.querySelector('#comentarios-ticket-origen');
+
+    if (contexto.comentarios.length === 0) {
+        listaComentariosOrigen.innerHTML = '<li class="hilo-vacio">El ticket original no tenía mensajes.</li>';
+    }
+
+    contexto.comentarios.forEach((comentario) => {
+        const esDelCliente = comentario.autor_id === ticket.created_by;
+        const autor = nombreEnHistorial(comentario.autor_id);
+        const fechaHora = new Date(comentario.fecha).toLocaleString('es-CL', formatoFechaHora);
+
+        const item = document.createElement('li');
+        item.className = 'mensaje';
+        item.innerHTML = `
+        <span class="avatar ${esDelCliente ? '' : 'avatar--equipo'}" aria-hidden="true">${escaparHTML(obtenerIniciales(autor))}</span>
+        <div class="mensaje-cuerpo">
+          <p class="mensaje-cabecera">
+            <span class="mensaje-autor">${escaparHTML(autor)}</span>
+            <span class="mensaje-fecha">${fechaHora}</span>
+          </p>
+          <p class="mensaje-texto">${escaparHTML(comentario.texto)}</p>
+        </div>
+      `;
+
+        listaComentariosOrigen.appendChild(item);
+    });
+
+    // Historial del original, del más nuevo al más antiguo
+    const listaHistorialOrigen = document.querySelector('#historial-ticket-origen');
+
+    if (contexto.eventos.length === 0) {
+        listaHistorialOrigen.innerHTML = '<li class="historial-vacio">El ticket original no tenía cambios registrados.</li>';
+    }
+
+    [...contexto.eventos].reverse().forEach((evento) => {
+        const eventoAdaptado = {
+            action: evento.accion,
+            actor_id: evento.actor_id,
+            metadata: evento.metadata,
+            created_at: evento.fecha,
+            entity_id: ticket.ticket_origen_id
+        };
+
+        listaHistorialOrigen.appendChild(crearItemEvento(eventoAdaptado, nombreEnHistorial, false));
+    });
+}
+
 async function cargarHistorial() {
     listaHistorial.innerHTML = '';
 
@@ -542,6 +603,8 @@ if (error || !ticket) {
 } else {
     dibujarDetalle(ticket);
     dibujarGestion(ticket);
+    dibujarGestion(ticket);
+    dibujarContextoOrigen(ticket);
     await Promise.all([cargarComentarios(), cargarAdjuntos(), cargarHistorial()]);
     activarFormularioComentario();
     activarFormularioAdjunto();
