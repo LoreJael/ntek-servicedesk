@@ -324,7 +324,7 @@ El subticket guarda en `contexto_origen` una copia del original (título, descri
 | 6 | Repetir la prueba 5 sobre el mismo ticket | Cliente (Loreto Jael Pradel) | Error genérico (el original ya está Cerrado) | Error genérico | ✅ |
 | 7 | Revisar `contexto_origen` del subticket | — | Incluye el evento `cerrar` del original con la clienta como actor | Eventos `cambiar_estado` (Diego) y `cerrar` (Loreto Jael Pradel) | ✅ |
 | 8 | Abrir subticket de un ticket con nota interna y respuesta pública | Cliente | Cubierta por la prueba 14 | | ✅ |
-| 9 | Abrir subticket de un subticket Resuelto | Cliente | Error genérico | | ✅ |
+| 9 | Abrir subticket de un subticket Resuelto | Cliente | Cubierta por la prueba 26| | ✅ |
 
 
 Nota: el ticket de la prueba 5 fue creado el 24-09, antes del trigger de auditoría (14-10), por eso su copia no incluye el evento `crear`.
@@ -343,7 +343,7 @@ La tarjeta de ticket Resuelto muestra la fecha límite (7 días desde `resuelto_
 | 15 | Volver al ticket original desde Mis tickets | Cliente (Loreto Jael Pradel) | Estado Cerrado y sin la tarjeta de Resuelto | Cerrado, sin tarjeta | ✅ |
 | 16 | Abrir un segundo subticket de un ticket que ya tiene uno (el admin lo había vuelto a dejar Resuelto) | Cliente (Loreto Jael Pradel) | Rechazado por el `unique`; el original no cambia (la transacción se deshace) | Notificación de error; el ticket sigue Resuelto | ✅ |
 
-Limitación conocida: en el caso de la prueba 16 el botón "No estoy conforme" se muestra igual, porque el vínculo se guarda en el subticket y el original no lo consulta. Se corrige al agregar el vínculo entre tickets en el detalle de cliente.
+Limitación corregida el 27-10: el botón "No estoy conforme" ya no aparece si el ticket tiene un subticket (ver pruebas 22 y 24).
 
 ### Interfaz — panel "Ticket original" en el detalle de equipo (27-10)
 
@@ -355,3 +355,16 @@ En un subticket, el detalle de equipo muestra la copia guardada en `contexto_ori
 | 18 | Tomar el subticket de la prueba 13 (original atendido por Diego) y abrirlo | Técnico (Camila) | Panel con el N.° del original, título, descripción, la respuesta pública de Diego (sin la nota interna) y el historial con el cierre de la clienta | Panel completo, sin la nota interna | ✅ |
 | 19 | Revisar la consola durante la prueba 18 | Técnico (Camila) | Sin errores | Sin errores | ✅ |
 | 20 | Abrir el mismo subticket | Admin (Andrea) | Mismo panel, con los nombres del equipo completos | Panel completo con nombres | ✅ |
+
+### Interfaz — vínculo entre ticket original y subticket en el detalle de cliente (27-10)
+
+El detalle de cliente muestra una franja con link al ticket relacionado. En un subticket se usa `ticket_origen_id`; en un ticket normal se consulta si existe un ticket con `ticket_origen_id` igual a su `id` (`maybeSingle`, a lo más uno por el `unique`). Si el ticket ya tiene un subticket, se oculta "No estoy conforme".
+
+| N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 21 | Abrir un subticket | Cliente (Loreto Jael Pradel) | Franja "Este es un subticket del ticket N.° …" con link al original | Franja visible; el link abre el original | ✅ |
+| 22 | Abrir el ticket original desde el link de la prueba 21 | Cliente (Loreto Jael Pradel) | Franja "…seguimos atendiendo tu caso en el ticket N.° …" con link al subticket | Franja visible; el link abre el subticket | ✅ |
+| 23 | Abrir un ticket sin subticket | Cliente (Loreto Jael Pradel) | Sin franja | Sin franja | ✅ |
+| 24 | Abrir un ticket Resuelto que ya tiene subticket (VPN) | Cliente (Loreto Jael Pradel) | Franja hacia el subticket; tarjeta de Resuelto sin "No estoy conforme" ni "avísanos antes del…" | Solo "Aceptar cierre", con la fecha de cierre automático | ✅ |
+| 25 | Abrir un subticket en estado Resuelto | Cliente (Loreto Jael Pradel) | Solo "Aceptar cierre", con la fecha de cierre automático | Solo "Aceptar cierre" | ✅ |
+| 26 | Llamar a `abrir_subticket` desde la consola sobre el subticket Resuelto de la prueba 25 | Cliente (Loreto Jael Pradel) | Error genérico; el subticket sigue Resuelto (la regla la cumple la base, no solo la pantalla) | Error genérico; sin cambios | ✅ |

@@ -125,6 +125,27 @@ if (error || !ticket) {
     <div><dt>Actualizado</dt><dd>${fechaActualizacion}</dd></div>
   `;
 
+    // Vínculo entre ticket original y subticket
+  const avisoVinculo = document.querySelector('#aviso-vinculo');
+  let idSubticketExistente = null;
+
+  if (ticket.ticket_origen_id) {
+    avisoVinculo.innerHTML = `Este es un subticket del <a href="detalle-ticket.html?id=${ticket.ticket_origen_id}">ticket N.° ${ticket.ticket_origen_id.slice(0, 8)}</a>, que abriste porque no quedaste conforme con la solución.`;
+    avisoVinculo.hidden = false;
+  } else {
+    const { data: subticket } = await supabase
+      .from('tickets')
+      .select('id')
+      .eq('ticket_origen_id', ticket.id)
+      .maybeSingle();
+
+    if (subticket) {
+      idSubticketExistente = subticket.id;
+      avisoVinculo.innerHTML = `No quedaste conforme con la solución de este ticket, así que seguimos atendiendo tu caso en el <a href="detalle-ticket.html?id=${subticket.id}">ticket N.° ${subticket.id.slice(0, 8)}</a>.`;
+      avisoVinculo.hidden = false;
+    }
+  }
+
   // Aceptar cierre (solo si el ticket está Resuelto)
   const avisoResuelto = document.querySelector('#aviso-resuelto');
   const botonAceptarCierre = document.querySelector('#boton-aceptar-cierre');
@@ -139,11 +160,11 @@ if (error || !ticket) {
     const fechaLimite = new Date(new Date(ticket.resuelto_at).getTime() + 7 * 24 * 60 * 60 * 1000);
     const textoFechaLimite = fechaLimite.toLocaleString('es-CL', formatoFechaHora);
     const plazoVigente = fechaLimite > new Date();
-    const puedeObjetar = plazoVigente && !ticket.ticket_origen_id;
+    const puedeObjetar = plazoVigente && !ticket.ticket_origen_id && !idSubticketExistente;
 
     if (!plazoVigente) {
       subtituloResuelto.textContent = 'El plazo para responder terminó. Este ticket se cerrará automáticamente.';
-    } else if (ticket.ticket_origen_id) {
+    } else if (ticket.ticket_origen_id || idSubticketExistente) {
       subtituloResuelto.textContent = `Si se solucionó tu problema, acepta el cierre. Si no respondes, se cerrará automáticamente el ${textoFechaLimite}.`;
     } else {
       subtituloResuelto.textContent = `Si se solucionó tu problema, acepta el cierre. Si no, avísanos antes del ${textoFechaLimite}; si no respondes, se cerrará automáticamente.`;
