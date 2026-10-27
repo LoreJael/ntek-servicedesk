@@ -22,15 +22,31 @@
 
     <header class="ticket-cabecera" id="encabezado-ticket"></header>
 
-    <div class="aviso-resuelto" id="aviso-resuelto" hidden>
+        <div class="aviso-resuelto" id="aviso-resuelto" hidden>
       <div class="aviso-resuelto-texto">
         <span class="aviso-resuelto-icono" aria-hidden="true">✓</span>
         <div>
           <p class="aviso-resuelto-titulo">El equipo NTEK marcó este ticket como resuelto</p>
-          <p class="aviso-resuelto-subtitulo">Si se solucionó tu problema, puedes cerrarlo.</p>
+          <p class="aviso-resuelto-subtitulo" id="aviso-resuelto-subtitulo">Si se solucionó tu problema, puedes cerrarlo.</p>
         </div>
       </div>
-      <button type="button" class="boton" id="boton-aceptar-cierre">Aceptar cierre</button>
+
+      <div class="aviso-resuelto-acciones">
+        <button type="button" class="boton boton--secundario" id="boton-no-conforme">No estoy conforme</button>
+        <button type="button" class="boton" id="boton-aceptar-cierre">Aceptar cierre</button>
+      </div>
+
+      <form class="respuesta form-no-conforme" id="form-no-conforme" hidden>
+        <label for="motivo-no-conforme">¿Qué sigue sin funcionar?</label>
+        <textarea id="motivo-no-conforme" rows="3" maxlength="2000" placeholder="Cuéntanos qué problema persiste para que el equipo lo revise"></textarea>
+        <div class="respuesta-pie">
+          <p class="respuesta-ayuda">Mínimo 15 caracteres. Se abrirá un subticket vinculado a este caso y este ticket quedará cerrado.</p>
+          <div class="aviso-resuelto-acciones">
+            <button type="button" class="boton boton--secundario" id="boton-cancelar-no-conforme">Cancelar</button>
+            <button type="submit" class="boton" id="boton-abrir-subticket">Abrir subticket</button>
+          </div>
+        </div>
+      </form>
     </div>
 
     <div class="ticket-layout">

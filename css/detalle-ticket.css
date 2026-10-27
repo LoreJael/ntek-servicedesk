@@ -162,13 +162,27 @@
   color: var(--color-texto-secundario);
 }
 
-/* El atributo hidden debe ganar aunque la clase tenga display */
+.aviso-resuelto-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.form-no-conforme {
+  flex-basis: 100%;
+  margin-top: 0;
+  border-top-color: #b9e2c6;
+}
+
+.aviso-resuelto .boton[hidden] {
+  display: none;
+}
+
 .aviso-resuelto[hidden],
 .ticket-layout[hidden] {
   display: none;
 }
 
-/* Dos columnas: la lateral va primero en el HTML para que en celular salga arriba */
 .ticket-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

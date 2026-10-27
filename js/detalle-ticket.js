@@ -132,6 +132,25 @@ if (error || !ticket) {
   if (ticket.status === 'resuelto') {
     avisoResuelto.hidden = false;
 
+        // Plazo para responder: 7 días desde que se marcó Resuelto
+    const subtituloResuelto = document.querySelector('#aviso-resuelto-subtitulo');
+    const botonNoConforme = document.querySelector('#boton-no-conforme');
+
+    const fechaLimite = new Date(new Date(ticket.resuelto_at).getTime() + 7 * 24 * 60 * 60 * 1000);
+    const textoFechaLimite = fechaLimite.toLocaleString('es-CL', formatoFechaHora);
+    const plazoVigente = fechaLimite > new Date();
+    const puedeObjetar = plazoVigente && !ticket.ticket_origen_id;
+
+    if (!plazoVigente) {
+      subtituloResuelto.textContent = 'El plazo para responder terminó. Este ticket se cerrará automáticamente.';
+    } else if (ticket.ticket_origen_id) {
+      subtituloResuelto.textContent = `Si se solucionó tu problema, acepta el cierre. Si no respondes, se cerrará automáticamente el ${textoFechaLimite}.`;
+    } else {
+      subtituloResuelto.textContent = `Si se solucionó tu problema, acepta el cierre. Si no, avísanos antes del ${textoFechaLimite}; si no respondes, se cerrará automáticamente.`;
+    }
+
+    botonNoConforme.hidden = !puedeObjetar;
+
     botonAceptarCierre.addEventListener('click', async () => {
       const confirmado = confirm('¿Seguro que quieres cerrar este ticket? Una vez cerrado ya no podrás comentar ni adjuntar archivos.');
 
@@ -153,6 +172,61 @@ if (error || !ticket) {
 
       mostrarNotificacion('Ticket cerrado. ¡Gracias por confirmar!', 'exito');
       setTimeout(() => window.location.reload(), 1500);
+    });
+
+        // No estoy conforme: abre un subticket vinculado a este ticket
+    const formNoConforme = document.querySelector('#form-no-conforme');
+    const motivoNoConforme = document.querySelector('#motivo-no-conforme');
+    const botonCancelarNoConforme = document.querySelector('#boton-cancelar-no-conforme');
+    const botonAbrirSubticket = document.querySelector('#boton-abrir-subticket');
+
+    botonNoConforme.addEventListener('click', () => {
+      formNoConforme.hidden = false;
+      motivoNoConforme.focus();
+    });
+
+    botonCancelarNoConforme.addEventListener('click', () => {
+      formNoConforme.hidden = true;
+      motivoNoConforme.value = '';
+      botonNoConforme.focus();
+    });
+
+    formNoConforme.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+
+      const motivo = motivoNoConforme.value.trim();
+
+      if (motivo.length < 15) {
+        mostrarNotificacion('Cuéntanos con al menos 15 caracteres qué sigue sin funcionar.', 'error');
+        motivoNoConforme.focus();
+        return;
+      }
+
+      const confirmado = confirm('Se abrirá un subticket y este ticket quedará cerrado. ¿Quieres continuar?');
+
+      if (!confirmado) {
+        return;
+      }
+
+      botonAbrirSubticket.disabled = true;
+      botonAbrirSubticket.textContent = 'Abriendo subticket...';
+
+      const { data: idSubticket, error: errorSubticket } = await supabase.rpc('abrir_subticket', {
+        id_ticket: ticket.id,
+        motivo: motivo
+      });
+
+      if (errorSubticket) {
+        mostrarNotificacion('No se pudo abrir el subticket. Intenta nuevamente.', 'error');
+        botonAbrirSubticket.disabled = false;
+        botonAbrirSubticket.textContent = 'Abrir subticket';
+        return;
+      }
+
+      mostrarNotificacion('Subticket abierto. Te llevamos a tu nuevo caso.', 'exito');
+      setTimeout(() => {
+        window.location.href = `detalle-ticket.html?id=${idSubticket}`;
+      }, 1500);
     });
   }
 

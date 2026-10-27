@@ -326,4 +326,5 @@ El subticket guarda en `contexto_origen` una copia del original (título, descri
 | 8 | Abrir subticket de un ticket con nota interna y respuesta pública | Cliente | La copia trae solo la respuesta pública | | ⬜ |
 | 9 | Abrir subticket de un subticket Resuelto | Cliente | Error genérico | | ⬜ |
 
+
 Nota: el ticket de la prueba 5 fue creado el 24-09, antes del trigger de auditoría (14-10), por eso su copia no incluye el evento `crear`.
