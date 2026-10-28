@@ -518,6 +518,56 @@ a.resumen-item:hover {
 .resumen-item--alta    { --color-indicador: var(--prioridad-alta-texto); }
 .resumen-item--critica { --color-indicador: var(--prioridad-critica-texto); }
 
+/* ===== Aviso de tickets resueltos (panel de cliente) ===== */
+.aviso-pendientes {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  background-color: var(--color-verde-suave);
+  border: 1px solid #b9e2c6;
+  border-radius: 14px;
+}
+
+.aviso-pendientes[hidden] {
+  display: none;
+}
+
+.aviso-pendientes-icono {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background-color: var(--color-acento);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.aviso-pendientes-titulo {
+  margin: 0.4rem 0 0.5rem;
+  font-size: 1rem;
+  color: var(--estado-resuelto-texto);
+}
+
+.aviso-pendientes-lista {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+  color: var(--color-texto-secundario);
+}
+
+.aviso-pendientes-lista li + li {
+  margin-top: 0.35rem;
+}
+
+.aviso-pendientes-lista a {
+  font-weight: 700;
+  color: var(--color-acento);
+}
+
 /* ===== Banner del panel de cliente ===== */
 .banner {
   display: flex;

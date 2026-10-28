@@ -26,10 +26,48 @@ const idUsuarioActual = datosUsuario.user.id;
 
 const { data: datosTickets, error: errorTickets } = await supabase
   .from('tickets')
-  .select('id, title, status, updated_at')
+  .select('id, title, status, updated_at, resuelto_at')
   .order('updated_at', { ascending: false });
 
 const tickets = datosTickets || [];
+
+// Aviso: tickets resueltos esperando respuesta del cliente
+const ticketsResueltos = tickets.filter((ticket) => ticket.status === 'resuelto');
+
+if (ticketsResueltos.length > 0) {
+  const avisoPendientes = document.querySelector('#aviso-pendientes');
+  const tituloPendientes = document.querySelector('#titulo-pendientes');
+  const listaPendientes = document.querySelector('#lista-pendientes');
+
+  tituloPendientes.textContent = ticketsResueltos.length === 1
+    ? 'Tienes 1 ticket resuelto esperando tu respuesta'
+    : `Tienes ${ticketsResueltos.length} tickets resueltos esperando tu respuesta`;
+
+  ticketsResueltos.forEach((ticket) => {
+    const fechaLimite = new Date(new Date(ticket.resuelto_at).getTime() + 7 * 24 * 60 * 60 * 1000);
+    const textoFechaLimite = fechaLimite.toLocaleString('es-CL', {
+      timeZone: 'America/Santiago',
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const textoPlazo = fechaLimite > new Date()
+      ? `Si no respondes, se cerrará automáticamente el ${textoFechaLimite}.`
+      : 'El plazo para responder terminó y se cerrará automáticamente.';
+
+    const item = document.createElement('li');
+    item.innerHTML = `
+      <a href="detalle-ticket.html?id=${ticket.id}">${escaparHTML(ticket.title)}</a>
+      · ${textoPlazo}
+    `;
+
+    listaPendientes.appendChild(item);
+  });
+
+  avisoPendientes.hidden = false;
+}
 
 const { data: datosComentarios, error: errorComentarios } = await supabase
   .from('comments')
