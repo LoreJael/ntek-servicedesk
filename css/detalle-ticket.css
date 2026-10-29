@@ -480,16 +480,6 @@
 }
 
 /* Botones */
-.boton--secundario {
-  background-color: #ffffff;
-  color: var(--color-acento);
-  border: 1px solid var(--color-borde);
-  font-weight: 600;
-}
-
-.boton--secundario:hover {
-  border-color: var(--color-acento);
-}
 
 .boton--chico {
   padding: 0.35rem 0.8rem;

@@ -1,0 +1,193 @@
+/* ===== Perfil: tarjeta de identidad ===== */
+.tarjeta-identidad {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.25rem;
+  border-radius: 20px;
+  background: linear-gradient(120deg, #0b4228 0%, #11834a 100%);
+  color: #ffffff;
+}
+
+.identidad-avatar {
+  flex-shrink: 0;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background-color: var(--color-verde-suave);
+  color: var(--color-verde-oscuro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.identidad-datos {
+  min-width: 0;
+}
+
+.identidad-datos h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.identidad-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  color: #d6eadd;
+  font-size: 0.95rem;
+}
+
+.identidad-rol {
+  padding: 0.25rem 0.85rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* ===== Cabecera de sección con botón o link a la derecha ===== */
+.cabecera-con-accion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cabecera-con-accion .boton[hidden] {
+  display: none;
+}
+
+.enlace-cabecera {
+  color: var(--color-acento);
+  font-weight: 700;
+}
+
+/* ===== Datos de contacto: vista ===== */
+.lista-datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem 2rem;
+  margin: 0;
+}
+
+.lista-datos[hidden] {
+  display: none;
+}
+
+.lista-datos dt {
+  color: var(--color-texto-secundario);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lista-datos dd {
+  margin: 0.35rem 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* ===== Datos de contacto: edición ===== */
+.form-perfil {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  column-gap: 1.5rem;
+}
+
+.form-perfil[hidden] {
+  display: none;
+}
+
+.form-perfil .form-grupo input {
+  min-height: 44px;
+  border-radius: 10px;
+}
+
+.form-acciones {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* ===== Admin: accesos rápidos ===== */
+.accesos-rapidos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+}
+
+.acceso-rapido {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  background-color: #ffffff;
+  border: 1px solid var(--color-borde);
+  border-radius: 14px;
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.acceso-rapido:hover {
+  border-color: var(--color-acento);
+}
+
+.acceso-rapido:focus-visible {
+  outline: 2px solid var(--color-acento);
+  outline-offset: 2px;
+}
+
+.acceso-icono {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: var(--color-verde-suave);
+  color: var(--color-acento);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.acceso-texto {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.acceso-texto span {
+  color: var(--color-texto-secundario);
+  font-size: 0.88rem;
+}
+
+.acceso-flecha {
+  color: var(--color-texto-secundario);
+  display: flex;
+}
+
+@media (max-width: 480px) {
+  .tarjeta-identidad {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #resumen-usuarios {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

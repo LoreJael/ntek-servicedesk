@@ -4,11 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfil - NTEK ServiceDesk Lite</title>
+  <title>Mi perfil - NTEK ServiceDesk Lite</title>
   <link rel="stylesheet" href="../../css/variables.css">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/layout.css">
   <link rel="stylesheet" href="../../css/componentes.css">
+  <link rel="stylesheet" href="../../css/perfil.css">
 </head>
 
 <body class="verificando">
@@ -17,42 +18,144 @@
   <div id="header-placeholder"></div>
 
   <main class="contenedor">
-    <div class="tarjeta">
-      <h1>Perfil</h1>
 
-      <div id="vista-perfil">
-        <p><strong>Correo electrónico:</strong> <span id="ver-correo"></span></p>
-        <p><strong>Nombre completo:</strong> <span id="ver-nombre"></span></p>
-        <p><strong>Teléfono:</strong> <span id="ver-telefono"></span></p>
-        <p><strong>Empresa:</strong> <span id="ver-empresa"></span></p>
-        <button type="button" class="boton" id="boton-editar">Editar</button>
+    <div class="encabezado-pagina">
+      <p class="eyebrow">Cuenta</p>
+      <h1>Mi perfil</h1>
+      <p class="subtitulo">Revisa y actualiza tus datos de contacto.</p>
+    </div>
+
+    <section class="tarjeta-identidad" aria-label="Resumen de tu cuenta">
+      <span class="identidad-avatar" id="ver-iniciales" aria-hidden="true"></span>
+      <div class="identidad-datos">
+        <h2 id="ver-nombre-titulo"></h2>
+        <div class="identidad-meta">
+          <span class="identidad-rol" id="ver-rol"></span>
+          <span id="ver-desde"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="tarjeta-seccion">
+      <div class="tarjeta-seccion-cabecera cabecera-con-accion">
+        <div>
+          <p class="eyebrow">Información personal</p>
+          <h2>Datos de contacto</h2>
+        </div>
+        <button type="button" class="boton boton--secundario" id="boton-editar">Editar datos</button>
       </div>
 
-      <form id="form-perfil" hidden>
-        <div class="form-grupo">
-          <label for="correo">Correo electrónico</label>
-          <input type="email" id="correo" name="correo" disabled>
-        </div>
+      <div class="tarjeta-seccion-cuerpo">
+        <dl class="lista-datos" id="vista-perfil">
+          <div>
+            <dt>Nombre completo</dt>
+            <dd id="ver-nombre"></dd>
+          </div>
+          <div>
+            <dt>Correo electrónico</dt>
+            <dd id="ver-correo"></dd>
+          </div>
+          <div>
+            <dt>Teléfono</dt>
+            <dd id="ver-telefono"></dd>
+          </div>
+          <div>
+            <dt>Empresa</dt>
+            <dd id="ver-empresa"></dd>
+          </div>
+        </dl>
 
-        <div class="form-grupo">
-          <label for="nombre">Nombre completo</label>
-          <input type="text" id="nombre" name="nombre" required>
-        </div>
+        <form id="form-perfil" class="form-perfil" hidden>
+          <div class="form-grupo">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" name="nombre" autocomplete="name" required>
+          </div>
 
-        <div class="form-grupo">
-          <label for="telefono">Teléfono</label>
-          <input type="tel" id="telefono" name="telefono" required>
-        </div>
+          <div class="form-grupo">
+            <label for="correo">Correo electrónico</label>
+            <input type="email" id="correo" name="correo" disabled>
+          </div>
 
-        <div class="form-grupo">
-          <label for="empresa">Empresa</label>
-          <input type="text" id="empresa" name="empresa" required>
-        </div>
+          <div class="form-grupo">
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono" autocomplete="tel" required>
+          </div>
 
-        <button type="submit" class="boton">Guardar cambios</button>
-        <button type="button" class="boton" id="boton-cancelar">Cancelar</button>
-      </form>
+          <div class="form-grupo" id="grupo-empresa">
+            <label for="empresa">Empresa</label>
+            <input type="text" id="empresa" name="empresa" autocomplete="organization" required>
+          </div>
+
+          <div class="form-acciones">
+            <button type="submit" class="boton">Guardar cambios</button>
+            <button type="button" class="boton boton--secundario" id="boton-cancelar">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <div id="seccion-admin" hidden>
+
+      <section class="tarjeta-seccion">
+        <div class="tarjeta-seccion-cabecera">
+          <p class="eyebrow">Administración</p>
+          <h2>Resumen de usuarios</h2>
+        </div>
+        <div class="tarjeta-seccion-cuerpo">
+          <div class="resumen-estados" id="resumen-usuarios"></div>
+        </div>
+      </section>
+
+      <section class="tarjeta-seccion">
+        <div class="tarjeta-seccion-cabecera">
+          <p class="eyebrow">Accesos rápidos</p>
+          <h2>Herramientas de administración</h2>
+        </div>
+        <div class="tarjeta-seccion-cuerpo">
+          <div class="accesos-rapidos">
+            <a class="acceso-rapido" href="../admin/usuarios.html">
+              <span class="acceso-icono" data-icono="usuarios"></span>
+              <span class="acceso-texto">
+                <strong>Usuarios</strong>
+                <span>Roles y activación de cuentas</span>
+              </span>
+              <span class="acceso-flecha" data-icono="flecha"></span>
+            </a>
+            <a class="acceso-rapido" href="../admin/auditoria.html">
+              <span class="acceso-icono" data-icono="auditoria"></span>
+              <span class="acceso-texto">
+                <strong>Auditoría</strong>
+                <span>Registro de cambios en los tickets</span>
+              </span>
+              <span class="acceso-flecha" data-icono="flecha"></span>
+            </a>
+            <a class="acceso-rapido" href="indicadores.html">
+              <span class="acceso-icono" data-icono="indicadores"></span>
+              <span class="acceso-texto">
+                <strong>Indicadores</strong>
+                <span>Totales por estado y prioridad</span>
+              </span>
+              <span class="acceso-flecha" data-icono="flecha"></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="tarjeta-seccion">
+        <div class="tarjeta-seccion-cabecera cabecera-con-accion">
+          <div>
+            <p class="eyebrow">Actividad</p>
+            <h2>Últimos movimientos</h2>
+          </div>
+          <a class="enlace-cabecera" href="../admin/auditoria.html">Ver auditoría completa</a>
+        </div>
+        <div class="tarjeta-seccion-cuerpo">
+          <ul class="lista-auditoria" id="lista-actividad"></ul>
+        </div>
+      </section>
+
     </div>
+
   </main>
 
   <script type="module" src="../../js/perfil.js"></script>
