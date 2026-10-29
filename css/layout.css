@@ -67,20 +67,74 @@ body:not(.verificando):has(> #header-placeholder) {
 }
 
 #header-placeholder .logo {
-  padding: 0 0.75rem;
-  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+.logo-marca {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: var(--color-acento);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-texto {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2rem;
+  line-height: 1.1;
+}
+
+.logo-texto small {
+  color: #b9cfc2;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 #header-placeholder .nav-principal {
   flex-direction: column;
+  gap: 1.5rem;
+}
+
+.nav-grupo {
+  display: flex;
+  flex-direction: column;
   gap: 0.25rem;
 }
 
+.nav-seccion {
+  margin: 0 0 0.25rem;
+  padding: 0 1rem;
+  color: #8fa89a;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 #header-placeholder .nav-principal a {
-  display: block;
-  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
   border-radius: 10px;
   color: #e4f5e9;
+}
+
+#header-placeholder .nav-principal svg {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+#header-placeholder .nav-principal a[aria-current="page"] svg {
+  opacity: 1;
 }
 
 /* ===== Usuario al fondo de la barra ===== */
@@ -173,6 +227,7 @@ main {
 @media (max-width: 768px) {
   body:not(.verificando):has(> #header-placeholder) {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
   }
 
   #header-placeholder {
@@ -201,11 +256,20 @@ main {
     order: 2;
   }
 
-  #header-placeholder .nav-principal {
+    #header-placeholder .nav-principal {
     order: 3;
     width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .nav-grupo {
+    display: contents;
+  }
+
+  .nav-seccion {
+    display: none;
   }
 
   #header-placeholder .nav-principal a {
@@ -215,6 +279,22 @@ main {
 
   body:has(> #header-placeholder) .contenedor {
     padding: 1.5rem 1rem;
+  }
+}
+
+/* ===== Celular: barra compacta (logo corto y solo el rol) ===== */
+@media (max-width: 480px) {
+  #header-placeholder .header {
+    column-gap: 0.75rem;
+  }
+
+  #header-placeholder .logo {
+    padding: 0;
+  }
+
+  #header-placeholder .logo-texto small,
+  #header-placeholder .usuario-nombre {
+    display: none;
   }
 }
 
