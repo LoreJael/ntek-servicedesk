@@ -9,39 +9,45 @@
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/layout.css">
   <link rel="stylesheet" href="../../css/componentes.css">
+  <link rel="stylesheet" href="../../css/publicas.css">
 </head>
 
-<body>
+<body class="pagina-publica">
 
-  <header class="header">
-    <p class="logo">NTEK ServiceDesk Lite</p>
-    <nav class="nav-principal" aria-label="Principal">
-      <a href="login.html">Iniciar sesión</a>
-      <a href="registro.html">Registrarse</a>
+  <header class="header header-publico">
+    <a class="logo" href="../../index.html" aria-label="NTEK ServiceDesk Lite, inicio">
+      <span class="logo-marca"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></span>
+      <span class="logo-texto">NTEK <small>ServiceDesk Lite</small></span>
+    </a>
+    <nav class="nav-publica" aria-label="Principal">
+      <a href="login.html" aria-current="page">Iniciar sesión</a>
+      <a href="registro.html" class="boton-pildora boton-pildora--acento">Crear cuenta</a>
     </nav>
   </header>
 
-  <main class="contenedor">
-    <div class="tarjeta">
-
+  <main class="contenedor-acceso">
+    <div class="tarjeta-acceso">
+      <p class="eyebrow">Acceso clientes y equipo</p>
       <h1>Iniciar sesión</h1>
+      <p class="subtitulo">Ingresa con tu correo para revisar y gestionar tus tickets.</p>
 
-      <form  id="form-login">
+      <form id="form-login">
         <div class="form-grupo">
           <label for="correo">Correo electrónico</label>
-          <input type="email" id="correo" name="correo" required>
+          <input type="email" id="correo" name="correo" autocomplete="email" required>
         </div>
 
         <div class="form-grupo">
           <label for="password">Contraseña</label>
-          <input type="password" id="password" name="password" required>
+          <input type="password" id="password" name="password" autocomplete="current-password" required>
         </div>
 
         <button type="submit" class="boton">Ingresar</button>
       </form>
 
-      <p><a href="recuperar.html">¿Olvidaste tu contraseña?</a></p>
+      <a href="recuperar.html" class="enlace-secundario">¿Olvidaste tu contraseña?</a>
 
+      <p class="acceso-enlaces">¿Aún no tienes cuenta? <a href="registro.html">Crea una</a></p>
     </div>
   </main>
 

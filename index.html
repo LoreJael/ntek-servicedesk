@@ -8,23 +8,94 @@
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
-
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/publicas.css">
 </head>
 
-<body>
+<body class="pagina-publica">
 
-  <header class="header">
-    <p class="logo">NTEK ServiceDesk Lite</p>
-    <nav class="nav-principal" aria-label="Principal">
+  <header class="header header-publico">
+    <a class="logo" href="index.html" aria-label="NTEK ServiceDesk Lite, inicio">
+      <span class="logo-marca"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></span>
+      <span class="logo-texto">NTEK <small>ServiceDesk Lite</small></span>
+    </a>
+    <nav class="nav-publica" aria-label="Principal">
       <a href="pantallas/publicas/login.html">Iniciar sesión</a>
-      <a href="pantallas/publicas/registro.html">Registrarse</a>
+      <a href="pantallas/publicas/registro.html" class="boton-pildora boton-pildora--acento">Crear cuenta</a>
     </nav>
   </header>
 
-  <main class="contenedor">
-    <h1>Bienvenido a NTEK ServiceDesk Lite</h1>
-    <p>Sistema de solicitudes de soporte y seguimiento para clientes.</p>
+  <main>
+
+    <section class="portada">
+      <div class="portada-contenido">
+        <div class="portada-texto">
+          <p class="eyebrow eyebrow--claro">Mesa de ayuda NTEK</p>
+          <h1>Tu soporte técnico, con seguimiento de principio a fin</h1>
+          <p>Crea una solicitud, conversa con el equipo de NTEK y revisa en todo momento en qué estado está tu ticket.</p>
+          <div class="banner-acciones">
+            <a href="pantallas/publicas/registro.html" class="boton-pildora boton-pildora--blanco">Crear cuenta</a>
+            <a href="pantallas/publicas/login.html" class="boton-pildora boton-pildora--borde">Iniciar sesión</a>
+          </div>
+        </div>
+
+        <div class="portada-muestra" aria-hidden="true">
+          <div class="muestra-ticket">
+            <p class="muestra-numero">N.º 4daf62d9</p>
+            <p class="muestra-titulo">Impresora de caja no imprime boletas</p>
+            <div class="muestra-pildoras">
+              <span class="badge-estado badge-estado--en_progreso">En progreso</span>
+              <span class="badge-prioridad badge-prioridad--alta">Alta</span>
+            </div>
+          </div>
+          <div class="muestra-ticket">
+            <p class="muestra-numero">N.º 9afb74cd</p>
+            <p class="muestra-titulo">WiFi de la sala de reuniones se corta</p>
+            <div class="muestra-pildoras">
+              <span class="badge-estado badge-estado--nuevo">Nuevo</span>
+              <span class="badge-prioridad badge-prioridad--media">Media</span>
+            </div>
+          </div>
+          <div class="muestra-ticket">
+            <p class="muestra-numero">N.º 0d39b32e</p>
+            <p class="muestra-titulo">Configurar red para nueva oficina</p>
+            <div class="muestra-pildoras">
+              <span class="badge-estado badge-estado--resuelto">Resuelto</span>
+              <span class="badge-prioridad badge-prioridad--media">Media</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion-publica" aria-labelledby="titulo-pasos">
+      <p class="eyebrow">Cómo funciona</p>
+      <h2 id="titulo-pasos">Tres pasos para resolver tu problema</h2>
+
+      <ol class="pasos">
+        <li class="paso">
+          <span class="paso-numero" aria-hidden="true">01</span>
+          <h3>Crea tu solicitud</h3>
+          <p>Describe el problema, elige la categoría y adjunta imágenes o documentos si te sirven para explicarlo.</p>
+        </li>
+        <li class="paso">
+          <span class="paso-numero" aria-hidden="true">02</span>
+          <h3>El equipo la atiende</h3>
+          <p>Un técnico toma tu ticket, te responde y va actualizando su estado mientras trabaja en la solución.</p>
+        </li>
+        <li class="paso">
+          <span class="paso-numero" aria-hidden="true">03</span>
+          <h3>Revisa y confirma</h3>
+          <p>Cuando el ticket queda resuelto, aceptas el cierre o avisas que no estás conforme para seguir con la atención.</p>
+        </li>
+      </ol>
+    </section>
+
   </main>
+
+  <footer class="pie-publico">
+    <p>NTEK ServiceDesk Lite · Sistema de solicitudes de soporte y seguimiento para clientes</p>
+  </footer>
 
 </body>
 

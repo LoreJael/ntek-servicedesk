@@ -9,20 +9,27 @@
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/layout.css">
   <link rel="stylesheet" href="../../css/componentes.css">
+  <link rel="stylesheet" href="../../css/publicas.css">
 </head>
 
-<body>
+<body class="pagina-publica">
 
-  <header class="header">
-    <p class="logo">NTEK ServiceDesk Lite</p>
+  <header class="header header-publico">
+    <a class="logo" href="../../index.html" aria-label="NTEK ServiceDesk Lite, inicio">
+      <span class="logo-marca"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></span>
+      <span class="logo-texto">NTEK <small>ServiceDesk Lite</small></span>
+    </a>
   </header>
 
-  <main class="contenedor">
-       <div class="tarjeta">
+  <main class="contenedor-acceso">
+    <div class="tarjeta-acceso tarjeta-sistema">
+      <span class="sistema-icono" aria-hidden="true">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/></svg>
+      </span>
       <p class="codigo-error">Error 404</p>
       <h1>Página no encontrada</h1>
-      <p>La dirección a la que intentaste acceder no existe o fue movida.</p>
-      <a href="../publicas/login.html" class="boton">Ir a iniciar sesión</a>
+      <p class="subtitulo">La dirección a la que intentaste acceder no existe o fue movida.</p>
+      <a href="../../index.html" class="boton">Ir al inicio</a>
     </div>
   </main>
 

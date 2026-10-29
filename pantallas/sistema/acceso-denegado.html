@@ -9,19 +9,26 @@
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/layout.css">
   <link rel="stylesheet" href="../../css/componentes.css">
+  <link rel="stylesheet" href="../../css/publicas.css">
 </head>
 
-<body>
+<body class="pagina-publica">
 
-  <header class="header">
-    <p class="logo">NTEK ServiceDesk Lite</p>
+  <header class="header header-publico">
+    <a class="logo" href="../../index.html" aria-label="NTEK ServiceDesk Lite, inicio">
+      <span class="logo-marca"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></span>
+      <span class="logo-texto">NTEK <small>ServiceDesk Lite</small></span>
+    </a>
   </header>
 
-  <main class="contenedor">
-    <div class="tarjeta">
+  <main class="contenedor-acceso">
+    <div class="tarjeta-acceso tarjeta-sistema">
+      <span class="sistema-icono" aria-hidden="true">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </span>
       <h1>Acceso denegado</h1>
-      <p>No tienes permiso para ver este contenido.</p>
-      <a href="../publicas/login.html" class="boton">Ir a iniciar sesión</a>
+      <p class="subtitulo">No tienes permiso para ver este contenido. Si crees que es un error, comunícate con el administrador.</p>
+      <a href="../../index.html" class="boton">Ir al inicio</a>
     </div>
   </main>
 
