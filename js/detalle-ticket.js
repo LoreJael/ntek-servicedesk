@@ -64,7 +64,7 @@ if (error || !ticket) {
 
   encabezadoTicket.innerHTML = `
     <div class="ticket-cabecera-texto">
-      <p class="eyebrow">Ticket N.° ${ticket.id.slice(0, 8)}</p>
+      <p class="eyebrow">Ticket N.º ${ticket.id.slice(0, 8)}</p>
       <h1>${escaparHTML(ticket.title)}</h1>
       <p class="ticket-cabecera-meta">
         ${pildoraEstado}
@@ -130,7 +130,7 @@ if (error || !ticket) {
   let idSubticketExistente = null;
 
   if (ticket.ticket_origen_id) {
-    avisoVinculo.innerHTML = `Este es un subticket del <a href="detalle-ticket.html?id=${ticket.ticket_origen_id}">ticket N.° ${ticket.ticket_origen_id.slice(0, 8)}</a>, que abriste porque no quedaste conforme con la solución.`;
+    avisoVinculo.innerHTML = `Este es un subticket del <a href="detalle-ticket.html?id=${ticket.ticket_origen_id}">ticket N.º ${ticket.ticket_origen_id.slice(0, 8)}</a>, que abriste porque no quedaste conforme con la solución.`;
     avisoVinculo.hidden = false;
   } else {
     const { data: subticket } = await supabase
@@ -141,7 +141,7 @@ if (error || !ticket) {
 
     if (subticket) {
       idSubticketExistente = subticket.id;
-      avisoVinculo.innerHTML = `No quedaste conforme con la solución de este ticket, así que seguimos atendiendo tu caso en el <a href="detalle-ticket.html?id=${subticket.id}">ticket N.° ${subticket.id.slice(0, 8)}</a>.`;
+      avisoVinculo.innerHTML = `No quedaste conforme con la solución de este ticket, así que la atención sigue en el <a href="detalle-ticket.html?id=${subticket.id}">ticket N.º ${subticket.id.slice(0, 8)}</a>.`;
       avisoVinculo.hidden = false;
     }
   }
@@ -185,7 +185,7 @@ if (error || !ticket) {
       const { error: errorCierre } = await supabase.rpc('aceptar_cierre', { id_ticket: ticket.id });
 
       if (errorCierre) {
-        mostrarNotificacion('No se pudo cerrar el ticket. Intenta nuevamente.', 'error');
+        mostrarNotificacion('No se pudo cerrar el ticket. Intenta de nuevo.', 'error');
         botonAceptarCierre.disabled = false;
         botonAceptarCierre.textContent = 'Aceptar cierre';
         return;
@@ -238,13 +238,13 @@ if (error || !ticket) {
       });
 
       if (errorSubticket) {
-        mostrarNotificacion('No se pudo abrir el subticket. Intenta nuevamente.', 'error');
+        mostrarNotificacion('No se pudo abrir el subticket. Intenta de nuevo.', 'error');
         botonAbrirSubticket.disabled = false;
         botonAbrirSubticket.textContent = 'Abrir subticket';
         return;
       }
 
-      mostrarNotificacion('Subticket abierto. Te llevamos a tu nuevo caso.', 'exito');
+      mostrarNotificacion('Subticket abierto. Te llevamos a su detalle.', 'exito');
       setTimeout(() => {
         window.location.href = `detalle-ticket.html?id=${idSubticket}`;
       }, 1500);
@@ -270,7 +270,7 @@ if (error || !ticket) {
     document.querySelector('#contador-comentarios').textContent = comentarios.length;
 
     if (comentarios.length === 0) {
-      listaComentarios.innerHTML = '<li class="hilo-vacio">Aún no hay mensajes. Si tienes novedades sobre tu caso, escríbelas abajo.</li>';
+      listaComentarios.innerHTML = '<li class="hilo-vacio">Aún no hay mensajes. Si tienes novedades sobre este ticket, escríbelas abajo.</li>';
       return;
     }
 
@@ -386,7 +386,7 @@ if (error || !ticket) {
         });
 
       if (errorInsert) {
-        mostrarNotificacion('No se pudo enviar el comentario. Intenta nuevamente.', 'error');
+        mostrarNotificacion('No se pudo enviar el comentario. Intenta de nuevo.', 'error');
         return;
       }
 
@@ -472,7 +472,7 @@ if (error || !ticket) {
       .createSignedUrl(ruta, 20, { download: true });
 
     if (error) {
-      mostrarNotificacion('No se pudo descargar el archivo. Intenta nuevamente.', 'error');
+      mostrarNotificacion('No se pudo descargar el archivo. Intenta de nuevo.', 'error');
       return;
     }
 
@@ -515,7 +515,7 @@ if (error || !ticket) {
       ).length;
 
       if (cantidadEnGrupo >= regla.maxArchivos) {
-        mostrarNotificacion(`Este ticket ya tiene el máximo de ${regla.maxArchivos} archivo(s) de este tipo.`, 'error');
+        mostrarNotificacion(`Este ticket ya alcanzó el máximo de archivos de este tipo (${regla.maxArchivos}).`, 'error');
         return;
       }
 
@@ -530,7 +530,7 @@ if (error || !ticket) {
         .upload(ruta, archivo);
 
       if (errorSubida) {
-        mostrarNotificacion('No se pudo subir el archivo. Intenta nuevamente.', 'error');
+        mostrarNotificacion('No se pudo subir el archivo. Intenta de nuevo.', 'error');
         botonSubir.disabled = false;
         botonSubir.textContent = 'Subir archivo';
         return;
@@ -548,14 +548,14 @@ if (error || !ticket) {
 
       if (errorFicha) {
         await supabase.storage.from('adjuntos').remove([ruta]);
-        mostrarNotificacion('No se pudo registrar el archivo. Intenta nuevamente.', 'error');
+        mostrarNotificacion('No se pudo registrar el archivo. Intenta de nuevo.', 'error');
         botonSubir.disabled = false;
         botonSubir.textContent = 'Subir archivo';
         return;
       }
 
       inputAdjunto.value = '';
-      mostrarNotificacion('Archivo subido correctamente.', 'exito');
+      mostrarNotificacion('Archivo subido.', 'exito');
       await cargarAdjuntos();
 
       botonSubir.disabled = false;

@@ -45,7 +45,7 @@ function pintarTickets(contenedor, lista, mensajeVacio) {
   tabla.innerHTML = `
     <thead>
       <tr>
-        <th scope="col">ID</th>
+        <th scope="col">N.º</th>
         <th scope="col">Título</th>
         <th scope="col">Estado</th>
         <th scope="col">Prioridad</th>
@@ -62,7 +62,7 @@ function pintarTickets(contenedor, lista, mensajeVacio) {
 
     const fila = document.createElement('tr');
     fila.innerHTML = `
-      <td data-label="ID" class="celda-id">${ticket.id.slice(0, 8)}</td>
+      <td data-label="N.º" class="celda-id">${ticket.id.slice(0, 8)}</td>
       <td data-label="Título" class="celda-titulo">
         <a class="enlace-ticket" href="detalle-ticket.html?id=${ticket.id}">${escaparHTML(ticket.title)}</a>
       </td>

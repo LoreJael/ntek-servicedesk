@@ -84,14 +84,14 @@ const ultimosTickets = tickets.slice(0, 5);
 if (errorTickets) {
   listaTickets.innerHTML = '<p>No se pudieron cargar tus tickets.</p>';
 } else if (ultimosTickets.length === 0) {
-  mostrarEstadoVacio(listaTickets, 'Aún no tienes solicitudes.');
+  mostrarEstadoVacio(listaTickets, 'Aún no tienes tickets.');
 } else {
   const tabla = document.createElement('table');
   tabla.classList.add('tabla', 'tabla--compacta');
   tabla.innerHTML = `
     <thead>
       <tr>
-        <th scope="col">ID</th>
+        <th scope="col">N.º</th>
         <th scope="col">Título</th>
         <th scope="col">Estado</th>
         <th scope="col">Actualizado</th>
@@ -107,7 +107,7 @@ if (errorTickets) {
 
     const fila = document.createElement('tr');
     fila.innerHTML = `
-      <td data-label="ID" class="celda-id">${ticket.id.slice(0, 8)}</td>
+      <td data-label="N.º" class="celda-id">${ticket.id.slice(0, 8)}</td>
       <td data-label="Título" class="celda-titulo">
         <a class="enlace-ticket" href="detalle-ticket.html?id=${ticket.id}">${escaparHTML(ticket.title)}</a>
       </td>

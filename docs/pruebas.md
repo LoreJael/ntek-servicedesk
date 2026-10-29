@@ -352,7 +352,7 @@ En un subticket, el detalle de equipo muestra la copia guardada en `contexto_ori
 | N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
 |---|---|---|---|---|---|
 | 17 | Abrir un ticket normal | Técnico (Diego) | No aparece el panel "Ticket original" | Panel oculto | ✅ |
-| 18 | Tomar el subticket de la prueba 13 (original atendido por Diego) y abrirlo | Técnico (Camila) | Panel con el N.° del original, título, descripción, la respuesta pública de Diego (sin la nota interna) y el historial con el cierre de la clienta | Panel completo, sin la nota interna | ✅ |
+| 18 | Tomar el subticket de la prueba 13 (original atendido por Diego) y abrirlo | Técnico (Camila) | Panel con el N.º del original, título, descripción, la respuesta pública de Diego (sin la nota interna) y el historial con el cierre de la clienta | Panel completo, sin la nota interna | ✅ |
 | 19 | Revisar la consola durante la prueba 18 | Técnico (Camila) | Sin errores | Sin errores | ✅ |
 | 20 | Abrir el mismo subticket | Admin (Andrea) | Mismo panel, con los nombres del equipo completos | Panel completo con nombres | ✅ |
 
@@ -362,8 +362,9 @@ El detalle de cliente muestra una franja con link al ticket relacionado. En un s
 
 | N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
 |---|---|---|---|---|---|
-| 21 | Abrir un subticket | Cliente (Loreto Jael Pradel) | Franja "Este es un subticket del ticket N.° …" con link al original | Franja visible; el link abre el original | ✅ |
-| 22 | Abrir el ticket original desde el link de la prueba 21 | Cliente (Loreto Jael Pradel) | Franja "…seguimos atendiendo tu caso en el ticket N.° …" con link al subticket | Franja visible; el link abre el subticket | ✅ |
+| 21 | Abrir un subticket | Cliente (Loreto Jael Pradel) | Franja "Este es un subticket del ticket N.º …" con link al original | Franja visible; el link abre el original | ✅ |
+| 22 | Abrir el ticket original desde el link de la prueba 21 | Cliente (Loreto Jael Pradel) | Franja "…seguimos atendiendo tu caso en el ticket N.º …" con link al subticket | Franja visible; el link abre el subticket | ✅ |
+“texto actualizado el 29-10 según el glosario”.
 | 23 | Abrir un ticket sin subticket | Cliente (Loreto Jael Pradel) | Sin franja | Sin franja | ✅ |
 | 24 | Abrir un ticket Resuelto que ya tiene subticket (VPN) | Cliente (Loreto Jael Pradel) | Franja hacia el subticket; tarjeta de Resuelto sin "No estoy conforme" ni "avísanos antes del…" | Solo "Aceptar cierre", con la fecha de cierre automático | ✅ |
 | 25 | Abrir un subticket en estado Resuelto | Cliente (Loreto Jael Pradel) | Solo "Aceptar cierre", con la fecha de cierre automático | Solo "Aceptar cierre" | ✅ |

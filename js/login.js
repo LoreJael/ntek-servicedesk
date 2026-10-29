@@ -4,7 +4,7 @@ import { mostrarNotificacion } from './notificaciones.js';
 const parametros = new URLSearchParams(window.location.search);
 
 if (parametros.get('cuenta') === 'desactivada') {
-  mostrarNotificacion('Lo sentimos, su cuenta se encuentra desactivada. Comuníquese con el administrador.', 'error');
+  mostrarNotificacion('Tu cuenta está desactivada. Comunícate con el administrador.', 'error');
 }
 
 const formLogin = document.getElementById('form-login');
@@ -21,7 +21,7 @@ formLogin.addEventListener('submit', async (evento) => {
   });
 
   if (error) {
-    alert('Correo o contraseña incorrectos.');
+    mostrarNotificacion('Correo o contraseña incorrectos.', 'error');
     return;
   }
 
@@ -32,7 +32,7 @@ formLogin.addEventListener('submit', async (evento) => {
     .single();
 
   if (errorPerfil) {
-    alert('No se pudo obtener tu perfil.');
+    mostrarNotificacion('No se pudo obtener tu perfil. Intenta de nuevo.', 'error');
     return;
   }
 

@@ -51,7 +51,7 @@ function mostrarPagina(numeroPagina) {
   tabla.innerHTML = `
     <thead>
       <tr>
-        <th scope="col">ID</th>
+        <th scope="col">N.º</th>
         <th scope="col">Título</th>
         <th scope="col">Estado</th>
         <th scope="col">Prioridad</th>
@@ -70,7 +70,7 @@ function mostrarPagina(numeroPagina) {
     const fila = document.createElement('tr');
 
     fila.innerHTML = `
-      <td data-label="ID" class="celda-id">${ticket.id.slice(0, 8)}</td>
+      <td data-label="N.º" class="celda-id">${ticket.id.slice(0, 8)}</td>
       <td data-label="Título" class="celda-titulo">${escaparHTML(ticket.title)}</td>
       <td data-label="Estado">
         <span class="badge-estado badge-estado--${ticket.status}">${etiquetasEstado[ticket.status]}</span>
@@ -133,7 +133,7 @@ if (error) {
   console.error(error);
   mostrarErrorRecuperable(listaTickets, 'No pudimos cargar tus tickets.', () => location.reload());
 } else if (tickets.length === 0) {
-  mostrarEstadoVacio(listaTickets, 'Aún no tienes solicitudes. Puedes crear una desde Nueva solicitud.');
+  mostrarEstadoVacio(listaTickets, 'Aún no tienes tickets. Puedes crear uno desde Nueva solicitud.');
 } else {
   aplicarFiltros();
 }

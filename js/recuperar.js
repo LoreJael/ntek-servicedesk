@@ -48,7 +48,7 @@ formNuevaPassword.addEventListener('submit', async (evento) => {
   const { error } = await supabase.auth.updateUser({ password: nuevaPassword });
 
   if (error) {
-    mensaje.textContent = 'No se pudo actualizar la contraseña.';
+    mensaje.textContent = 'No se pudo actualizar la contraseña. Intenta de nuevo.';
     return;
   }
 

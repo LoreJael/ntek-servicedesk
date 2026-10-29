@@ -114,7 +114,7 @@ function dibujarDetalle(ticket) {
 
     contenedorDetalle.innerHTML = `
     <div class="ticket-cabecera-texto">
-      <p class="eyebrow">Ticket N.° ${ticket.id.slice(0, 8)}</p>
+      <p class="eyebrow">Ticket N.º ${ticket.id.slice(0, 8)}</p>
       <h1>${escaparHTML(ticket.title)}</h1>
       <p class="ticket-cabecera-meta">
         ${pildoraEstado}
@@ -231,7 +231,7 @@ function dibujarGestion(ticket) {
             return;
         }
 
-        mostrarNotificacion('Cambios guardados correctamente.', 'exito');
+        mostrarNotificacion('Cambios guardados.', 'exito');
         dibujarDetalle(data[0]);
         dibujarGestion(data[0]);
         await cargarHistorial();
@@ -417,7 +417,7 @@ function activarFormularioComentario() {
             });
 
         if (errorInsert) {
-            mostrarNotificacion('No se pudo enviar el comentario. Intenta nuevamente.', 'error');
+            mostrarNotificacion('No se pudo enviar el comentario. Intenta de nuevo.', 'error');
             return;
         }
 
@@ -509,7 +509,7 @@ async function descargarAdjunto(ruta) {
         .createSignedUrl(ruta, 20, { download: true });
 
     if (error) {
-        mostrarNotificacion('No se pudo descargar el archivo. Intenta nuevamente.', 'error');
+        mostrarNotificacion('No se pudo descargar el archivo. Intenta de nuevo.', 'error');
         return;
     }
 
@@ -550,7 +550,7 @@ function activarFormularioAdjunto() {
         ).length;
 
         if (cantidadEnGrupo >= regla.maxArchivos) {
-            mostrarNotificacion(`Este ticket ya tiene el máximo de ${regla.maxArchivos} archivo(s) de este tipo.`, 'error');
+            mostrarNotificacion(`Este ticket ya alcanzó el máximo de archivos de este tipo (${regla.maxArchivos}).`, 'error');
             return;
         }
 
@@ -565,7 +565,7 @@ function activarFormularioAdjunto() {
             .upload(ruta, archivo);
 
         if (errorSubida) {
-            mostrarNotificacion('No se pudo subir el archivo. Intenta nuevamente.', 'error');
+            mostrarNotificacion('No se pudo subir el archivo. Intenta de nuevo.', 'error');
             return;
         }
 
@@ -584,12 +584,12 @@ function activarFormularioAdjunto() {
 
         if (errorFicha) {
             await supabase.storage.from('adjuntos').remove([ruta]);
-            mostrarNotificacion('No se pudo registrar el archivo. Intenta nuevamente.', 'error');
+            mostrarNotificacion('No se pudo registrar el archivo. Intenta de nuevo.', 'error');
             return;
         }
 
         inputAdjunto.value = '';
-        mostrarNotificacion('Archivo subido correctamente.', 'exito');
+        mostrarNotificacion('Archivo subido.', 'exito');
         await cargarAdjuntos();
 
                   botonSubir.disabled = false;

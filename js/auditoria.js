@@ -22,7 +22,7 @@ function dibujarEventos(eventos) {
     listaAuditoria.innerHTML = '';
 
     if (eventos.length === 0) {
-        mostrarEstadoVacio(listaAuditoria, 'Todavía no hay eventos registrados.');
+        mostrarEstadoVacio(listaAuditoria, 'Todavía no hay movimientos registrados.');
         return;
     }
 

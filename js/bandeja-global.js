@@ -69,7 +69,7 @@ function dibujarTickets(lista) {
   tabla.innerHTML = `
     <thead>
       <tr>
-        <th scope="col">ID</th>
+        <th scope="col">N.º</th>
         <th scope="col">Título</th>
         <th scope="col">Cliente</th>
         <th scope="col">Estado</th>
@@ -97,7 +97,7 @@ function dibujarTickets(lista) {
     const fila = document.createElement('tr');
 
     fila.innerHTML = `
-      <td data-label="ID" class="celda-id">${ticket.id.slice(0, 8)}</td>
+      <td data-label="N.º" class="celda-id">${ticket.id.slice(0, 8)}</td>
       <td data-label="Título" class="celda-titulo">${escaparHTML(ticket.title)}</td>
       <td data-label="Cliente">${cliente ? escaparHTML(cliente.company) : 'Cliente no disponible'}</td>
       <td data-label="Estado">
@@ -150,7 +150,7 @@ async function tomarCaso(idTicket) {
     return;
   }
 
-  mostrarNotificacion('Tomaste el caso correctamente.', 'exito');
+  mostrarNotificacion('Tomaste el caso.', 'exito');
   await cargarTickets();
 
 }
