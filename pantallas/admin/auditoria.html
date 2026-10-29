@@ -16,9 +16,23 @@
     <div id="header-placeholder"></div>
 
     <main class="contenedor">
-        <h1>Auditoría</h1>
-        <p class="subtitulo">Últimos 50 cambios registrados en los tickets.</p>
-        <ul id="lista-auditoria" class="lista-auditoria"></ul>
+
+        <div class="encabezado-pagina">
+            <p class="eyebrow">Administración</p>
+            <h1>Auditoría</h1>
+            <p class="subtitulo">Registro de los cambios hechos en los tickets: quién, qué y cuándo.</p>
+        </div>
+
+        <section class="tarjeta-seccion">
+            <div class="tarjeta-seccion-cabecera">
+                <p class="eyebrow">Actividad</p>
+                <h2>Últimos 50 movimientos</h2>
+            </div>
+            <div class="tarjeta-seccion-cuerpo">
+                <ul id="lista-auditoria" class="lista-auditoria"></ul>
+            </div>
+        </section>
+
     </main>
 
     <script type="module" src="../../js/auditoria.js"></script>

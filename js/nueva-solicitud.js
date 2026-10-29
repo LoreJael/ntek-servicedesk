@@ -10,6 +10,18 @@ activarBotonCerrarSesion();
 
 const formNuevaSolicitud = document.getElementById('form-nueva-solicitud');
 
+function activarContador(campo, contador, maximo) {
+  const actualizar = () => {
+    contador.textContent = `${[...campo.value].length} / ${maximo}`;
+  };
+
+  campo.addEventListener('input', actualizar);
+  actualizar();
+}
+
+activarContador(document.getElementById('titulo'), document.getElementById('contador-titulo'), 120);
+activarContador(document.getElementById('descripcion'), document.getElementById('contador-descripcion'), 2000);
+
 const botonEnviar = formNuevaSolicitud.querySelector('button[type="submit"]');
 const textoOriginalBoton = botonEnviar.textContent;
 
@@ -33,7 +45,7 @@ formNuevaSolicitud.addEventListener('submit', async (evento) => {
   }
   
   botonEnviar.disabled = true;
-  botonEnviar.textContent = 'Procesando solicitud...';
+  botonEnviar.textContent = 'Enviando solicitud...';
 
   const { data: datosUsuario } = await supabase.auth.getUser();
 
@@ -53,14 +65,14 @@ formNuevaSolicitud.addEventListener('submit', async (evento) => {
 
   if (error) {
     console.error(error);
-    mostrarNotificacion('No se pudo crear la solicitud. Inténtalo de nuevo.', 'error');
+    mostrarNotificacion('No se pudo enviar la solicitud. Intenta de nuevo.', 'error');
     botonEnviar.disabled = false;
     botonEnviar.textContent = textoOriginalBoton;
     return;
   }
 
   const idCorto = data.id.slice(0, 8);
-  mostrarNotificacion(`Solicitud creada con el N.° ${idCorto}. Quedó en estado Nuevo.`, 'exito');
+  mostrarNotificacion(`Ticket creado con el N.º ${idCorto}. Quedó en estado Nuevo.`, 'exito');
     setTimeout(() => {
     window.location.href = `detalle-ticket.html?id=${data.id}`;
   }, 2000);

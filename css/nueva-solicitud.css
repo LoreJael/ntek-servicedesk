@@ -1,0 +1,137 @@
+/* ===== Nueva solicitud: formulario + columna de ayuda ===== */
+.solicitud-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.form-solicitud .form-grupo {
+  margin-bottom: 1.25rem;
+}
+
+.form-solicitud input,
+.form-solicitud select {
+  min-height: 46px;
+  border-radius: 10px;
+}
+
+.form-solicitud select {
+  background-color: #ffffff;
+  color: var(--color-texto);
+}
+
+.form-solicitud textarea {
+  border-radius: 10px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-solicitud input:focus-visible,
+.form-solicitud select:focus-visible,
+.form-solicitud textarea:focus-visible {
+  outline: 2px solid var(--color-acento);
+  outline-offset: 1px;
+}
+
+.campos-fila {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  column-gap: 1.25rem;
+}
+
+.campo-pie {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.4rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.85rem;
+}
+
+.contador {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.form-solicitud .form-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.form-solicitud .form-acciones .boton {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* ===== Columna de ayuda ===== */
+.guia-prioridades {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.guia-prioridades div {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  align-items: start;
+  gap: 0.75rem;
+}
+
+.guia-prioridades dd {
+  margin: 0;
+  color: var(--color-texto-secundario);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.nota-guia {
+  margin: 1.1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-borde);
+  color: var(--color-texto-secundario);
+  font-size: 0.88rem;
+}
+
+.pasos-solicitud {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.pasos-solicitud li::marker {
+  color: var(--color-acento);
+  font-weight: 800;
+}
+
+/* ===== Celular y tablet: la ayuda pasa abajo ===== */
+@media (max-width: 1024px) {
+  .solicitud-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .campo-pie {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .form-solicitud .form-acciones .boton {
+    width: 100%;
+    justify-content: center;
+  }
+}

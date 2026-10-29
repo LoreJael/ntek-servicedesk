@@ -9,53 +9,134 @@
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/layout.css">
   <link rel="stylesheet" href="../../css/componentes.css">
+  <link rel="stylesheet" href="../../css/nueva-solicitud.css">
 </head>
 
-<body class="verificando">
-  <div class="pantalla-carga">Cargando...</div>
+<body>
 
   <div id="header-placeholder"></div>
 
   <main class="contenedor">
-    <div class="tarjeta">
+
+    <div class="encabezado-pagina">
+      <p class="eyebrow">Soporte</p>
       <h1>Nueva solicitud</h1>
-
-      <form id="form-nueva-solicitud">
-        <div class="form-grupo">
-          <label for="titulo">Título</label>
-          <input type="text" id="titulo" name="titulo" required maxlength="120">
-        </div>
-
-        <div class="form-grupo">
-          <label for="categoria">Categoría</label>
-          <select id="categoria" name="categoria" required>
-            <option value="">Selecciona una categoría</option>
-            <option value="Software">Software</option>
-            <option value="Hardware">Hardware</option>
-            <option value="Red">Red</option>
-            <option value="Cuenta">Cuenta</option>
-          </select>
-        </div>
-
-        <div class="form-grupo">
-          <label for="descripcion">Descripción</label>
-          <textarea id="descripcion" name="descripcion" rows="4" required maxlength="2000" ></textarea >
-        </div>
-
-        <div class="form-grupo">
-          <label for="prioridad">Prioridad sugerida</label>
-          <select id="prioridad" name="prioridad" required>
-            <option value="">Selecciona una prioridad</option>
-            <option value="baja">Baja</option>
-            <option value="media">Media</option>
-            <option value="alta">Alta</option>
-            <option value="critica">Crítica</option>
-          </select>
-        </div>
-
-        <button type="submit" class="boton">Enviar solicitud</button>
-      </form>
+      <p class="subtitulo">Cuéntanos qué está pasando. El equipo de NTEK te responderá dentro del ticket.</p>
     </div>
+
+    <div class="solicitud-layout">
+
+      <section class="tarjeta-seccion">
+        <div class="tarjeta-seccion-cabecera">
+          <p class="eyebrow">Formulario</p>
+          <h2>Datos del problema</h2>
+        </div>
+
+        <div class="tarjeta-seccion-cuerpo">
+          <form id="form-nueva-solicitud" class="form-solicitud">
+
+            <div class="form-grupo">
+              <label for="titulo">Título</label>
+              <input type="text" id="titulo" name="titulo" required maxlength="120" aria-describedby="ayuda-titulo contador-titulo">
+              <div class="campo-pie">
+                <span id="ayuda-titulo">Resume el problema en una frase.</span>
+                <span id="contador-titulo" class="contador">0 / 120</span>
+              </div>
+            </div>
+
+            <div class="campos-fila">
+              <div class="form-grupo">
+                <label for="categoria">Categoría</label>
+                <select id="categoria" name="categoria" required>
+                  <option value="">Selecciona una categoría</option>
+                  <option value="Software">Software</option>
+                  <option value="Hardware">Hardware</option>
+                  <option value="Red">Red</option>
+                  <option value="Cuenta">Cuenta</option>
+                </select>
+              </div>
+
+              <div class="form-grupo">
+                <label for="prioridad">Prioridad sugerida</label>
+                <select id="prioridad" name="prioridad" required aria-describedby="ayuda-prioridad">
+                  <option value="">Selecciona una prioridad</option>
+                  <option value="baja">Baja</option>
+                  <option value="media">Media</option>
+                  <option value="alta">Alta</option>
+                  <option value="critica">Crítica</option>
+                </select>
+                <div class="campo-pie">
+                  <span id="ayuda-prioridad">Revisa la guía de prioridades si tienes dudas.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-grupo">
+              <label for="descripcion">Descripción</label>
+              <textarea id="descripcion" name="descripcion" rows="7" required maxlength="2000" aria-describedby="ayuda-descripcion contador-descripcion"></textarea>
+              <div class="campo-pie">
+                <span id="ayuda-descripcion">Indica qué estabas haciendo, desde cuándo ocurre y qué ya intentaste.</span>
+                <span id="contador-descripcion" class="contador">0 / 2000</span>
+              </div>
+            </div>
+
+            <div class="form-acciones">
+              <button type="submit" class="boton">Enviar solicitud</button>
+              <a href="mis-tickets.html" class="boton boton--secundario">Cancelar</a>
+            </div>
+
+          </form>
+        </div>
+      </section>
+
+      <aside class="solicitud-lateral" aria-label="Ayuda para crear tu solicitud">
+
+        <section class="tarjeta-seccion">
+          <div class="tarjeta-seccion-cabecera">
+            <p class="eyebrow">Guía</p>
+            <h2>¿Qué prioridad elijo?</h2>
+          </div>
+          <div class="tarjeta-seccion-cuerpo">
+            <dl class="guia-prioridades">
+              <div>
+                <dt><span class="badge-prioridad badge-prioridad--baja">Baja</span></dt>
+                <dd>Una consulta o mejora que no afecta tu trabajo.</dd>
+              </div>
+              <div>
+                <dt><span class="badge-prioridad badge-prioridad--media">Media</span></dt>
+                <dd>Algo falla, pero tienes una forma temporal de seguir trabajando.</dd>
+              </div>
+              <div>
+                <dt><span class="badge-prioridad badge-prioridad--alta">Alta</span></dt>
+                <dd>Un servicio importante funciona mal y no tienes alternativa.</dd>
+              </div>
+              <div>
+                <dt><span class="badge-prioridad badge-prioridad--critica">Crítica</span></dt>
+                <dd>El servicio está detenido por completo o hay un riesgo importante.</dd>
+              </div>
+            </dl>
+            <p class="nota-guia">El equipo puede ajustar la prioridad después de revisar tu ticket.</p>
+          </div>
+        </section>
+
+        <section class="tarjeta-seccion">
+          <div class="tarjeta-seccion-cabecera">
+            <p class="eyebrow">Después de enviar</p>
+            <h2>¿Qué pasa con tu solicitud?</h2>
+          </div>
+          <div class="tarjeta-seccion-cuerpo">
+            <ol class="pasos-solicitud">
+              <li>Se crea un ticket con su N.º y queda en estado Nuevo.</li>
+              <li>Un técnico lo toma y te responde dentro del ticket.</li>
+              <li>Desde el detalle del ticket puedes comentar y adjuntar imágenes, PDF o archivos Markdown.</li>
+            </ol>
+          </div>
+        </section>
+
+      </aside>
+
+    </div>
+
   </main>
 
   <script type="module" src="../../js/nueva-solicitud.js"></script>

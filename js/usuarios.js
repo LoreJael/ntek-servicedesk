@@ -13,6 +13,40 @@ activarBotonCerrarSesion();
 
 const listaUsuarios = document.querySelector('#lista-usuarios');
 
+const inputBuscar = document.querySelector('#buscar-usuario');
+let todosLosUsuarios = [];
+
+function aplicarBusqueda() {
+    const texto = inputBuscar.value.trim().toLowerCase();
+
+    const filtrados = todosLosUsuarios.filter((usuario) => {
+        const nombre = (usuario.full_name ?? '').toLowerCase();
+        const empresa = (usuario.company ?? '').toLowerCase();
+        return nombre.includes(texto) || empresa.includes(texto);
+    });
+
+    dibujarUsuarios(filtrados);
+}
+
+inputBuscar.addEventListener('input', aplicarBusqueda);
+
+const inputBuscar = document.querySelector('#buscar-usuario');
+let todosLosUsuarios = [];
+
+function aplicarBusqueda() {
+    const texto = inputBuscar.value.trim().toLowerCase();
+
+    const filtrados = todosLosUsuarios.filter((usuario) => {
+        const nombre = (usuario.full_name ?? '').toLowerCase();
+        const empresa = (usuario.company ?? '').toLowerCase();
+        return nombre.includes(texto) || empresa.includes(texto);
+    });
+
+    dibujarUsuarios(filtrados);
+}
+
+inputBuscar.addEventListener('input', aplicarBusqueda);
+
 const etiquetasRol = {
     cliente: 'Cliente',
     tecnico: 'Técnico',
@@ -65,7 +99,7 @@ function dibujarUsuarios(lista) {
           </td>
           <td data-label="Estado">
             <span class="badge-estado ${usuario.active ? 'badge-estado--resuelto' : 'badge-estado--cerrado'}">
-              ${usuario.active ? 'Activo' : 'Inactivo'}
+              ${usuario.active ? 'Activo' : 'Desactivado'}
             </span>
           </td>
           <td data-label="Acciones" class="celda-acciones">
@@ -79,7 +113,7 @@ function dibujarUsuarios(lista) {
         if (usuario.id === user.id) {
             fila.querySelector('select').disabled = true;
             boton.disabled = true;
-            boton.textContent = 'Tu Cuenta';
+            boton.textContent = 'Tu cuenta';
             botonEstado.disabled = true;
         }
         boton.addEventListener('click', () => {
@@ -134,11 +168,11 @@ async function cambiarRol(idUsuario, nuevoRol) {
 
 
     if (data.length === 0) {
-        mostrarNotificacion('No se pudo cambiar el rol.', 'error');
+        mostrarNotificacion('No se pudo cambiar el rol. Intenta de nuevo.', 'error');
         return;
     }
 
-    mostrarNotificacion('Rol actualizado correctamente.', 'exito');
+    mostrarNotificacion('Rol actualizado.', 'exito');
     await traerUsuarios();
 }
 
@@ -161,10 +195,11 @@ async function cambiarEstado(idUsuario, nuevoEstado) {
 
 
     if (data.length === 0) {
-        mostrarNotificacion('No se pudo cambiar el estado.', 'error');
+        mostrarNotificacion('No se pudo cambiar el estado. Intenta de nuevo.', 'error');
         return;
     }
 
-    mostrarNotificacion('Estado actualizado correctamente.', 'exito');
-    await traerUsuarios();
+    mostrarNotificacion('Estado actualizado.', 'exito');
+    todosLosUsuarios = datosUsuarios;
+    aplicarBusqueda();
 }
