@@ -30,23 +30,6 @@ function aplicarBusqueda() {
 
 inputBuscar.addEventListener('input', aplicarBusqueda);
 
-const inputBuscar = document.querySelector('#buscar-usuario');
-let todosLosUsuarios = [];
-
-function aplicarBusqueda() {
-    const texto = inputBuscar.value.trim().toLowerCase();
-
-    const filtrados = todosLosUsuarios.filter((usuario) => {
-        const nombre = (usuario.full_name ?? '').toLowerCase();
-        const empresa = (usuario.company ?? '').toLowerCase();
-        return nombre.includes(texto) || empresa.includes(texto);
-    });
-
-    dibujarUsuarios(filtrados);
-}
-
-inputBuscar.addEventListener('input', aplicarBusqueda);
-
 const etiquetasRol = {
     cliente: 'Cliente',
     tecnico: 'Técnico',
