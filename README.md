@@ -47,6 +47,22 @@ Cada ticket acepta como máximo:
 
 Si se cambia un número, crear una migración nueva con la función actualizada.
 
+## Archivo semanal de auditoría
+
+Cada lunes a las 06:00 UTC, `pg_cron` (tarea `archivar_auditoria_semanal`) llama con `pg_net` a la Edge Function `archivar-auditoria`. La función:
+
+1. Lee los eventos de `audit_events` de la semana anterior (lunes a domingo, UTC).
+2. Genera un `.txt` con una línea por evento y lo sube al bucket privado `auditoria` (solo el administrador puede leerlo).
+3. Llama a `borrar_auditoria_antigua()`, que elimina los eventos de tickets cerrados sin cambios hace más de 2 meses.
+
+Configuración necesaria (no está en el repositorio):
+
+- Secreto de la función: `npx supabase secrets set AUDITORIA_CLAVE=<valor>`
+- Secretos en Vault (SQL Editor): `auditoria_url` (URL de la función) y `auditoria_clave` (mismo valor que `AUDITORIA_CLAVE`)
+- Despliegue: `npx supabase functions deploy archivar-auditoria --no-verify-jwt`
+
+Para archivar una semana a mano, enviar `{"desde": "AAAA-MM-DD"}` (un lunes) con la cabecera `x-clave-auditoria`.
+
 ## Instalación y despliegue
 Pendiente (etapa 7).
 

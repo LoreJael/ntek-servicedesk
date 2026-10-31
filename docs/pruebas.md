@@ -369,3 +369,17 @@ El detalle de cliente muestra una franja con link al ticket relacionado. En un s
 | 24 | Abrir un ticket Resuelto que ya tiene subticket (VPN) | Cliente (Loreto Jael Pradel) | Franja hacia el subticket; tarjeta de Resuelto sin "No estoy conforme" ni "avísanos antes del…" | Solo "Aceptar cierre", con la fecha de cierre automático | ✅ |
 | 25 | Abrir un subticket en estado Resuelto | Cliente (Loreto Jael Pradel) | Solo "Aceptar cierre", con la fecha de cierre automático | Solo "Aceptar cierre" | ✅ |
 | 26 | Llamar a `abrir_subticket` desde la consola sobre el subticket Resuelto de la prueba 25 | Cliente (Loreto Jael Pradel) | Error genérico; el subticket sigue Resuelto (la regla la cumple la base, no solo la pantalla) | Error genérico; sin cambios | ✅ |
+
+## RF-12 — Archivo semanal de auditoría (Edge Function `archivar-auditoria`, 30-10)
+
+| # | Escenario | Cuenta | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Llamar a la función sin la cabecera `x-clave-auditoria` (`net.http_post` desde el SQL Editor) | — | 401 "No autorizado"; no se crea archivo | ✅ 30-10 — 401 "No autorizado" |
+| 2 | Archivar la semana del 12-10 (`{"desde": "2026-10-12"}`) | — | 200; archivo `2026-10-12_a_2026-10-18.txt` en el bucket `auditoria` | ✅ 30-10 — archivo creado, `text/plain`, 1,72 KB |
+| 3 | Archivar la semana del 19-10 (`{"desde": "2026-10-19"}`) | — | 200; archivo `2026-10-19_a_2026-10-25.txt` | ✅ 30-10 — archivo creado |
+| 4 | Abrir el `.txt` descargado | Admin (panel) | Una línea por evento con nombres, tildes y flechas legibles | ✅ |
+| 5 | `borrar_auditoria_antigua` sin tickets cerrados hace más de 2 meses | — | `borrados: 0`; `audit_events` sin cambios | ✅ 30-10 — `borrados: 0` |
+| 6 | Instrucción de la tarea `archivar_auditoria_semanal` (URL y clave leídas desde Vault) | — | 200; se reemplaza el archivo de la semana anterior (`upsert`) | ✅ 30-10 |
+| 7 | `supabase.storage.from('auditoria').list()` desde la consola | Admin (Andrea) | Lista los archivos | ⬜ |
+| 8 | `supabase.storage.from('auditoria').list()` desde la consola | Técnico (Diego) y Cliente | `[]` (la política solo permite al admin) | ⬜ |
+| 9 | `supabase.storage.from('auditoria').upload('prueba.txt', new Blob(['x']))` desde la consola | Admin | Error de RLS: nadie sube archivos desde la app | ⬜ |
