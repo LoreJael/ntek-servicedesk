@@ -407,3 +407,35 @@ Cambios:
 | 6 | Andrea (admin) | Lighthouse Mobile en Render | Performance ≥ 80 | ✅ 95 (antes 77–80) · Accessibility 96 · Best Practices 100 · SEO 90 |
 
 Despliegue: el auto-deploy de `b56e713` falló en Render (error del servicio, sin cambios en Dockerfile ni nginx). Se resolvió con Manual Deploy → Deploy latest commit.
+
+## RNF-01 / RNF-03 / CA-10 — Revisión responsive y teclado (02-11)
+
+Revisado en Live Server con DevTools (modo dispositivo, ancho 360, 768 y 1280 px) y navegación con Tab.
+
+| Pantalla | Cuenta | 360 | 768 | 1280 | Teclado | Observación |
+|---|---|---|---|---|---|---|
+| Inicio | — | ✅  | ✅  | ✅  | ✅  | |
+| Login | — | ✅  | ✅  | ✅  | ✅  | |
+| Registro | — | ✅  | ✅  | ✅  | ✅  | |
+| Recuperar contraseña | — | ✅  | ✅  | ✅  | ✅  | |
+| Panel de cliente | Loreto | ✅  | ✅  | ✅  | ✅  | |
+| Nueva solicitud | Loreto | ✅  | ✅  | ✅  | ✅  | |
+| Mis tickets | Loreto | ✅  | ✅  | ✅  | ✅  | |
+| Detalle de cliente | Loreto | ✅  | ✅  | ✅  | ✅  | |
+| Perfil de cliente | Loreto | ✅  | ✅  | ✅  | ✅  | |
+| Bandeja global | Diego | ✅  | ✅  | ✅  | ✅  | |
+| Detalle de equipo | Diego | ✅  | ✅  | ✅  | ✅  | |
+| Indicadores | Diego | ✅  | ✅  | ✅  | ✅  | |
+| Perfil de equipo | Diego | ✅ | ✅ | ✅ | ✅ | |
+| Usuarios | Andrea | ✅ | ✅ | ✅ | ✅ | Ver defecto 1 |
+| Auditoría | Andrea | ✅| ✅ | ✅ | ✅ | |
+| Perfil de admin | Andrea | ✅ | ✅ | ✅ | ✅ | |
+| 404 | — | ✅ | ✅ | ✅ | ✅ | |
+| Acceso denegado | — | ✅ | ✅ | ✅ | ✅ | |
+
+### Defectos encontrados
+
+| N.º | Pantalla | Defecto | Corrección | Estado |
+|---|---|---|---|---|
+| 1 | Usuarios | `TypeError` en `usuarios.js:31`: no existía `#buscar-usuario`. El HTML del rediseño del 29-10 no quedó comiteado (solo el JS). | Se rehízo el HTML con encabezado, tarjeta y buscador. | ✅ |
+| 2 | Panel de cliente | En anchos intermedios la tabla "Últimos tickets" era más ancha que su tarjeta y la columna Actualizado quedaba detrás de "Últimos comentarios". | Se agregó `tabla-contenedor` al contenedor de la tabla (`overflow-x: auto`, igual que en las demás tablas). | ✅ |
