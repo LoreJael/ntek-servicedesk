@@ -42,18 +42,21 @@ const formatoFechaHora = { timeZone: 'America/Santiago', day: '2-digit', month: 
 
 const parametros = new URLSearchParams(window.location.search);
 const idTicket = parametros.get('id');
+const [respuestaTicket, respuestaPerfiles] = await Promise.all([
+    supabase
+        .from('tickets')
+        .select('*')
+        .eq('id', idTicket)
+        .maybeSingle(),
+    supabase
+        .from('profiles')
+        .select('id, full_name, company, role')
+        .order('full_name')
+]);
 
-const { data: ticket, error } = await supabase
-    .from('tickets')
-    .select('*')
-    .eq('id', idTicket)
-    .maybeSingle();
-
-const { data: datosPerfiles } = await supabase
-    .from('profiles')
-    .select('id, full_name, company');
-
-const perfiles = datosPerfiles || [];
+const ticket = respuestaTicket.data;
+const error = respuestaTicket.error;
+const perfiles = respuestaPerfiles.data || [];
 
 const contenedorDetalle = document.querySelector('#detalle-ticket');
 const contenedorGestion = document.querySelector('#gestion-ticket');
@@ -70,19 +73,13 @@ function nombreEnHistorial(id) {
     return perfil ? perfil.full_name : 'Equipo NTEK';
 }
 
-const { data: datosUsuario } = await supabase.auth.getUser();
-const idUsuarioActual = datosUsuario.user.id;
+const { data: datosSesion } = await supabase.auth.getSession();
+const idUsuarioActual = datosSesion.session.user.id;
 
 let tecnicos = [];
 
 if (rolActual === 'admin') {
-    const { data: datosTecnicos } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('role', ['tecnico', 'admin'])
-        .order('full_name');
-
-    tecnicos = datosTecnicos || [];
+    tecnicos = perfiles.filter((perfil) => perfil.role === 'tecnico' || perfil.role === 'admin');
 }
 
 function dibujarDetalle(ticket) {
@@ -602,7 +599,6 @@ if (error || !ticket) {
     document.querySelector('.ticket-layout').hidden = true;
 } else {
     dibujarDetalle(ticket);
-    dibujarGestion(ticket);
     dibujarGestion(ticket);
     dibujarContextoOrigen(ticket);
     await Promise.all([cargarComentarios(), cargarAdjuntos(), cargarHistorial()]);
