@@ -16,10 +16,27 @@
 
     <div id="header-placeholder"></div>
 
-    <main>
-        <h1>Usuarios</h1>
-        <div id="lista-usuarios" class="tabla-contenedor"></div>
-               
+       <main class="contenedor">
+
+        <div class="encabezado-pagina">
+            <p class="eyebrow">Administración</p>
+            <h1>Usuarios</h1>
+            <p class="subtitulo">Personas registradas en el sistema. Cambia su rol o activa y desactiva su cuenta.</p>
+        </div>
+
+        <section class="tarjeta-seccion">
+            <div class="tarjeta-seccion-cuerpo">
+
+                <div class="filtros">
+                    <input type="search" id="buscar-usuario" placeholder="Buscar por nombre o empresa"
+                        aria-label="Buscar por nombre o empresa">
+                </div>
+
+                <div id="lista-usuarios" class="tabla-contenedor"></div>
+
+            </div>
+        </section>
+
     </main>
 
     <script type="module" src="../../js/usuarios.js"></script>
