@@ -285,6 +285,7 @@ Defecto corregido: el link activo de la barra lateral (`aria-current="page"`) te
 Falso positivo: Lighthouse marca los botones "Ver detalle" de la Bandeja por contraste bajo. Revisado con el selector de color de DevTools: 4,94:1 (cumple AA). La columna Acciones queda dentro del scroll horizontal de la tabla a 960 px y Lighthouse no detecta su fondo.
 
 Detalle de equipo: Performance entre 77 y 80 (bajo el objetivo de 80). El `<h1>` aparece tarde porque la página hace 6 esperas seguidas a Supabase antes de mostrarse. Se pasaron comentarios, adjuntos e historial a `Promise.all`, sin mejora medible: la espera principal está antes (`getUser()` y las consultas iniciales). Pendiente para la semana 11: revisar la cadena de consultas, `preconnect` al CDN y caché con Cloudflare.
+**Resuelto el 02-11** (ver sección "RNF-02 — Consultas en paralelo en el detalle de equipo").
 
 Pendiente para la etapa de Cloudflare: compresión de archivos y caché de CSS/JS. Para la semana de calidad: `preconnect` al CDN de Supabase.
 
@@ -384,3 +385,25 @@ El detalle de cliente muestra una franja con link al ticket relacionado. En un s
 | 8 | `supabase.storage.from('auditoria').list()` desde la consola | Técnico (Diego) y Cliente | `[]` (la política solo permite al admin) | ✅ 02-11 — [] sin error (Diego y cliente) |
 | 9 | `supabase.storage.from('auditoria').upload('prueba.txt', new Blob(['x']))` desde la consola | Admin | Error de RLS: nadie sube archivos desde la app | ✅ 02-11 — 400 "new row violates row-level security policy" |
 | 10 | Ejecución automática de la tarea `archivar_auditoria_semanal` (pg_cron) | — | Aparece el archivo de la semana anterior sin ejecutarlo a mano | ✅ 02-11 — `2026-10-26_a_2026-11-01.txt` creado el __ |
+
+## RNF-02 — Consultas en paralelo en el detalle de equipo (02-11)
+
+Problema: antes de mostrarse, la página esperaba 7 respuestas una detrás de otra (sesión, perfil, ticket, perfiles, `getUser()`, técnicos y luego comentarios/adjuntos/historial). El `<h1>` aparecía tarde y Performance quedaba en 77–80.
+
+Cambios:
+- `preconnect` a Supabase y al CDN de `supabase-js` en el `<head>`.
+- `getUser()` → `getSession()`: el id del usuario se lee de la sesión guardada, sin petición al servidor de Auth. La RLS sigue validando con `auth.uid()`.
+- Ticket y perfiles en un mismo `Promise.all`.
+- La lista de técnicos para "Asignar a" se obtiene filtrando los perfiles (`.filter` por rol) en vez de una consulta aparte.
+- Se borró un `dibujarGestion(ticket)` duplicado.
+
+| N.º | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Andrea (admin) | Abrir el detalle | "Asignar a" muestra técnicos y admin en orden alfabético | ✅ |
+| 2 | Andrea (admin) | Cambiar estado y guardar | Un solo evento por cambio en el historial | ✅ |
+| 3 | Diego (técnico) | Abrir el detalle de un ticket suyo | Carga, gestiona y muestra nombres | ✅ |
+| 4 | Andrea (admin) | Network → Fetch/XHR → Waterfall | `tickets` y `profiles` salen al mismo tiempo | ✅ |
+| 5 | Andrea (admin) | Abrir un id inexistente | "No se encontró el ticket solicitado" | ✅ |
+| 6 | Andrea (admin) | Lighthouse Mobile en Render | Performance ≥ 80 | ✅ 95 (antes 77–80) · Accessibility 96 · Best Practices 100 · SEO 90 |
+
+Despliegue: el auto-deploy de `b56e713` falló en Render (error del servicio, sin cambios en Dockerfile ni nginx). Se resolvió con Manual Deploy → Deploy latest commit.
