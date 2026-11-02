@@ -380,6 +380,7 @@ El detalle de cliente muestra una franja con link al ticket relacionado. En un s
 | 4 | Abrir el `.txt` descargado | Admin (panel) | Una línea por evento con nombres, tildes y flechas legibles | ✅ |
 | 5 | `borrar_auditoria_antigua` sin tickets cerrados hace más de 2 meses | — | `borrados: 0`; `audit_events` sin cambios | ✅ 30-10 — `borrados: 0` |
 | 6 | Instrucción de la tarea `archivar_auditoria_semanal` (URL y clave leídas desde Vault) | — | 200; se reemplaza el archivo de la semana anterior (`upsert`) | ✅ 30-10 |
-| 7 | `supabase.storage.from('auditoria').list()` desde la consola | Admin (Andrea) | Lista los archivos | ⬜ |
-| 8 | `supabase.storage.from('auditoria').list()` desde la consola | Técnico (Diego) y Cliente | `[]` (la política solo permite al admin) | ⬜ |
-| 9 | `supabase.storage.from('auditoria').upload('prueba.txt', new Blob(['x']))` desde la consola | Admin | Error de RLS: nadie sube archivos desde la app | ⬜ |
+| 7 | `supabase.storage.from('auditoria').list()` desde la consola | Admin (Andrea) | Lista los archivos | ✅ 02-11 — 3 archivos, error null |
+| 8 | `supabase.storage.from('auditoria').list()` desde la consola | Técnico (Diego) y Cliente | `[]` (la política solo permite al admin) | ✅ 02-11 — [] sin error (Diego y cliente) |
+| 9 | `supabase.storage.from('auditoria').upload('prueba.txt', new Blob(['x']))` desde la consola | Admin | Error de RLS: nadie sube archivos desde la app | ✅ 02-11 — 400 "new row violates row-level security policy" |
+| 10 | Ejecución automática de la tarea `archivar_auditoria_semanal` (pg_cron) | — | Aparece el archivo de la semana anterior sin ejecutarlo a mano | ✅ 02-11 — `2026-10-26_a_2026-11-01.txt` creado el __ |
