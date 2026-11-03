@@ -496,3 +496,25 @@ Firefox (última versión estable), sitio en Render. El modo de diseño adaptabl
 ### Defectos encontrados
 
 | 1 | Detalle de cliente y de equipo | Firefox no asigna tipo MIME a los archivos `.md` (`archivo.type` llega vacío): primero `buscarGrupo` los rechazaba y, después de corregirlo, Storage los recibía como `application/octet-stream` y el bucket los rechazaba. | Función `obtenerTipoArchivo()` en `reglas-adjuntos.js` (si no hay tipo y la extensión es `.md`, usa `text/markdown`). Antes de subir se crea una copia del archivo con ese tipo (`new File(...)`), porque Supabase toma el tipo del archivo y no la opción `contentType`. | ✅ |
+
+## CA-11 — Reconstruir el contenedor desde cero (03-11)
+
+Construido en local con `docker build --no-cache` (sin usar capas guardadas de builds anteriores) y ejecutado con `docker run -p 8080:80`, siguiendo solo los pasos del README.
+
+| N.º | Prueba | Resultado esperado | Estado |
+|---|---|---|---|
+| 1 | `docker build --no-cache -t ntek-servicedesk .` | Build exitoso, sin errores | ✅ |
+| 2 | `ls -la /usr/share/nginx/html` dentro de la imagen | Están `index.html`, `css`, `js` y `pantallas`; no están `.git`, `.vscode`, `docs`, `supabase`, `Dockerfile`, `README.md` ni `package.json` | ✅ |
+| 3 | Abrir `http://localhost:8080` | Inicio con estilos | ✅ |
+| 4 | Login con cliente y abrir un ticket | Panel y detalle con datos reales | ✅ |
+| 5 | Response headers del documento | CSP, nosniff, Referrer-Policy, Permissions-Policy y X-Frame-Options | ✅ |
+| 6 | Abrir `/no-existe` | Página 404 propia, Status 404 | ✅ |
+| 7 | Abrir `/pantallas/cliente/a/b/no-existe` | Página 404 propia con estilos | ✅ |
+| 8 | "Ir al inicio" desde el 404 | Vuelve a la página de inicio | ✅ |
+
+### Defectos encontrados
+
+| N.º | Pantalla | Defecto | Corrección | Estado |
+|---|---|---|---|---|
+| 1 | 404 | nginx mostraba su página 404 por defecto ("404 Not Found nginx/1.31.8") en vez de la propia, en local y en Render. | `error_page 404 /pantallas/sistema/404.html;` en `nginx.conf`. Las rutas de `404.html` pasaron de relativas (`../../`) a absolutas (`/`), porque nginx entrega la página en la URL que pidió el usuario. | ✅ |
+| 2 | Imagen Docker | Se copiaban al sitio publicado archivos que no son parte de la app (`.vscode`, `README.md`, `.gitignore`, `package.json`, `package-lock.json`). | Se agregaron a `.dockerignore`. `nginx.conf` se mantiene porque el Dockerfile lo necesita para su propio `COPY`. | ✅ |
