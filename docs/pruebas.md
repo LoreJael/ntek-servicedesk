@@ -518,3 +518,45 @@ Construido en local con `docker build --no-cache` (sin usar capas guardadas de b
 |---|---|---|---|---|
 | 1 | 404 | nginx mostraba su página 404 por defecto ("404 Not Found nginx/1.31.8") en vez de la propia, en local y en Render. | `error_page 404 /pantallas/sistema/404.html;` en `nginx.conf`. Las rutas de `404.html` pasaron de relativas (`../../`) a absolutas (`/`), porque nginx entrega la página en la URL que pidió el usuario. | ✅ |
 | 2 | Imagen Docker | Se copiaban al sitio publicado archivos que no son parte de la app (`.vscode`, `README.md`, `.gitignore`, `package.json`, `package-lock.json`). | Se agregaron a `.dockerignore`. `nginx.conf` se mantiene porque el Dockerfile lo necesita para su propio `COPY`. | ✅ |
+
+## Matriz de casos de aceptación (CA-01 a CA-12) (03-11)
+
+| CA | Escenario | Dónde se probó | Estado |
+|---|---|---|---|
+| CA-01 | Cliente válido inicia sesión y llega a su panel | "CA-01 / CA-02 / CA-04 — Flujo principal (03-11)" | ✅  |
+| CA-02 | Cliente crea ticket con campos obligatorios | "CA-01 / CA-02 / CA-04 — Flujo principal (03-11)"; evento `crear` en RF-12 prueba 1 | ✅  |
+| CA-03 | Cliente A intenta abrir URL de ticket de Cliente B | RF-SEG-03 — Aislamiento entre clientes (06-10) | ✅ |
+| CA-04 | Técnico filtra por estado y toma asignación | "CA-01 / CA-02 / CA-04 — Flujo principal (03-11)"; RLS en RF-07 (28-09) | ✅  |
+| CA-05 | Técnico agrega nota interna y respuesta pública | RF-08 — Comentarios y notas internas (06-10) | ✅ |
+| CA-06 | Adjuntar tipo o tamaño no permitido | RF-09 — Archivos adjuntos (08-10) y límites por tipo (13-10 y 14-10) | ✅ |
+| CA-07 | Nuevo → En progreso → Resuelto con historial | RF-12 — Auditoría (15-10); RF-05 / CA-07 historial en los detalles (20-10 y 21-10) | ✅ |
+| CA-08 | Cliente solicita reapertura de caso resuelto | F-03 / CA-08 — Subticket (27-10). Según lo acordado con Tomás, el original pasa a Cerrado y la atención sigue en un subticket vinculado | ✅ |
+| CA-09 | Administrador desactiva un perfil cliente | RF-11 — Gestión de usuarios (02-10), pruebas 4 a 6 | ✅ |
+| CA-10 | Flujo principal en 360 px | RNF-01 / RNF-03 / CA-10 — Revisión responsive y teclado (02-11) | ✅ |
+| CA-11 | Reconstruir el contenedor desde cero | CA-11 — Reconstruir el contenedor desde cero (03-11) | ✅ |
+| CA-12 | Actualizar la rama de despliegue | "CA-12 — Despliegue en Render (03-11)". La parte de Cloudflare (HTTPS en el subdominio) queda pendiente para la semana 12 | ⏳ |
+
+## CA-01 / CA-02 / CA-04 — Flujo principal (03-11)
+
+Probado en Render desde la interfaz.
+
+| N.º | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Loreto Jael Pradel (cliente) | Iniciar sesión | Llega al panel de cliente; saludo con su nombre y rol "Cliente" en la barra lateral | ✅ |
+| 2 | Loreto Jael Pradel (cliente) | Abrir Perfil | Nombre, teléfono y empresa propios; el correo como identificador | ✅ |
+| 3 | Loreto Jael Pradel (cliente) | Nueva solicitud con título vacío | Mensaje de validación; no se crea ticket | ✅ |
+| 4 | Loreto Jael Pradel (cliente) | Nueva solicitud con todos los campos | Redirige al detalle con N.º, estado Nuevo, fecha de creación y su nombre como autor | ✅ |
+| 5 | Diego (técnico) | Bandeja: filtrar por estado Nuevo | Aparece el ticket de la prueba 4, solo tickets Nuevo | ✅ |
+| 6 | Diego (técnico) | "Tomar caso" en ese ticket | Notificación de éxito; "Asignado" cambia a Diego Muñoz | ✅ |
+| 7 | Diego (técnico) | Recargar la página (F5) | La asignación se mantiene (quedó guardada en la base) | ✅ |
+| 8 | Andrea (admin) | Abrir Auditoría | Eventos `crear` (Loreto Jael Pradel) y `asignar` (Diego Muñoz) del ticket | ✅ |
+
+## CA-12 — Despliegue en Render (03-11)
+
+| N.º | Acción | Resultado esperado | Estado |
+|---|---|---|---|
+| 1 | Push a `main` con la corrección del 404 | Render inicia el despliegue automático y queda en Live | ✅ |
+| 2 | Abrir `https://ntek-servicedesk.onrender.com/no-existe` | Página 404 propia, con estilos (confirma que se publicó la versión nueva) | ✅ |
+| 3 | Abrir `https://ntek-servicedesk.onrender.com/package.json` | 404 (el archivo ya no está en la imagen) | ✅ |
+| 4 | Revisar el candado del navegador en el sitio | HTTPS activo (certificado de Render) | ✅ Certificado válido para `onrender.com`, emitido por Google Trust Services, vence el 20-12-2026 (Render lo renueva automáticamente) |
+| 5 | HTTPS en el subdominio de NTEK con Cloudflare | Pendiente: semana 12, cuando Tomás entregue el subdominio | ⏳ |
