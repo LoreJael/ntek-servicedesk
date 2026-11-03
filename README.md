@@ -16,13 +16,39 @@ HTML, CSS, JavaScript (módulos ES, sin framework), Supabase (Auth, Postgres, St
 - Técnico: gestiona tickets asignados o sin asignar.
 - Administrador: todo lo del técnico + usuarios y auditoría.
 
+## Ejecutar con Docker
+
+**Requisito:** Docker Desktop instalado y abierto (debe decir "Engine running").
+
+La imagen usa `nginx:alpine` y sirve los archivos estáticos del proyecto. La configuración de nginx (`nginx.conf`) define las cabeceras de seguridad y la página 404 propia. Los archivos que no forman parte del sitio quedan fuera de la imagen mediante `.dockerignore`.
+
+1. Construir la imagen desde la carpeta del proyecto:
+
+   ```bash
+   docker build --no-cache -t ntek-servicedesk .
+   ```
+
+2. Ejecutar el contenedor:
+
+   ```bash
+   docker run --rm -p 8080:80 --name ntek-local ntek-servicedesk
+   ```
+
+3. Abrir `http://localhost:8080`.
+
+4. Para detenerlo, presionar `Ctrl + C` en la terminal.
+
+**Configuración:** la app no usa variables de entorno. La URL de Supabase y la llave `anon` (pública) están en `js/supabase-client.js`; la seguridad de los datos depende de las políticas RLS, no de ocultar esa llave. La llave `service_role` nunca se usa en el front-end ni se guarda en el repositorio.
+
+**Despliegue en Render:** el servicio está conectado a la rama `main` y usa este mismo Dockerfile. Cada push a `main` vuelve a desplegar. Si el despliegue automático falla, usar Manual Deploy → Deploy latest commit.
+
 ## Estado del proyecto
 - [x] Etapa 1: Descubrimiento y diseño
 - [x] Etapa 2: Base front-end
 - [x] Etapa 3: Supabase y autenticación
 - [x] Etapa 4: Tickets — creación, listado con paginación de 10, detalle, filtros, gestión y "Tomar caso"
 - [x] Etapa 5: Interacción — listos: comentarios y notas internas, adjuntos con límites por tipo, auditoría (RF-12), historial en ambos detalles y "Aceptar cierre" (F-03). subticket vinculado (CA-08) y cierre automático a los 7 días. Pendiente: confirmación de las reglas del subticket por NTEK
-- [ ] Etapa 6: Panel y calidad — listos: indicadores (RF-10), estados de carga/vacío/error, validación en formularios y en la base, rediseño con identidad NTEK. En curso: Lighthouse y revisión responsive (360 / 768 / 1280 px)
+- [x] Etapa 6: Panel y calidad — listos: indicadores (RF-10), estados de carga/vacío/error, validación en formularios y en la base, rediseño con identidad NTEK. En curso: Lighthouse y revisión responsive (360 / 768 / 1280 px)
 - [ ] Etapa 7: DevOps — listos: Docker, Render y cabeceras de seguridad en nginx (nota A en securityheaders.com). Pendiente: Cloudflare (dominio, HSTS, caché) y documentar el despliegue
 - [ ] Etapa 8: Cierre — manual de usuario, memoria técnica y respaldo SQL
 

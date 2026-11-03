@@ -4,3 +4,8 @@ supabase
 docs
 Dockerfile
 .dockerignore
+.vscode
+README.md
+.gitignore
+package.json
+package-lock.json
