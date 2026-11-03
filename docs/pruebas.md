@@ -439,3 +439,60 @@ Revisado en Live Server con DevTools (modo dispositivo, ancho 360, 768 y 1280 px
 |---|---|---|---|---|
 | 1 | Usuarios | `TypeError` en `usuarios.js:31`: no existía `#buscar-usuario`. El HTML del rediseño del 29-10 no quedó comiteado (solo el JS). | Se rehízo el HTML con encabezado, tarjeta y buscador. | ✅ |
 | 2 | Panel de cliente | En anchos intermedios la tabla "Últimos tickets" era más ancha que su tarjeta y la columna Actualizado quedaba detrás de "Últimos comentarios". | Se agregó `tabla-contenedor` al contenedor de la tabla (`overflow-x: auto`, igual que en las demás tablas). | ✅ |
+
+## Datos de demostración (sección 09 de los requisitos, 03-11)
+
+Revisado en el SQL Editor: 27 tickets en total. Clientes de empresas distintas: Pedro González (Panadería El Trigal Ltda.) y Loreto Jael Pradel (Fairy Pole&Circus SpA); además Lore Jael (Fairy Circus SpA) y Loreto (FairyPole). Equipo: Diego Muñoz y Camila Rojas (técnicos) y Andrea Soto (admin). Todos los datos son ficticios.
+
+| N.º | Caso que cubre | Ticket | Título | Cliente | Asignado | Detalle | Estado |
+|---|---|---|---|---|---|---|---|
+| 1 | Estado Nuevo | `9afb74cd` | WiFi de la sala de ensayo se corta | Lore Jael | Sin asignar | | ✅ |
+| 2 | Estado En revisión | `e4d25850` | Error al abrir el sistema de facturación | Lore Jael | Diego Muñoz | | ✅ |
+| 3 | Estado En progreso | `5d027099` | Correo no sincroniza en el celular | Loreto Jael Pradel | Camila Rojas | | ✅ |
+| 4 | Estado En espera | `95ac757d` | Notebook de recepción no enciende | Lore Jael | Camila Rojas | | ✅ |
+| 5 | Estado Resuelto | `0d39b32e` | Configurar red para nueva oficina | Loreto | Diego Muñoz | | ✅ |
+| 6 | Estado Cerrado | `6af4f944` | Instalar Office en equipo nuevo | Pedro González | Diego Muñoz | | ✅ |
+| 7 | Prioridad Baja | `0d4fb41f` | Crear cuenta de correo para nuevo colaborador | Loreto Jael Pradel | Diego Muñoz | | ✅ |
+| 8 | Prioridad Media | `353c24f2` | Programa de contabilidad se cierra al imprimir | Lore Jael | Andrea Soto | | ✅ |
+| 9 | Prioridad Alta | `178bc8c4` | Error al exportar informe de ventas a Excel | Loreto Jael Pradel | Sin asignar | | ✅ |
+| 10 | Prioridad Crítica | `4a74a41b` | Sin internet en sucursal | Pedro González | Camila Rojas | | ✅ |
+| 11 | Sin asignar | `c63ae86f` | Monitor defectuoso | Loreto Jael Pradel | Sin asignar | | ✅ |
+| 12 | Con adjunto | `4daf62d9` | Impresora de caja no imprime boletas | Pedro González | Sin asignar | 1 adjunto | ✅ |
+| 13 | Con nota interna | `0d9fb9eb` | Batería de notebook dura menos de una hora | Lore Jael | Camila Rojas | 1 respuesta pública y 1 nota interna | ✅ |
+| 14 | Subticket vinculado (F-03 / CA-08) | `6182cb67` | Subticket: No puedo acceder a la carpeta compartida | Loreto Jael Pradel | Sin asignar | Original `0acb644b` (Cerrado) | ✅ |
+
+## RNF-02 / RNF-03 — Lighthouse en el resto de las pantallas (03-11)
+
+Medido en ventana de incógnito, modo Navigation, dispositivo Mobile, con la simulación de red por defecto. Objetivos: Performance ≥ 80 y Accessibility ≥ 90. Continúa la tabla del 23-10 (pruebas 1 a 4).
+
+| N.º | Pantalla | Cuenta | Performance | Accessibility | Best Practices | SEO |
+|---|---|---|---|---|---|---|
+| 5 | Inicio | — | 100 | 100 | 100 | 90 |
+| 6 | Panel de cliente | Cliente (Loreto Jael Pradel) | 93 | 96 | 100 | 90 |
+| 7 | Mis tickets | Cliente (Loreto Jael Pradel) | 95 | 96 | 100 | 90 |
+| 8 | Nueva solicitud | Cliente (Loreto Jael Pradel) | 91 | 96 | 100 | 90 |
+| 9 | Perfil de cliente | Cliente (Loreto Jael Pradel) | 94 | 95 | 100 | 90 |
+| 10 | Indicadores | Técnico (Diego) | 94 | 95 | 100 | 90 |
+| 11 | Perfil de equipo | Técnico (Diego) | 92 | 95 | 100 | 90 |
+| 12 | Usuarios | Admin (Andrea) | 90 | 96 | 100 | 90 |
+| 13 | Auditoría | Admin (Andrea) | 90 | 95 | 100 | 90 |
+
+## RNF-04 — Prueba básica en Firefox (03-11)
+
+Firefox (última versión estable), sitio en Render. El modo de diseño adaptable de Firefox también se abre con Ctrl + Shift + M.
+
+| N.º | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Loreto (cliente) | Iniciar sesión | Llega al panel con su nombre y rol | ✅ |
+| 2 | Loreto (cliente) | Crear un ticket con Ñ y tildes en el título | Cooldown del botón; detalle con su ID y el texto bien escrito | ✅ |
+| 3 | Loreto (cliente) | Subir un PNG en el detalle | Se sube y aparece en la lista | ✅ |
+| 4 | Loreto (cliente) | Subir un `.md` | Se sube y aparece como "Markdown" (Firefox puede informar otro tipo MIME) | ✅ |
+| 5 | Loreto (cliente) | Descargar el archivo | Se descarga sin salir de la página | ✅ |
+| 6 | Diego (técnico) | Bandeja: filtrar y cambiar de página | Filtros y paginación funcionan | ✅ |
+| 7 | Diego (técnico) | Detalle: cambiar estado y guardar | El cambio aparece en el historial | ✅ |
+| 8 | — | Consola durante los flujos anteriores | Sin errores | ✅ |
+| 9 | Loreto (cliente) | Recorrer panel y detalle en 360 px | Sin desplazamiento horizontal | ✅ |
+
+### Defectos encontrados
+
+| 1 | Detalle de cliente y de equipo | Firefox no asigna tipo MIME a los archivos `.md` (`archivo.type` llega vacío): primero `buscarGrupo` los rechazaba y, después de corregirlo, Storage los recibía como `application/octet-stream` y el bucket los rechazaba. | Función `obtenerTipoArchivo()` en `reglas-adjuntos.js` (si no hay tipo y la extensión es `.md`, usa `text/markdown`). Antes de subir se crea una copia del archivo con ese tipo (`new File(...)`), porque Supabase toma el tipo del archivo y no la opción `contentType`. | ✅ |
