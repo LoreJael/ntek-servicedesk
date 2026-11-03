@@ -12,3 +12,17 @@ export function buscarGrupo(mime) {
   }
   return null;
 }
+
+export function obtenerTipoArchivo(archivo) {
+  if (archivo.type) {
+    return archivo.type;
+  }
+
+  const extension = archivo.name.split('.').pop().toLowerCase();
+
+  if (extension === 'md') {
+    return 'text/markdown';
+  }
+
+  return '';
+}

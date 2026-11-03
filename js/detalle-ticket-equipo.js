@@ -5,7 +5,7 @@ import { activarBotonCerrarSesion, nombreUsuario } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { mostrarNotificacion } from './notificaciones.js';
 import { escaparHTML } from './seguridad.js';
-import { reglasAdjuntos, buscarGrupo } from './reglas-adjuntos.js';
+import { reglasAdjuntos, buscarGrupo, obtenerTipoArchivo } from './reglas-adjuntos.js';
 import { crearItemEvento } from './eventos-auditoria.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderEquipo(rolActual);
@@ -528,7 +528,8 @@ function activarFormularioAdjunto() {
             return;
         }
 
-        const grupo = buscarGrupo(archivo.type);
+        const tipoArchivo = obtenerTipoArchivo(archivo);
+        const grupo = buscarGrupo(tipoArchivo);
 
         if (!grupo) {
             mostrarNotificacion('Solo se permiten archivos JPG, PNG, PDF o Markdown (.md).', 'error');
@@ -557,9 +558,10 @@ function activarFormularioAdjunto() {
         const extension = archivo.name.split('.').pop().toLowerCase();
         const ruta = `${ticket.id}/${crypto.randomUUID()}.${extension}`;
 
+        const archivoConTipo = new File([archivo], archivo.name, { type: tipoArchivo });
         const { error: errorSubida } = await supabase.storage
             .from('adjuntos')
-            .upload(ruta, archivo);
+            .upload(ruta, archivoConTipo);
 
         if (errorSubida) {
             mostrarNotificacion('No se pudo subir el archivo. Intenta de nuevo.', 'error');
@@ -572,7 +574,7 @@ function activarFormularioAdjunto() {
                 ticket_id: ticket.id,
                 uploaded_by: idUsuarioActual,
                 path: ruta,
-                mime_type: archivo.type,
+                mime_type: tipoArchivo,
                 size_bytes: archivo.size
             });
 
