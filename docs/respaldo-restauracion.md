@@ -43,10 +43,18 @@ Al respaldar los datos, `pg_dump` advierte que `tickets` tiene una llave foráne
    npx supabase db push
    ```
 
-4. Cargar los datos con `psql`. Se usa desde la imagen oficial de Postgres en Docker, para no instalarlo aparte:
+4. Cargar los datos con `psql`, **sin la sección `storage`**. Los buckets ya los crean las migraciones (si se cargan de nuevo, falla por llave duplicada) y las fichas de `storage.objects` no sirven sin los archivos, que no vienen en el respaldo.
+
+   Primero buscar en qué línea empieza la sección `storage`:
+
+   ```powershell
+   Select-String -Path respaldos\AAAA-MM-DD_datos.sql -Pattern '^COPY "storage"' | Select-Object -First 1
+   ```
+
+   Luego cargar solo hasta la línea anterior (en el respaldo del 03-11, la sección empieza en la 427, así que se carga hasta la 426). Se usa `psql` desde la imagen oficial de Postgres en Docker, para no instalarlo aparte. El corte se hace con `head` dentro del contenedor, para no cambiar la codificación del archivo (Ñ, tildes, emoji):
 
    ```bash
-   docker run --rm -v "${PWD}/respaldos:/respaldos" postgres:17 psql "<cadena-de-conexión>" --single-transaction --variable ON_ERROR_STOP=1 --file /respaldos/AAAA-MM-DD_datos.sql
+   docker run --rm -v "${PWD}/respaldos:/respaldos" postgres:17 sh -c "head -n <línea-anterior> /respaldos/AAAA-MM-DD_datos.sql | psql '<cadena-de-conexión>' --single-transaction --variable ON_ERROR_STOP=1"
    ```
 
    `--single-transaction` hace que, si una línea falla, no se guarde nada (no queda una restauración a medias). `ON_ERROR_STOP=1` detiene la carga en el primer error.
@@ -59,3 +67,20 @@ Al respaldar los datos, `pg_dump` advierte que `tickets` tiene una llave foráne
 - Iniciar sesión con una cuenta de prueba de cada rol.
 - Comparar la cantidad de filas de `tickets`, `comments` y `audit_events` con las del proyecto original (`select count(*) from ...`).
 - Revisar en Auditoría que no aparezcan eventos nuevos con la fecha de la restauración.
+
+## Probar la restauración en local
+
+Probado el 04-11 con el respaldo del 03-11 (detalle en `docs/pruebas.md`).
+
+1. Con Docker Desktop abierto: `npx supabase start`. Levanta un Supabase local y aplica todas las migraciones (crea la estructura y los buckets). No toca el proyecto en la nube.
+2. Cargar los datos como en el punto 4, con esta cadena de conexión:
+
+   ```
+   postgresql://postgres:postgres@host.docker.internal:54322/postgres
+   ```
+
+   Se usa `host.docker.internal` y no `127.0.0.1`, porque `psql` corre dentro de un contenedor: para el contenedor, `127.0.0.1` es él mismo.
+3. Para iniciar sesión contra la base local, cambiar **temporalmente** en `js/supabase-client.js` la URL por `http://127.0.0.1:54321` y la llave por la `ANON_KEY` de `npx supabase status -o env`, y abrir la app con Live Server. Al terminar: `git restore js/supabase-client.js` (este cambio nunca se sube).
+4. Apagar con `npx supabase stop`.
+
+Si se vuelve a cargar sobre una base local que ya tiene datos, primero `npx supabase db reset` (sin `--linked`): borra la base **local** y vuelve a aplicar las migraciones.

@@ -560,3 +560,28 @@ Probado en Render desde la interfaz.
 | 3 | Abrir `https://ntek-servicedesk.onrender.com/package.json` | 404 (el archivo ya no está en la imagen) | ✅ |
 | 4 | Revisar el candado del navegador en el sitio | HTTPS activo (certificado de Render) | ✅ Certificado válido para `onrender.com`, emitido por Google Trust Services, vence el 20-12-2026 (Render lo renueva automáticamente) |
 | 5 | HTTPS en el subdominio de NTEK con Cloudflare | Pendiente: semana 12, cuando Tomás entregue el subdominio | ⏳ |
+
+## Respaldo y restauración — prueba en Supabase local (04-11)
+
+Restauración del respaldo `2026-11-03_datos.sql` en un Supabase local (`npx supabase start`), siguiendo `docs/respaldo-restauracion.md`.
+
+| N.º | Prueba | Resultado esperado | Estado |
+|---|---|---|---|
+| 1 | `npx supabase start` | Se aplican las 31 migraciones sin errores (estructura, RLS, funciones, triggers y buckets) | ✅ |
+| 2 | Cargar los datos con `psql` (hasta antes de la sección `storage`) | Sin errores; `COPY` con 7 usuarios de Auth, 7 perfiles, 29 tickets, 13 adjuntos, 46 eventos y 15 comentarios | ✅ |
+| 3 | Comparar conteos entre la nube y local | `auth.users`, `profiles`, `tickets`, `comments` y `attachments` iguales | ✅ |
+| 4 | `audit_events`: nube 48, local 46 | Diferencia explicada: 2 eventos `cerrar` del cierre automático (pg_cron) del 04-11 a las 04:00, posteriores al respaldo | ✅ |
+| 5 | Fecha del último evento en local | 03-11 17:04, anterior al respaldo: la carga no disparó los triggers de auditoría | ✅ |
+| 6 | Request URL en la pestaña Red | Las consultas van a `127.0.0.1:54321` (base local); `Content-Range: 0-28/*` = 29 tickets | ✅ |
+| 7 | Login con Andrea (admin) | Bandeja con todos los tickets; los 2 tickets cerrados en la nube a las 04:00 siguen Resueltos en local | ✅ |
+| 8 | Login con Pedro (cliente) | Solo ve sus propios tickets (RLS restaurada) | ✅ |
+| 9 | Login con Diego (técnico) | Bandeja con sus tickets y los sin asignar | ✅ |
+| 10 | `git restore js/supabase-client.js` | El archivo vuelve a apuntar a la nube; no queda en `git status` | ✅ |
+
+### Defectos encontrados
+
+| N.º | Parte | Defecto | Corrección | Estado |
+|---|---|---|---|---|
+| 1 | `storage.buckets` | Las migraciones ya insertan los buckets `adjuntos` y `auditoria`; cargar el respaldo completo choca por llave duplicada. | Se carga solo hasta antes de la sección `storage`; los buckets los crean las migraciones. Documentado en el punto 4. | ✅ |
+| 2 | Versión de Storage | `column "lifecycle_configuration" of relation "buckets" does not exist`: Storage en la nube es más nuevo que el de la CLI v2.117.0. Con `--single-transaction` no se guardó nada. | Mismo corte: no se carga la sección `storage`. No se actualiza la CLI hasta después de la entrega. | ✅ |
+| 3 | Documento | El punto 4 usaba `127.0.0.1` dentro del contenedor y cargaba el archivo completo. | `host.docker.internal` para pruebas locales y carga sin `storage`. | ✅ |
