@@ -43,12 +43,12 @@ erDiagram
     }
 
     %% entity_id no es una FK real: es una referencia polimorfica.
-    %% La tabla a la que apunta depende del valor de entity_type (ticket, comment, attachment, etc).
+    %% La tabla a la que apunta depende del valor de entity (ticket, comment, attachment, etc).
     AUDIT_EVENTS {
         uuid id PK
         uuid actor_id FK
         string action
-        string entity_type
+        string entity
         uuid entity_id
         json metadata
         timestamp created_at
