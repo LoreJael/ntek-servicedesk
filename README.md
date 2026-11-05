@@ -90,7 +90,83 @@ Configuración necesaria (no está en el repositorio):
 Para archivar una semana a mano, enviar `{"desde": "AAAA-MM-DD"}` (un lunes) con la cabecera `x-clave-auditoria`.
 
 ## Instalación y despliegue
-Pendiente (etapa 7).
+
+Pasos para levantar el sistema desde cero en un proyecto de Supabase y un servicio de Render nuevos.
+
+### Requisitos
+
+- Git y Node.js (para usar la CLI de Supabase con `npx`).
+- Docker Desktop (para probar la imagen en local).
+- Cuenta de Supabase y cuenta de Render conectada a GitHub.
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/LoreJael/ntek-servicedesk.git
+cd ntek-servicedesk
+npm install
+```
+
+`npm install` instala la CLI de Supabase (v2.117.0), definida en `package.json`.
+
+### 2. Crear la base de datos en Supabase
+
+1. Crear un proyecto nuevo en Supabase y copiar su **Reference ID** (Project Settings → General).
+2. Vincular el proyecto y aplicar las migraciones:
+
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref <reference-id>
+   npx supabase db push
+   ```
+
+   Las migraciones de `supabase/migrations/` crean las tablas, restricciones, políticas RLS, triggers, funciones, los buckets `adjuntos` y `auditoria`, y las tareas de `pg_cron` (cierre automático y archivo semanal).
+
+3. En **Authentication → URL Configuration**:
+   - Site URL: la URL de Render (paso 5).
+   - Redirect URLs: la URL de Render y la URL local que se use para desarrollo.
+
+4. Configurar la Edge Function de auditoría y sus secretos: ver la sección [Archivo semanal de auditoría](#archivo-semanal-de-auditoría).
+
+5. Crear el primer administrador: registrarse desde la app (queda con rol `cliente`) y luego, en el SQL Editor:
+
+   ```sql
+   update profiles
+   set role = 'admin'
+   where id = '<id-del-usuario>';
+   ```
+
+   El `id` se ve en Authentication → Users. Los demás roles se asignan después desde la pantalla Usuarios.
+
+### 3. Conectar el front-end con el proyecto
+
+Si se usa un proyecto de Supabase distinto al actual, cambiar la URL en dos archivos:
+
+| Archivo | Qué cambiar |
+|---|---|
+| `js/supabase-client.js` | `SUPABASE_URL` y `SUPABASE_ANON_KEY` (Project Settings → API). La llave `anon` es pública; nunca usar la `service_role`. |
+| `nginx.conf` | La URL de Supabase dentro de `connect-src` en `Content-Security-Policy`. Si no se cambia, el navegador bloquea las consultas. |
+
+### 4. Probar en local
+
+Ver [Ejecutar con Docker](#ejecutar-con-docker).
+
+### 5. Desplegar en Render
+
+1. New → Web Service → conectar el repositorio de GitHub.
+2. Elegir **Docker** como entorno (en Settings aparece como Dockerfile Path: `./Dockerfile`). Branch: `main`.
+3. Plan: Free. No se necesitan variables de entorno.
+4. Crear el servicio y esperar el estado **Live**.
+
+Cada push a `main` vuelve a desplegar. Si el despliegue automático falla, usar Manual Deploy → Deploy latest commit. En el plan Free el servicio se suspende sin uso y la primera carga tarda unos segundos.
+
+### 6. Cloudflare
+
+Pendiente: requiere el dominio o subdominio de NTEK. Se usará para DNS, HTTPS con HSTS y caché.
+
+### Respaldo y datos de demostración
+
+El respaldo de esquema y datos, y cómo restaurarlo, están en [docs/respaldo-restauracion.md](docs/respaldo-restauracion.md).
 
 Proyecto desarrollado durante la práctica profesional.
 
