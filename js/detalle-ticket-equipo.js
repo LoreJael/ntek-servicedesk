@@ -7,25 +7,10 @@ import { mostrarNotificacion } from './notificaciones.js';
 import { escaparHTML } from './seguridad.js';
 import { reglasAdjuntos, buscarGrupo, obtenerTipoArchivo } from './reglas-adjuntos.js';
 import { crearItemEvento } from './eventos-auditoria.js';
+import { etiquetasEstado, etiquetasPrioridad } from './etiquetas.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
-
-const etiquetasEstado = {
-    nuevo: "Nuevo",
-    en_revision: "En revisión",
-    en_progreso: "En progreso",
-    en_espera: "En espera",
-    resuelto: "Resuelto",
-    cerrado: "Cerrado"
-};
-
-const etiquetasPrioridad = {
-    baja: "Baja",
-    media: "Media",
-    alta: "Alta",
-    critica: "Crítica"
-};
 
 function obtenerIniciales(nombre) {
     return nombre

@@ -5,25 +5,10 @@ import { activarBotonCerrarSesion } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { escaparHTML } from './seguridad.js';
 import { mostrarEstadoVacio, mostrarErrorRecuperable } from './estados.js';
+import { etiquetasEstado, etiquetasPrioridad } from './etiquetas.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderEquipo(rolActual);
 activarBotonCerrarSesion();
-
-const etiquetasEstado = {
-  nuevo: "Nuevo",
-  en_revision: "En revisión",
-  en_progreso: "En progreso",
-  en_espera: "En espera",
-  resuelto: "Resuelto",
-  cerrado: "Cerrado"
-};
-
-const etiquetasPrioridad = {
-  baja: "Baja",
-  media: "Media",
-  alta: "Alta",
-  critica: "Crítica"
-};
 
 const { data: tickets, error } = await supabase
   .from('tickets')

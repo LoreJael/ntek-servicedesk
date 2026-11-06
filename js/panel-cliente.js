@@ -5,21 +5,13 @@ import { activarBotonCerrarSesion, nombreUsuario } from './sesion.js';
 import { supabase } from './supabase-client.js';
 import { escaparHTML } from './seguridad.js';
 import { mostrarEstadoVacio } from './estados.js';
+import { etiquetasEstado, etiquetasPrioridad } from './etiquetas.js';
 
 document.getElementById('header-placeholder').innerHTML = crearHeaderCliente(rolActual);
 activarBotonCerrarSesion();
 
 const primerNombre = nombreUsuario.split(' ')[0];
 document.querySelector('#saludo').textContent = `Hola, ${primerNombre}`;
-
-const etiquetasEstado = {
-  nuevo: "Nuevo",
-  en_revision: "En revisión",
-  en_progreso: "En progreso",
-  en_espera: "En espera",
-  resuelto: "Resuelto",
-  cerrado: "Cerrado"
-};
 
 const { data: datosUsuario } = await supabase.auth.getUser();
 const idUsuarioActual = datosUsuario.user.id;

@@ -442,7 +442,7 @@ Revisado en Live Server con DevTools (modo dispositivo, ancho 360, 768 y 1280 px
 
 ## Datos de demostración (sección 09 de los requisitos, 03-11)
 
-Revisado en el SQL Editor: 27 tickets en total. Clientes de empresas distintas: Pedro González (Panadería El Trigal Ltda.) y Loreto Jael Pradel (Fairy Pole&Circus SpA); además Lore Jael (Fairy Circus SpA) y Loreto (FairyPole). Equipo: Diego Muñoz y Camila Rojas (técnicos) y Andrea Soto (admin). Todos los datos son ficticios.
+Revisado en el SQL Editor: 27 tickets en total. Clientes de empresas distintas: Pedro González (Panadería El Trigal Ltda.), Loreto Jael Pradel (Fairy Pole&Circus SpA), Sofía Herrera (Ferretería Los Andes Ltda.) y Matías Contreras (Transportes Biobío SpA). Equipo NTEK: Diego Muñoz y Camila Rojas (técnicos) y Andrea Soto (admin). Nombres y empresas actualizados el 05-11 desde el SQL Editor. Todos los datos son ficticios.
 
 | N.º | Caso que cubre | Ticket | Título | Cliente | Asignado | Detalle | Estado |
 |---|---|---|---|---|---|---|---|
