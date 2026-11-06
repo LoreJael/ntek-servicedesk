@@ -585,3 +585,26 @@ Restauración del respaldo `2026-11-03_datos.sql` en un Supabase local (`npx sup
 | 1 | `storage.buckets` | Las migraciones ya insertan los buckets `adjuntos` y `auditoria`; cargar el respaldo completo choca por llave duplicada. | Se carga solo hasta antes de la sección `storage`; los buckets los crean las migraciones. Documentado en el punto 4. | ✅ |
 | 2 | Versión de Storage | `column "lifecycle_configuration" of relation "buckets" does not exist`: Storage en la nube es más nuevo que el de la CLI v2.117.0. Con `--single-transaction` no se guardó nada. | Mismo corte: no se carga la sección `storage`. No se actualiza la CLI hasta después de la entrega. | ✅ |
 | 3 | Documento | El punto 4 usaba `127.0.0.1` dentro del contenedor y cargaba el archivo completo. | `host.docker.internal` para pruebas locales y carga sin `storage`. | ✅ |
+
+## Registro de defectos corregidos
+
+Resumen de los defectos encontrados durante el desarrollo y las pruebas. El detalle y las pruebas de cada uno están en la sección indicada.
+
+| N.º | Fecha | Área | Defecto | Corrección | Sección con la prueba |
+|---|---|---|---|---|---|
+| 1 | 08-10 | Seguridad (RLS) | Dos políticas de update duplicadas en `tickets` (`update_ticket_tecnico`, `update_ticket_admin`) se sumaban a las nuevas y abrían más permisos de los esperados. | Se eliminaron; quedan solo las políticas de RF-07. | RF-07 |
+| 2 | 09-10 | Nueva solicitud | Con mala conexión, varios clics en "Enviar" creaban tickets duplicados (observación de NTEK). | Cooldown: botón deshabilitado y mensaje "Procesando solicitud..." hasta recibir respuesta. | RF-03 |
+| 3 | 14-10 | Adjuntos | Mismo riesgo de duplicados al subir archivos. Además, al apagar el botón antes de validar, un `return` lo dejaba deshabilitado para siempre. | Cooldown después de las validaciones; el botón se reactiva antes de cada `return` y al terminar. | RF-09 |
+| 4 | 14-10 | Seguridad (Storage) | `delete_adjuntos_propios` permitía borrar desde la consola un archivo propio con ficha en `attachments`, dejándola huérfana. | La política solo permite borrar archivos propios sin ficha (`adjunto_tiene_ficha()`). | RF-09 |
+| 5 | 15-10 | Navegación | Un técnico que abría una página de admin era enviado al login en vez de a "Acceso denegado". | `protegerRuta` separa "perfil no leído" (login) de "rol no permitido" (Acceso denegado). | Defecto 15-10 — Rol no permitido |
+| 6 | 15-10 | Responsive (RNF-01) | El header horizontal se desbordaba a ~960 px y generaba desplazamiento horizontal. | Rediseño con barra lateral; las tablas se desplazan dentro de `.tabla-contenedor`. | Defecto 15-10 — Header se desborda |
+| 7 | 21-10 | Bandeja | "Tomar caso" aparecía en tickets Cerrados sin asignar; la RLS bloqueaba el cambio, pero el mensaje decía "ya fue tomado por otro técnico". | El botón solo se muestra en tickets sin asignar que no están cerrados. | RF-07 — "Tomar caso" en tickets cerrados |
+| 8 | 23-10 | Accesibilidad (RNF-03) | Contraste justo del link activo de la barra lateral (4,74:1). | Color cambiado a `--color-acento` (4,94:1). | RNF-02 / RNF-03 — Lighthouse (23-10) |
+| 9 | 23-10 | Rendimiento (RNF-02) | Detalle de equipo con Performance 77–80, bajo el objetivo de 80, por consultas en cadena. | `getSession()`, `preconnect` y consultas en paralelo con `Promise.all`: Performance 95. | RNF-02 — Consultas en paralelo (02-11) |
+| 10 | 02-11 | Usuarios | `TypeError`: no existía `#buscar-usuario`, porque el HTML del rediseño no se había comiteado. | Se rehízo el HTML con encabezado, tarjeta y buscador. | RNF-01 / RNF-03 / CA-10 |
+| 11 | 02-11 | Panel de cliente | En anchos intermedios, la tabla "Últimos tickets" era más ancha que su tarjeta. | `tabla-contenedor` en el contenedor de la tabla. | RNF-01 / RNF-03 / CA-10 |
+| 12 | 03-11 | Compatibilidad (RNF-04) | Firefox no asigna tipo MIME a los `.md`; la app y Storage los rechazaban. | `obtenerTipoArchivo()` deduce el tipo por la extensión y se sube una copia con `new File(...)`. | RNF-04 — Firefox |
+| 13 | 03-11 | Docker / nginx | nginx mostraba su 404 por defecto en vez de la propia. | `error_page 404` en `nginx.conf` y rutas absolutas en `404.html`. | CA-11 |
+| 14 | 03-11 | Imagen Docker | Se publicaban archivos que no son de la app (`.vscode`, `README.md`, `package.json`...). | Agregados a `.dockerignore`. | CA-11 |
+| 15 | 04-11 | Restauración | Cargar el respaldo completo fallaba: buckets duplicados y columna de Storage inexistente en la CLI local. | Se carga solo hasta antes de la sección `storage`; los buckets los crean las migraciones. | Respaldo y restauración |
+| 16 | 04-11 | Documentación | El procedimiento usaba `127.0.0.1` dentro del contenedor. | `host.docker.internal` y carga sin `storage`. | Respaldo y restauración |
