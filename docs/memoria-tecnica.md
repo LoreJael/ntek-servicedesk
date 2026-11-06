@@ -168,10 +168,11 @@ Los dos procesos corren en la base con `pg_cron`, sin intervención del usuario.
 | Fechas en UTC en la base y hora de Chile al mostrar | Evita errores con cambios de horario. |
 | Cargas en paralelo con `Promise.all` en los detalles | Lighthouse Mobile Performance del detalle de equipo subió de 77–80 a 95. |
 | Repositorio público sin credenciales | Las cuentas de prueba se entregan por canal privado. |
+| La vista de Auditoría muestra los últimos 7 días | Indicación de NTEK; coincide con el archivo semanal, que guarda cada semana en Storage. |
 
 ## 6. Pendientes conocidos
 
-- **Cloudflare (etapa 7):** dominio o subdominio de NTEK, HTTPS con HSTS y caché. Cierra CA-12. A la espera del dominio.
+- **Cloudflare (etapa 7):** NTEK entregará un subdominio; con él se configuran HTTPS con HSTS y caché, y se cierra CA-12.
 - **Logo oficial de NTEK:** la barra lateral usa texto mientras tanto.
 - **Auditoría:** hoy muestra los últimos 50 eventos; por confirmar si se pagina y si se muestra el título del ticket junto al N.º.
 - **README:** completar la sección "Instalación y despliegue".

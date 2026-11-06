@@ -586,15 +586,27 @@ Restauración del respaldo `2026-11-03_datos.sql` en un Supabase local (`npx sup
 | 2 | Versión de Storage | `column "lifecycle_configuration" of relation "buckets" does not exist`: Storage en la nube es más nuevo que el de la CLI v2.117.0. Con `--single-transaction` no se guardó nada. | Mismo corte: no se carga la sección `storage`. No se actualiza la CLI hasta después de la entrega. | ✅ |
 | 3 | Documento | El punto 4 usaba `127.0.0.1` dentro del contenedor y cargaba el archivo completo. | `host.docker.internal` para pruebas locales y carga sin `storage`. | ✅ |
 
+## Cooldown contra solicitudes duplicadas (06-11)
+
+Probado con la red simulada en Slow 3G (DevTools → Network), para que la respuesta tarde y se puedan hacer varios clics.
+
+| N.º | Pantalla | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|---|
+| 1 | Nueva solicitud | Cliente | Hacer 3 clics seguidos en Enviar | Botón deshabilitado con "Procesando solicitud..."; se crea un solo ticket | ✅ |
+| 2 | Nueva solicitud | Cliente | Enviar con el título vacío | Mensaje de validación; el botón sigue habilitado | ✅ |
+| 3 | Detalle de cliente | Cliente | Hacer 3 clics seguidos en subir adjunto | Botón deshabilitado con "Subiendo archivo..."; se sube un solo archivo | ✅ |
+| 4 | Detalle de cliente | Cliente | Intentar subir un tipo no permitido | Mensaje de error; el botón sigue habilitado | ✅ |
+| 5 | Detalle de equipo | Técnico | Hacer 3 clics seguidos en subir adjunto | Un solo archivo subido | ✅ |
+
 ## Registro de defectos corregidos
 
 Resumen de los defectos encontrados durante el desarrollo y las pruebas. El detalle y las pruebas de cada uno están en la sección indicada.
 
 | N.º | Fecha | Área | Defecto | Corrección | Sección con la prueba |
 |---|---|---|---|---|---|
-| 1 | 08-10 | Seguridad (RLS) | Dos políticas de update duplicadas en `tickets` (`update_ticket_tecnico`, `update_ticket_admin`) se sumaban a las nuevas y abrían más permisos de los esperados. | Se eliminaron; quedan solo las políticas de RF-07. | RF-07 |
-| 2 | 09-10 | Nueva solicitud | Con mala conexión, varios clics en "Enviar" creaban tickets duplicados (observación de NTEK). | Cooldown: botón deshabilitado y mensaje "Procesando solicitud..." hasta recibir respuesta. | RF-03 |
-| 3 | 14-10 | Adjuntos | Mismo riesgo de duplicados al subir archivos. Además, al apagar el botón antes de validar, un `return` lo dejaba deshabilitado para siempre. | Cooldown después de las validaciones; el botón se reactiva antes de cada `return` y al terminar. | RF-09 |
+| 1 | 08-10 | Seguridad (RLS) | Dos políticas de update duplicadas en `tickets` (`update_ticket_tecnico`, `update_ticket_admin`) se sumaban a las nuevas y abrían más permisos de los esperados. | Se eliminaron; quedan solo las políticas de RF-07. | RF-07: políticas RLS de UPDATE (28-09) |
+| 2 | 09-10 | Nueva solicitud | Con mala conexión, varios clics en "Enviar" creaban tickets duplicados (observación de NTEK). | Cooldown: botón deshabilitado y mensaje "Procesando solicitud..." hasta recibir respuesta. | Cooldown contra solicitudes duplicadas (06-11) |
+| 3 | 14-10 | Adjuntos | Mismo riesgo de duplicados al subir archivos. Además, al apagar el botón antes de validar, un `return` lo dejaba deshabilitado para siempre. | Cooldown después de las validaciones; el botón se reactiva antes de cada `return` y al terminar. | Cooldown contra solicitudes duplicadas (06-11) |
 | 4 | 14-10 | Seguridad (Storage) | `delete_adjuntos_propios` permitía borrar desde la consola un archivo propio con ficha en `attachments`, dejándola huérfana. | La política solo permite borrar archivos propios sin ficha (`adjunto_tiene_ficha()`). | RF-09 |
 | 5 | 15-10 | Navegación | Un técnico que abría una página de admin era enviado al login en vez de a "Acceso denegado". | `protegerRuta` separa "perfil no leído" (login) de "rol no permitido" (Acceso denegado). | Defecto 15-10 — Rol no permitido |
 | 6 | 15-10 | Responsive (RNF-01) | El header horizontal se desbordaba a ~960 px y generaba desplazamiento horizontal. | Rediseño con barra lateral; las tablas se desplazan dentro de `.tabla-contenedor`. | Defecto 15-10 — Header se desborda |
