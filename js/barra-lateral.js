@@ -3,8 +3,8 @@ import { icono } from './iconos.js';
 export function crearLogo() {
   return `
     <p class="logo">
-      <span class="logo-marca">${icono('logo', 22)}</span>
-      <span class="logo-texto">NTEK <small>ServiceDesk Lite</small></span>
+      <img class="logo-imagen" src="../../img/logo-ntek.webp" alt="NTEK">
+      <span class="logo-texto"><small>ServiceDesk Lite</small></span>
     </p>
   `;
 }

@@ -98,6 +98,12 @@ body:not(.verificando):has(> #header-placeholder) {
   font-weight: 600;
 }
 
+.logo-imagen {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+
 #header-placeholder .nav-principal {
   flex-direction: column;
   gap: 1.5rem;
