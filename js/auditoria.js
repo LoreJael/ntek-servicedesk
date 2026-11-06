@@ -22,7 +22,7 @@ function dibujarEventos(eventos) {
     listaAuditoria.innerHTML = '';
 
     if (eventos.length === 0) {
-        mostrarEstadoVacio(listaAuditoria, 'Todavía no hay movimientos registrados.');
+        mostrarEstadoVacio(listaAuditoria, 'No hay movimientos en los últimos 7 días.');
         return;
     }
 
@@ -36,11 +36,14 @@ async function cargarAuditoria() {
         .from('profiles')
         .select('id, full_name');
 
+    const haceUnaSemana = new Date();
+    haceUnaSemana.setDate(haceUnaSemana.getDate() - 7);
+
     const { data: eventos, error: errorEventos } = await supabase
         .from('audit_events')
         .select('id, actor_id, action, entity_id, metadata, created_at')
-        .order('created_at', { ascending: false })
-        .limit(50);
+        .gte('created_at', haceUnaSemana.toISOString())
+        .order('created_at', { ascending: false });
 
     if (errorPerfiles || errorEventos) {
         mostrarErrorRecuperable(listaAuditoria, 'No pudimos cargar la auditoría.', () => location.reload());
