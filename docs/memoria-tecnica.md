@@ -172,7 +172,6 @@ Los dos procesos corren en la base con `pg_cron`, sin intervención del usuario.
 ## 6. Pendientes conocidos
 
 - **Cloudflare (etapa 7):** dominio o subdominio de NTEK, HTTPS con HSTS y caché. Cierra CA-12. A la espera del dominio.
-- **Reglas del subticket:** implementadas; falta la confirmación formal de NTEK.
 - **Logo oficial de NTEK:** la barra lateral usa texto mientras tanto.
 - **Auditoría:** hoy muestra los últimos 50 eventos; por confirmar si se pagina y si se muestra el título del ticket junto al N.º.
 - **README:** completar la sección "Instalación y despliegue".
