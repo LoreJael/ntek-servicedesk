@@ -36,14 +36,18 @@ const contenedorPaginacion = document.querySelector('#paginacion');
 let ticketsFiltrados = [];
 
 async function cargarTickets() {
-  const { data: datosTickets, error: errorTickets } = await supabase
-    .from('tickets')
-    .select('*')
-    .order('updated_at', { ascending: false });
-
-  const { data: datosPerfiles, error: errorPerfiles } = await supabase
-    .from('profiles')
-    .select('id, full_name, company');
+    const [
+    { data: datosTickets, error: errorTickets },
+    { data: datosPerfiles, error: errorPerfiles }
+  ] = await Promise.all([
+    supabase
+      .from('tickets')
+      .select('*')
+      .order('updated_at', { ascending: false }),
+    supabase
+      .from('profiles')
+      .select('id, full_name, company')
+  ]);
 
   if (errorTickets || errorPerfiles) {
     console.error(errorTickets || errorPerfiles);
