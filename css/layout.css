@@ -73,18 +73,6 @@ body:not(.verificando):has(> #header-placeholder) {
   padding: 0 0.5rem;
 }
 
-.logo-marca {
-  flex-shrink: 0;
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background-color: var(--color-acento);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .logo-texto {
   display: flex;
   flex-direction: column;
