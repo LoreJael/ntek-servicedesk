@@ -1,0 +1,9 @@
+create index if not exists tickets_created_by_idx      on public.tickets (created_by);
+create index if not exists tickets_assigned_to_idx     on public.tickets (assigned_to);
+create index if not exists comments_ticket_id_idx      on public.comments (ticket_id);
+create index if not exists comments_author_id_idx      on public.comments (author_id);
+create index if not exists attachments_ticket_id_idx   on public.attachments (ticket_id);
+create index if not exists attachments_uploaded_by_idx on public.attachments (uploaded_by);
+create index if not exists audit_events_actor_id_idx   on public.audit_events (actor_id);
+create index if not exists audit_events_entity_id_idx  on public.audit_events (entity_id);
+create index if not exists audit_events_created_at_idx on public.audit_events (created_at);
