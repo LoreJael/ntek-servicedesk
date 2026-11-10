@@ -32,19 +32,22 @@ function dibujarEventos(eventos) {
 }
 
 async function cargarAuditoria() {
-    const { data: datosPerfiles, error: errorPerfiles } = await supabase
-        .from('profiles')
-        .select('id, full_name');
-
-    const haceUnaSemana = new Date();
+       const haceUnaSemana = new Date();
     haceUnaSemana.setDate(haceUnaSemana.getDate() - 7);
 
-    const { data: eventos, error: errorEventos } = await supabase
-        .from('audit_events')
-        .select('id, actor_id, action, entity_id, metadata, created_at')
-        .gte('created_at', haceUnaSemana.toISOString())
-        .order('created_at', { ascending: false });
-
+    const [
+        { data: datosPerfiles, error: errorPerfiles },
+        { data: eventos, error: errorEventos }
+    ] = await Promise.all([
+        supabase
+            .from('profiles')
+            .select('id, full_name'),
+        supabase
+            .from('audit_events')
+            .select('id, actor_id, action, entity_id, metadata, created_at')
+            .gte('created_at', haceUnaSemana.toISOString())
+            .order('created_at', { ascending: false })
+    ]);
     if (errorPerfiles || errorEventos) {
         mostrarErrorRecuperable(listaAuditoria, 'No pudimos cargar la auditoría.', () => location.reload());
         return;
