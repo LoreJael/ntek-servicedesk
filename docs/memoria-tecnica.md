@@ -169,13 +169,11 @@ Los dos procesos corren en la base con `pg_cron`, sin intervención del usuario.
 | Cargas en paralelo con `Promise.all` en los detalles | Lighthouse Mobile Performance del detalle de equipo subió de 77–80 a 95. |
 | Repositorio público sin credenciales | Las cuentas de prueba se entregan por canal privado. |
 | La vista de Auditoría muestra los últimos 7 días | Indicación de NTEK; coincide con el archivo semanal, que guarda cada semana en Storage. |
+| La vista de Auditoría muestra los últimos 7 días | Indicación de NTEK; coincide con el archivo semanal, que guarda cada semana en Storage. Es solo un filtro de la vista: la tabla `audit_events` no se borra por esto (la limpieza la hace la tarea semanal, con los tickets cerrados hace más de 2 meses). |
 
 ## 6. Pendientes conocidos
 
 - **Cloudflare (etapa 7):** NTEK entregará un subdominio; con él se configuran HTTPS con HSTS y caché, y se cierra CA-12.
-- **Logo oficial de NTEK:** la barra lateral usa texto mientras tanto.
-- **Auditoría:** hoy muestra los últimos 50 eventos; por confirmar si se pagina y si se muestra el título del ticket junto al N.º.
-- **README:** completar la sección "Instalación y despliegue".
 - **Plan Free de Render:** el servicio se suspende sin uso y tarda en responder la primera vez.
 - **Supabase CLI:** se mantiene la versión v2.117.0 hasta la entrega, para no cambiar el entorno con que se probó la restauración.
 - **Opcional:** PWA instalable, solo si alcanza el tiempo.

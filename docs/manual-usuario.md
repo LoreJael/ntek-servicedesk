@@ -126,7 +126,7 @@ Lista de todas las cuentas con nombre, empresa, teléfono, rol y estado. Se pued
 
 ### Auditoría
 
-Muestra los últimos 50 movimientos: crear, asignar, cambiar estado, cambiar prioridad, cerrar y reabrir. Cada movimiento indica quién lo hizo, el cambio (antes → después), la fecha y un enlace al ticket. Cuando el autor es **Sistema**, el cambio lo hizo una tarea automática (por ejemplo, el cierre automático de tickets Resueltos).
+Muestra los movimientos de los últimos 7 días: crear, asignar, cambiar estado, cambiar prioridad, cerrar y reabrir. Cada movimiento indica quién lo hizo, el cambio (antes → después), la fecha y un enlace al ticket. Cuando el autor es **Sistema**, el cambio lo hizo una tarea automática (por ejemplo, el cierre automático de tickets Resueltos).
 
 Cada semana se genera automáticamente un archivo `.txt` con los movimientos de la semana anterior, que queda guardado para el administrador.
 
