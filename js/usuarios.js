@@ -30,13 +30,6 @@ function aplicarBusqueda() {
 
 inputBuscar.addEventListener('input', aplicarBusqueda);
 
-const etiquetasRol = {
-    cliente: 'Cliente',
-    tecnico: 'Técnico',
-    admin: 'Administrador'
-};
-
-
 function dibujarUsuarios(lista) {
     listaUsuarios.innerHTML = '';
 

@@ -7,12 +7,7 @@ import { mostrarNotificacion } from './notificaciones.js';
 import { supabase } from './supabase-client.js';
 import { obtenerIniciales } from './barra-lateral.js';
 import { cargarPanelAdmin } from './perfil-admin.js';
-
-const etiquetasRol = {
-  cliente: 'Cliente',
-  tecnico: 'Técnico',
-  admin: 'Administrador'
-};
+import { etiquetasRol } from './etiquetas.js';
 
 const esCliente = rolActual === 'cliente';
 document.getElementById('header-placeholder').innerHTML = esCliente

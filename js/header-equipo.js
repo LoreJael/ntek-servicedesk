@@ -2,11 +2,7 @@ import { nombreUsuario } from './sesion.js';
 import { escaparHTML } from './seguridad.js';
 import { icono } from './iconos.js';
 import { crearLogo, crearEnlace, crearSeccion, obtenerIniciales } from './barra-lateral.js';
-
-const etiquetasRol = {
-  tecnico: "Técnico",
-  admin: "Administrador"
-};
+import { etiquetasRol } from './etiquetas.js';
 
 export function crearHeaderEquipo(rol) {
   const esAdmin = rol === "admin";

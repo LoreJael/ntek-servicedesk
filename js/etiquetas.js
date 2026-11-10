@@ -13,3 +13,9 @@ export const etiquetasPrioridad = {
   alta: "Alta",
   critica: "Crítica"
 };
+
+export const etiquetasRol = {
+  cliente: "Cliente",
+  tecnico: "Técnico",
+  admin: "Administrador"
+};
