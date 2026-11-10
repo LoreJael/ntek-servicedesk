@@ -48,9 +48,9 @@ La imagen usa `nginx:alpine` y sirve los archivos estáticos del proyecto. La co
 - [x] Etapa 3: Supabase y autenticación
 - [x] Etapa 4: Tickets — creación, listado con paginación de 10, detalle, filtros, gestión y "Tomar caso"
 - [x] Etapa 5: Interacción — listos: comentarios y notas internas, adjuntos con límites por tipo, auditoría (RF-12), historial en ambos detalles y "Aceptar cierre" (F-03). subticket vinculado (CA-08) y cierre automático a los 7 días. 
-- [x] Etapa 6: Panel y calidad — listos: indicadores (RF-10), estados de carga/vacío/error, validación en formularios y en la base, rediseño con identidad NTEK. En curso: Lighthouse y revisión responsive (360 / 768 / 1280 px)
-- [ ] Etapa 7: DevOps — listos: Docker, Render y cabeceras de seguridad en nginx (nota A en securityheaders.com). Pendiente: Cloudflare (dominio, HSTS, caché) y documentar el despliegue
-- [ ] Etapa 8: Cierre — manual de usuario, memoria técnica y respaldo SQL
+- [x] Etapa 6: Panel y calidad — indicadores (RF-10), estados de carga/vacío/error, validación en formularios y en la base, rediseño con identidad NTEK, Lighthouse (Performance ≥ 80 y Accessibility ≥ 90), revisión responsive (360 / 768 / 1280 px), prueba en Firefox e índices en la base
+- [ ] Etapa 7: DevOps — listos: Docker, Render, cabeceras de seguridad en nginx (nota A en securityheaders.com) y procedimiento de despliegue documentado. Pendiente: Cloudflare (subdominio de NTEK, HSTS y caché)
+- [ ] Etapa 8: Cierre — listos: manual de usuario, memoria técnica (borrador), respaldo SQL y restauración probada. Pendiente: revisión final de la memoria, demostración final y traspaso
 
 ## Validación cruzada
 Guía para probar el sistema como usuario: [docs/guia-validacion.md](docs/guia-validacion.md).
@@ -171,3 +171,7 @@ El respaldo de esquema y datos, y cómo restaurarlo, están en [docs/respaldo-re
 Proyecto desarrollado durante la práctica profesional.
 
 Despliegue:    https://ntek-servicedesk.onrender.com
+
+
+## Uso y licencia
+Uso interno de NTEK. Código desarrollado durante la práctica profesional de Loreto Pradel (Instituto Profesional Virginio Gómez) para NTEK. El repositorio es público para fines de revisión y evaluación; no se otorga licencia para reutilizar el código fuera de NTEK sin su autorización.

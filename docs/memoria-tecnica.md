@@ -23,7 +23,7 @@ El sistema es una aplicación web estática que se comunica directamente con Sup
   - `estados.js`: estados de vacío y de error recuperable.
   - `seguridad.js`: `escaparHTML()` para mostrar datos de usuario como texto.
   - `paginacion.js`, `reglas-adjuntos.js`, `notificaciones.js`, `eventos-auditoria.js`.
-- `supabase/migrations/`: esquema versionado (31 migraciones).
+- `supabase/migrations/`: esquema versionado (32 migraciones).
 - `docs/`: modelo de datos, pruebas, manual de usuario, respaldo y restauración.
 
 ### Recorrido de una consulta
@@ -50,6 +50,19 @@ El sistema es una aplicación web estática que se comunica directamente con Sup
 - Categorías permitidas: `Software`, `Hardware`, `Red`, `Cuenta`.
 - Largos: título de 5 a 120 caracteres, descripción de 10 a 2000 y comentario de 10 a 2000.
 - Fechas en UTC (`timestamptz`). La hora de Chile se aplica solo al mostrarlas.
+
+### Índices
+
+Postgres crea índices automáticos solo para las claves primarias y las columnas `unique`. El Performance Advisor de Supabase marcaba 7 claves foráneas sin índice; se crearon 9 índices (migración `indices_claves_foraneas`, 10-11):
+
+| Tabla | Columnas | Uso |
+|---|---|---|
+| `tickets` | `created_by`, `assigned_to` | Políticas RLS de cliente y técnico; "Tomar caso" |
+| `comments` | `ticket_id`, `author_id` | Conversación del detalle; borrado en cascada |
+| `attachments` | `ticket_id`, `uploaded_by` | Adjuntos del detalle; trigger de límites por tipo |
+| `audit_events` | `actor_id`, `entity_id`, `created_at` | Historial de cada ticket; vista de los últimos 7 días; tarea semanal |
+
+Después del cambio, el Advisor los marca como "sin uso": con los datos de demostración, Postgres prefiere leer la tabla completa. Los índices quedan listos para cuando el volumen crezca.
 
 ### Triggers y funciones principales
 
