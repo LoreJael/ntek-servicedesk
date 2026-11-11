@@ -163,7 +163,18 @@ Cada push a `main` vuelve a desplegar. Si el despliegue automático falla, usar 
 
 ### 6. Cloudflare
 
-Pendiente: requiere el dominio o subdominio de NTEK. Se usará para DNS, HTTPS con HSTS y caché.
+Pendiente: el subdominio lo entrega NTEK. Pasos para cuando llegue:
+
+| N.º | Dónde | Paso | Cómo se comprueba | Estado |
+|---|---|---|---|---|
+| 1 | Render → Settings → Custom Domains | Agregar el subdominio de NTEK | Render muestra el registro DNS que hay que crear | ⬜ |
+| 2 | Cloudflare → DNS | Crear un CNAME del subdominio hacia `ntek-servicedesk.onrender.com`, primero en "Solo DNS" (nube gris) | Render marca el dominio como verificado y emite el certificado | ⬜ |
+| 3 | Cloudflare → DNS | Activar el proxy (nube naranja) | El sitio carga por el subdominio | ⬜ |
+| 4 | Cloudflare → SSL/TLS | Modo "Full (strict)" | Candado válido y sin bucle de redirecciones | ⬜ |
+| 5 | Cloudflare → SSL/TLS → Edge Certificates | Activar "Always Use HTTPS" y HSTS (6 meses, sin `includeSubDomains` ni `preload`, porque el dominio es de NTEK) | securityheaders.com muestra `Strict-Transport-Security` | ⬜ |
+| 6 | Supabase → Authentication → URL Configuration | Agregar el subdominio en Site URL y Redirect URLs (mantener la URL de Render) | Registro y recuperación de contraseña funcionan desde el subdominio | ⬜ |
+| 7 | Cloudflare → Caching | Caché estándar para CSS/JS; purgar la caché después de cada despliegue | `cf-cache-status: HIT` en DevTools → Network | ⬜ |
+| 8 | `docs/pruebas.md` | Repetir CA-12 y la fila 5 de seguridad en el subdominio | Ambos en ✅ | ⬜ |
 
 ### Respaldo y datos de demostración
 
