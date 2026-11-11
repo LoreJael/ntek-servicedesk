@@ -287,7 +287,7 @@ Falso positivo: Lighthouse marca los botones "Ver detalle" de la Bandeja por con
 Detalle de equipo: Performance entre 77 y 80 (bajo el objetivo de 80). El `<h1>` aparece tarde porque la página hace 6 esperas seguidas a Supabase antes de mostrarse. Se pasaron comentarios, adjuntos e historial a `Promise.all`, sin mejora medible: la espera principal está antes (`getUser()` y las consultas iniciales). Pendiente para la semana 11: revisar la cadena de consultas, `preconnect` al CDN y caché con Cloudflare.
 **Resuelto el 02-11** (ver sección "RNF-02 — Consultas en paralelo en el detalle de equipo").
 
-Pendiente para la etapa de Cloudflare: compresión de archivos y caché de CSS/JS. Para la semana de calidad: `preconnect` al CDN de Supabase.
+Compresión revisada el 11-11: Render ya entrega CSS y JS comprimidos con Brotli (`content-encoding: br`) desde su propia red, así que no hace falta activarla en nginx. Pendiente para la etapa de Cloudflare: caché de CSS/JS. `preconnect` al CDN de Supabase: hecho el 10-11.
 
 ## RNF-02 — Carga en paralelo en el detalle de cliente (24-10)
 
@@ -496,6 +496,34 @@ Firefox (última versión estable), sitio en Render. El modo de diseño adaptabl
 ### Defectos encontrados
 
 | 1 | Detalle de cliente y de equipo | Firefox no asigna tipo MIME a los archivos `.md` (`archivo.type` llega vacío): primero `buscarGrupo` los rechazaba y, después de corregirlo, Storage los recibía como `application/octet-stream` y el bucket los rechazaba. | Función `obtenerTipoArchivo()` en `reglas-adjuntos.js` (si no hay tipo y la extensión es `.md`, usa `text/markdown`). Antes de subir se crea una copia del archivo con ese tipo (`new File(...)`), porque Supabase toma el tipo del archivo y no la opción `contentType`. | ✅ |
+
+## RNF-04 — Prueba en Edge (11-11)
+
+Microsoft Edge (última versión estable) en el PC, sitio en Render. Vista adaptable con Ctrl + Shift + M.
+
+| N.º | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Loreto (cliente) | Iniciar sesión | Llega al panel con su nombre y rol | ✅ |
+| 2 | Loreto (cliente) | Crear un ticket con Ñ y tildes en el título | Cooldown del botón; detalle con su ID y el texto bien escrito | ✅ |
+| 3 | Loreto (cliente) | Subir un PNG y un `.md` en el detalle | Se suben y aparecen en la lista | ✅ |
+| 4 | Loreto (cliente) | Descargar un archivo | Se descarga sin salir de la página | ✅ |
+| 5 | Diego (técnico) | Bandeja: filtrar y cambiar de página | Filtros y paginación funcionan | ✅ |
+| 6 | Diego (técnico) | Detalle: cambiar estado y guardar | El cambio aparece en el historial | ✅ |
+| 7 | Andrea (admin) | Abrir Usuarios y Auditoría | Las dos páginas cargan con datos | ✅ |
+| 8 | — | Consola durante los flujos anteriores | Sin errores | ✅ |
+| 9 | Loreto (cliente) | Recorrer panel y detalle en 360 px | Sin desplazamiento horizontal | ✅ |
+
+## RNF-04 — Prueba básica en Safari (iPhone, 11-11)
+
+Safari en iPhone, sitio en Render.
+
+| N.º | Cuenta | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | Loreto (cliente) | Iniciar sesión | Llega al panel con su nombre y rol | ✅ |
+| 2 | Loreto (cliente) | Abrir Mis tickets y un detalle | Lista y detalle cargan; tablas pasan a bloques con rótulos | ✅ |
+| 3 | Loreto (cliente) | Crear un ticket desde Nueva solicitud | Cooldown del botón; llega al detalle con su ID | ✅ |
+| 4 | Loreto (cliente) | Recorrer las pantallas en vertical | Sin desplazamiento horizontal ni texto cortado | ✅ |
+| 5 | Loreto (cliente) | Cerrar sesión | Vuelve al login | ✅ |
 
 ## CA-11 — Reconstruir el contenedor desde cero (03-11)
 
