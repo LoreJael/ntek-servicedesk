@@ -157,6 +157,7 @@ Ver [Ejecutar con Docker](#ejecutar-con-docker).
 2. Elegir **Docker** como entorno (en Settings aparece como Dockerfile Path: `./Dockerfile`). Branch: `main`.
 3. Plan: Free. No se necesitan variables de entorno.
 4. Crear el servicio y esperar el estado **Live**.
+5. Settings → Health Checks → Health Check Path: `/health`. Esa ruta la responde nginx con `200 ok` (bloque `location = /health` en `nginx.conf`); Render la consulta cada pocos segundos y antes de cada despliegue.
 
 Cada push a `main` vuelve a desplegar. Si el despliegue automático falla, usar Manual Deploy → Deploy latest commit. En el plan Free el servicio se suspende sin uso y la primera carga tarda unos segundos.
 
