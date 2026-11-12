@@ -72,12 +72,6 @@ if (ticketsResueltos.length > 0) {
   avisoPendientes.hidden = false;
 }
 
-const { data: datosComentarios, error: errorComentarios } = await supabase
-  .from('comments')
-  .select('id, ticket_id, body, author_id, created_at')
-  .order('created_at', { ascending: false })
-  .limit(4);
-
 const ultimosComentarios = datosComentarios || [];
 
 const listaTickets = document.querySelector('#lista-ultimos-tickets');
