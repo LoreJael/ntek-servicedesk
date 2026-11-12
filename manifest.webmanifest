@@ -1,0 +1,16 @@
+{
+  "name": "NTEK ServiceDesk Lite",
+  "short_name": "NTEK Soporte",
+  "description": "Solicitudes de soporte y seguimiento para clientes de NTEK",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f8f5",
+  "theme_color": "#0b2015",
+  "lang": "es",
+  "icons": [
+    { "src": "img/icono-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "img/icono-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "img/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

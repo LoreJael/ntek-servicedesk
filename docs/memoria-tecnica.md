@@ -184,7 +184,6 @@ Los dos procesos corren en la base con `pg_cron`, sin intervención del usuario.
 | Fechas en UTC en la base y hora de Chile al mostrar | Evita errores con cambios de horario. |
 | Cargas en paralelo con `Promise.all` en los detalles, la Bandeja y el panel de cliente | Lighthouse Mobile Performance del detalle de equipo subió de 77–80 a 95, y el del panel de cliente de 86 a 93. |
 | Repositorio público sin credenciales | Las cuentas de prueba se entregan por canal privado. |
-| La vista de Auditoría muestra los últimos 7 días | Indicación de NTEK; coincide con el archivo semanal, que guarda cada semana en Storage. |
 | La vista de Auditoría muestra los últimos 7 días | Indicación de NTEK; coincide con el archivo semanal, que guarda cada semana en Storage. Es solo un filtro de la vista: la tabla `audit_events` no se borra por esto (la limpieza la hace la tarea semanal, con los tickets cerrados hace más de 2 meses). |
 | Una política RLS por rol en cada tabla | Más legible y ya probada. Por eso se mantienen los avisos "Multiple Permissive Policies" del Performance Advisor: juntarlas implicaría reescribir todas las reglas de seguridad al cierre del proyecto. |
 
