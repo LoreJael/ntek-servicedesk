@@ -626,6 +626,32 @@ Probado con la red simulada en Slow 3G (DevTools → Network), para que la respu
 | 4 | Detalle de cliente | Cliente | Intentar subir un tipo no permitido | Mensaje de error; el botón sigue habilitado | ✅ |
 | 5 | Detalle de equipo | Técnico | Hacer 3 clics seguidos en subir adjunto | Un solo archivo subido | ✅ |
 
+## Rendimiento RLS — Políticas con `(select ...)` (11-11)
+
+El Performance Advisor de Supabase marcaba avisos "Auth RLS Initialization Plan" en `profiles`, `tickets`, `comments` y `attachments` (más de 10): las políticas llamaban a `auth.uid()`, `is_admin()`, `is_tecnico()` e `is_cliente()` una vez por cada fila revisada. Se cambiaron las 23 políticas de `public` con `alter policy` para envolver esas llamadas en `(select ...)`, de modo que Postgres las calcula una sola vez por consulta (migración `politicas_rls_initplan`). La lógica de acceso no cambia. Las 2 políticas de `storage.objects` quedaron igual (solo se evalúan al descargar o borrar un archivo).
+Performance Advisor: avisos "Auth RLS Initialization Plan" → 0. Pantallazos `S12_RLS_initplan_antes.png` y `S12_RLS_initplan_despues.png`.
+
+Los avisos "Multiple Permissive Policies" se mantienen a propósito: cada tabla tiene una política por rol (más legible y ya probada); juntarlas implicaría reescribir todas las reglas de seguridad al cierre del proyecto.
+
+Pruebas de aislamiento repetidas después del cambio, desde la consola del sitio en Render:
+
+| N.º | Cuenta | Prueba (desde la consola) | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 1 | Loreto (cliente) | `select` a `tickets` sin filtro | Solo tickets con `created_by` = su id | 17 tickets, todos propios (coincide con el resumen del panel) | ✅ |
+| 2 | Loreto (cliente) | `select` a `profiles` | Solo su perfil | 1 fila, su id | ✅ |
+| 3 | Loreto (cliente) | `select` a `comments` con `is_internal = true` | `[]` sin error | `data: []`, `error: null` | ✅ |
+| 4 | Loreto (cliente) | `select` a `audit_events` | Sin eventos `cambiar_prioridad` | 42 eventos, ninguno de prioridad | ✅ |
+| 5 | Loreto (cliente) | `update` de `status` a `cerrado` en un ticket propio | 0 filas, sin error | `data: []`, `error: null` | ✅ |
+| 6 | Diego (técnico) | `select` a `tickets` sin filtro | Solo asignados a él o sin asignar | 18 tickets, todos cumplen | ✅ |
+| 7 | Diego (técnico) | `select` a `profiles` | Solo clientes y su propio perfil | Todos cumplen | ✅ |
+| 8 | Diego (técnico) | `update` de `assigned_to` a Camila en un caso propio abierto | Error de RLS | 403, `42501` | ✅ |
+| 9 | Diego (técnico) | `update` de su propio `role` a `admin` | Error de RLS | Primero 500 (`42P17`, defecto 17); después de la corrección, 403 `42501` y el rol sigue `tecnico` | ✅ |
+| 10 | Diego (técnico) | `update` de su propio `phone` | 1 fila modificada | 200, 1 fila | ✅ |
+| 11 | Andrea (admin) | Conteo de `tickets` con `count: 'exact'` | Igual al `count(*)` del SQL Editor | 29 y 29 | ✅ |
+| 12 | Andrea (admin) | `select` a `audit_events` | Lee los eventos | 53 eventos | ✅ |
+| 13 | Andrea (admin) | Recorrer Bandeja, detalle, Auditoría y Usuarios | Todo carga sin errores | Como se esperaba | ✅ |
+
+
 ## Registro de defectos corregidos
 
 Resumen de los defectos encontrados durante el desarrollo y las pruebas. El detalle y las pruebas de cada uno están en la sección indicada.
@@ -648,3 +674,4 @@ Resumen de los defectos encontrados durante el desarrollo y las pruebas. El deta
 | 14 | 03-11 | Imagen Docker | Se publicaban archivos que no son de la app (`.vscode`, `README.md`, `package.json`...). | Agregados a `.dockerignore`. | CA-11 |
 | 15 | 04-11 | Restauración | Cargar el respaldo completo fallaba: buckets duplicados y columna de Storage inexistente en la CLI local. | Se carga solo hasta antes de la sección `storage`; los buckets los crean las migraciones. | Respaldo y restauración |
 | 16 | 04-11 | Documentación | El procedimiento usaba `127.0.0.1` dentro del contenedor. | `host.docker.internal` y carga sin `storage`. | Respaldo y restauración |
+| 17 | 11-11 | RLS (`profiles`) | `update_own_profile` comparaba el rol y el estado con subconsultas a la misma tabla `profiles`; Postgres detectaba recursión (`42P17`) y respondía 500 en cualquier `update` sobre el propio perfil. | Funciones `security definer` `rol_actual()` y `activo_actual()`; la política las usa en vez de las subconsultas (migración `corregir_recursion_update_own_profile`). | Rendimiento RLS — Políticas con `(select ...)` |
