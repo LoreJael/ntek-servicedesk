@@ -13,13 +13,24 @@ activarBotonCerrarSesion();
 const primerNombre = nombreUsuario.split(' ')[0];
 document.querySelector('#saludo').textContent = `Hola, ${primerNombre}`;
 
-const { data: datosUsuario } = await supabase.auth.getUser();
-const idUsuarioActual = datosUsuario.user.id;
+const [
+  { data: datosUsuario },
+  { data: datosTickets, error: errorTickets },
+  { data: datosComentarios, error: errorComentarios }
+] = await Promise.all([
+  supabase.auth.getUser(),
+  supabase
+    .from('tickets')
+    .select('id, title, status, updated_at, resuelto_at')
+    .order('updated_at', { ascending: false }),
+  supabase
+    .from('comments')
+    .select('id, ticket_id, body, author_id, created_at')
+    .order('created_at', { ascending: false })
+    .limit(4)
+]);
 
-const { data: datosTickets, error: errorTickets } = await supabase
-  .from('tickets')
-  .select('id, title, status, updated_at, resuelto_at')
-  .order('updated_at', { ascending: false });
+const idUsuarioActual = datosUsuario.user.id;
 
 const tickets = datosTickets || [];
 
