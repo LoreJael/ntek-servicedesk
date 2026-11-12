@@ -477,6 +477,9 @@ Medido en ventana de incógnito, modo Navigation, dispositivo Mobile, con la sim
 | 12 | Usuarios | Admin (Andrea) | 90 | 96 | 100 | 90 |
 | 13 | Auditoría | Admin (Andrea) | 90 | 95 | 100 | 90 |
 
+Panel de cliente, 11-11: las tres esperas seguidas (usuario, tickets y comentarios) pasaron a un solo `Promise.all`. Performance Mobile de 86 a 93 (pantallazos `S12_panel_cliente_lighthouse_antes.png` y `S12_panel_cliente_lighthouse_despues.png`). Lighthouse varía entre ejecuciones: el 03-11 la misma pantalla había dado 93.
+
+
 ## RNF-04 — Prueba básica en Firefox (03-11)
 
 Firefox (última versión estable), sitio en Render. El modo de diseño adaptable de Firefox también se abre con Ctrl + Shift + M.

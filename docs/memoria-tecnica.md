@@ -23,7 +23,7 @@ El sistema es una aplicación web estática que se comunica directamente con Sup
   - `estados.js`: estados de vacío y de error recuperable.
   - `seguridad.js`: `escaparHTML()` para mostrar datos de usuario como texto.
   - `paginacion.js`, `reglas-adjuntos.js`, `notificaciones.js`, `eventos-auditoria.js`.
-- `supabase/migrations/`: esquema versionado (32 migraciones).
+- `supabase/migrations/`: esquema versionado (34 migraciones).
 - `docs/`: modelo de datos, pruebas, manual de usuario, respaldo y restauración.
 
 ### Recorrido de una consulta
@@ -79,6 +79,7 @@ Después del cambio, el Advisor los marca como "sin uso": con los datos de demos
 | `nombres_equipo()` | Entrega al cliente solo los nombres del equipo, sin otros datos del perfil |
 | `cerrar_resueltos_vencidos()` | Cierra los tickets resueltos hace más de 7 días sin respuesta del cliente |
 | `borrar_auditoria_antigua()` | Elimina eventos de tickets cerrados sin cambios hace más de 2 meses |
+| `rol_actual()` / `activo_actual()` | Entregan el rol y el estado guardados del usuario actual; las usa `update_own_profile` para impedir que alguien cambie su propio rol o estado |
 
 ### Cambios respecto al modelo orientativo de los requisitos
 
@@ -129,6 +130,8 @@ Lecciones del modelado:
 - La RLS limita **filas**, no columnas. Por eso el `with check` de `update_own_profile` compara `role` y `active` con los valores actuales.
 - Las políticas permisivas se suman: dos políticas de update duplicadas abrían más permisos de los esperados y se eliminaron.
 - Si falla el `using`, la consulta devuelve 0 filas sin error; si falla el `with check`, la base responde con error.
+- Una política no puede consultar su propia tabla: el `with check` de `update_own_profile` leía `profiles` y Postgres respondía con recursión infinita (`42P17`). Se resolvió con funciones `security definer` (11-11).
+- Las llamadas a `auth.uid()` y a las funciones de rol van envueltas en `(select ...)`, para que Postgres las calcule una vez por consulta y no una vez por fila (aviso "Auth RLS Initialization Plan" del Performance Advisor, 11-11).
 
 ### 3.3 Archivos (Storage)
 
@@ -179,10 +182,11 @@ Los dos procesos corren en la base con `pg_cron`, sin intervención del usuario.
 | Link de descarga firmado de 20 segundos | El archivo no queda accesible por una URL permanente. |
 | Paginación de 10 en listados y máximo 5 en "Alta prioridad abiertos" | Indicación de NTEK: el panel muestra solo lo necesario. |
 | Fechas en UTC en la base y hora de Chile al mostrar | Evita errores con cambios de horario. |
-| Cargas en paralelo con `Promise.all` en los detalles | Lighthouse Mobile Performance del detalle de equipo subió de 77–80 a 95. |
+| Cargas en paralelo con `Promise.all` en los detalles, la Bandeja y el panel de cliente | Lighthouse Mobile Performance del detalle de equipo subió de 77–80 a 95, y el del panel de cliente de 86 a 93. |
 | Repositorio público sin credenciales | Las cuentas de prueba se entregan por canal privado. |
 | La vista de Auditoría muestra los últimos 7 días | Indicación de NTEK; coincide con el archivo semanal, que guarda cada semana en Storage. |
 | La vista de Auditoría muestra los últimos 7 días | Indicación de NTEK; coincide con el archivo semanal, que guarda cada semana en Storage. Es solo un filtro de la vista: la tabla `audit_events` no se borra por esto (la limpieza la hace la tarea semanal, con los tickets cerrados hace más de 2 meses). |
+| Una política RLS por rol en cada tabla | Más legible y ya probada. Por eso se mantienen los avisos "Multiple Permissive Policies" del Performance Advisor: juntarlas implicaría reescribir todas las reglas de seguridad al cierre del proyecto. |
 
 ## 6. Pendientes conocidos
 
