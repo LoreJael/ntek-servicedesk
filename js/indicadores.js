@@ -12,7 +12,7 @@ activarBotonCerrarSesion();
 
 const { data: tickets, error } = await supabase
   .from('tickets')
-  .select('id, title, status, priority, created_at')
+  .select('id, title, status, priority, created_at, resuelto_at')
   .order('created_at', { ascending: false });
 
 const contenido = document.querySelector('#indicadores-contenido');
@@ -66,6 +66,18 @@ function pintarTickets(contenedor, lista, mensajeVacio) {
   contenedor.appendChild(tabla);
 }
 
+function formatearDuracion(milisegundos) {
+  const horasTotales = Math.round(milisegundos / (1000 * 60 * 60));
+  const dias = Math.floor(horasTotales / 24);
+  const horas = horasTotales % 24;
+
+  if (dias === 0) {
+    return `${horas} h`;
+  }
+
+  return `${dias} d ${horas} h`;
+}
+
 if (error) {
   console.error(error);
   mostrarErrorRecuperable(contenido, 'No pudimos cargar los indicadores.', () => location.reload());
@@ -103,6 +115,29 @@ if (error) {
 
     resumenPorPrioridad.appendChild(item);
   });
+
+  const tiempoPromedio = document.querySelector('#tiempo-promedio');
+
+  const ticketsResueltos = tickets.filter((ticket) =>
+    (ticket.status === 'resuelto' || ticket.status === 'cerrado') && ticket.resuelto_at
+  );
+
+  if (ticketsResueltos.length === 0) {
+    mostrarEstadoVacio(tiempoPromedio, 'Aún no hay tickets resueltos para calcular este indicador.');
+  } else {
+    let sumaMilisegundos = 0;
+
+    ticketsResueltos.forEach((ticket) => {
+      sumaMilisegundos += new Date(ticket.resuelto_at) - new Date(ticket.created_at);
+    });
+
+    const promedio = sumaMilisegundos / ticketsResueltos.length;
+
+    tiempoPromedio.innerHTML = `
+      <p class="resumen-numero">${formatearDuracion(promedio)}</p>
+      <p class="resumen-etiqueta">Calculado sobre ${ticketsResueltos.length} tickets resueltos o cerrados</p>
+    `;
+  }
 
   const listaAltaPrioridad = document.querySelector('#lista-alta-prioridad');
   const listaRecientes = document.querySelector('#lista-recientes');
