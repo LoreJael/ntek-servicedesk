@@ -528,6 +528,20 @@ Safari en iPhone, sitio en Render.
 | 4 | Loreto (cliente) | Recorrer las pantallas en vertical | Sin desplazamiento horizontal ni texto cortado | ✅ |
 | 5 | Loreto (cliente) | Cerrar sesión | Vuelve al login | ✅ |
 
+## PWA instalable (12-11)
+
+Sitio en Render (HTTPS). Se agregó `manifest.webmanifest` (nombre, colores e íconos de 192 y 512 px), un service worker (`sw.js`) que va primero a la red y guarda copia solo de los archivos propios del sitio (nunca las respuestas de Supabase), y `js/pwa.js`, que lo registra en las 17 páginas.
+
+| N.º | Dispositivo | Acción | Resultado esperado | Estado |
+|---|---|---|---|---|
+| 1 | PC (Chrome) | DevTools → Application → Manifest | Nombre, colores e íconos sin errores | ✅  |
+| 2 | PC (Chrome) | DevTools → Application → Service workers | `sw.js` activo ("activated and is running") | ✅  |
+| 3 | PC (Chrome) | Consola al recorrer las pantallas | Sin errores (incluida la CSP) | ✅  |
+| 4 | PC (Chrome) | Instalar desde la barra de direcciones | Se abre en ventana propia con barra verde y acceso en el menú Inicio | ✅  |
+| 5 | PC (app instalada) | Iniciar sesión y recorrer pantallas | Datos cargan igual que en el navegador | ✅  |
+| 6 | PC (Chrome) | Network en modo Offline y recargar una pantalla privada ya visitada (Mis tickets) | La página abre desde la copia guardada (no aparece el error de Chrome), pero queda en la pantalla de carga: `protegerRuta` no puede verificar la sesión sin Supabase, así que no se muestra contenido privado | ✅ |
+No se probó la instalación en teléfono (sin espacio disponible en el equipo de prueba). Las páginas incluyen `apple-touch-icon` para que el ícono se vea bien si se agrega a la pantalla de inicio desde Safari en iPhone.
+
 ## CA-11 — Reconstruir el contenedor desde cero (03-11)
 
 Construido en local con `docker build --no-cache` (sin usar capas guardadas de builds anteriores) y ejecutado con `docker run -p 8080:80`, siguiendo solo los pasos del README.

@@ -186,10 +186,10 @@ Los dos procesos corren en la base con `pg_cron`, sin intervención del usuario.
 | Repositorio público sin credenciales | Las cuentas de prueba se entregan por canal privado. |
 | La vista de Auditoría muestra los últimos 7 días | Indicación de NTEK; coincide con el archivo semanal, que guarda cada semana en Storage. Es solo un filtro de la vista: la tabla `audit_events` no se borra por esto (la limpieza la hace la tarea semanal, con los tickets cerrados hace más de 2 meses). |
 | Una política RLS por rol en cada tabla | Más legible y ya probada. Por eso se mantienen los avisos "Multiple Permissive Policies" del Performance Advisor: juntarlas implicaría reescribir todas las reglas de seguridad al cierre del proyecto. |
+| Service worker que va primero a la red y solo guarda archivos propios | La app instalada siempre muestra la última versión publicada; las consultas a Supabase no pasan por el caché, así que no quedan datos de tickets ni de usuarios guardados en el navegador. |
 
 ## 6. Pendientes conocidos
 
 - **Cloudflare (etapa 7):** NTEK entregará un subdominio; con él se configuran HTTPS con HSTS y caché, y se cierra CA-12.
 - **Plan Free de Render:** el servicio se suspende sin uso y tarda en responder la primera vez.
 - **Supabase CLI:** se mantiene la versión v2.117.0 hasta la entrega, para no cambiar el entorno con que se probó la restauración.
-- **Opcional:** PWA instalable, solo si alcanza el tiempo.

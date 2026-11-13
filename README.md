@@ -48,7 +48,7 @@ La imagen usa `nginx:alpine` y sirve los archivos estáticos del proyecto. La co
 - [x] Etapa 3: Supabase y autenticación
 - [x] Etapa 4: Tickets — creación, listado con paginación de 10, detalle, filtros, gestión y "Tomar caso"
 - [x] Etapa 5: Interacción — listos: comentarios y notas internas, adjuntos con límites por tipo, auditoría (RF-12), historial en ambos detalles y "Aceptar cierre" (F-03). subticket vinculado (CA-08) y cierre automático a los 7 días. 
-- [x] Etapa 6: Panel y calidad — indicadores (RF-10), estados de carga/vacío/error, validación en formularios y en la base, rediseño con identidad NTEK, Lighthouse (Performance ≥ 80 y Accessibility ≥ 90), revisión responsive (360 / 768 / 1280 px), prueba en Firefox e índices en la base
+- [x] Etapa 6: Panel y calidad — indicadores (RF-10), estados de carga/vacío/error, validación en formularios y en la base, rediseño con identidad NTEK, Lighthouse (Performance ≥ 80 y Accessibility ≥ 90), revisión responsive (360 / 768 / 1280 px), prueba en Firefox e índices en la base, PWA instalable (manifest y service worker)
 - [ ] Etapa 7: DevOps — listos: Docker, Render, cabeceras de seguridad en nginx (nota A en securityheaders.com) y procedimiento de despliegue documentado. Pendiente: Cloudflare (subdominio de NTEK, HSTS y caché)
 - [ ] Etapa 8: Cierre — listos: manual de usuario, memoria técnica (borrador), respaldo SQL y restauración probada. Pendiente: revisión final de la memoria, demostración final y traspaso
 
