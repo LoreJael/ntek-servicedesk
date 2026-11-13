@@ -103,7 +103,7 @@ Además de la descripción, la conversación, los adjuntos y el historial comple
 
 ### Indicadores
 
-Totales de tickets por estado y por prioridad, los 5 tickets de **Alta prioridad abiertos** y los **Tickets recientes**. Cada tarjeta abre la Bandeja con ese filtro aplicado. El técnico ve los indicadores solo de los tickets que puede ver en su Bandeja.
+Totales de tickets por estado y por prioridad, el **Tiempo promedio de resolución** (desde que se crea un ticket hasta que pasa a Resuelto), los 5 tickets de **Alta prioridad abiertos** y los **Tickets recientes**. Cada tarjeta de totales abre la Bandeja con ese filtro aplicado. El técnico ve los indicadores solo de los tickets que puede ver en su Bandeja.
 
 ### Perfil
 

@@ -668,6 +668,21 @@ Pruebas de aislamiento repetidas después del cambio, desde la consola del sitio
 | 12 | Andrea (admin) | `select` a `audit_events` | Lee los eventos | 53 eventos | ✅ |
 | 13 | Andrea (admin) | Recorrer Bandeja, detalle, Auditoría y Usuarios | Todo carga sin errores | Como se esperaba | ✅ |
 
+## RF-10 — Tiempo promedio de resolución (13-11)
+
+Nueva tarjeta en `equipo/indicadores.html`: promedio del tiempo entre `created_at` y `resuelto_at` de los tickets en estado Resuelto o Cerrado. Se usa `tickets.resuelto_at` (trigger `tickets_resuelto_at`, 27-10) y no `audit_events`, porque `borrar_auditoria_antigua()` elimina la auditoría de los tickets cerrados hace más de 2 meses y el indicador iría perdiendo datos. La RLS decide qué tickets entran al cálculo (admin: todos; técnico: asignados a él y sin asignar).
+
+Los tickets que ya estaban Cerrados cuando se creó `resuelto_at` habían quedado con la columna vacía. Se rellenaron una sola vez con la fecha del último evento `despues = 'resuelto'` de `audit_events`. Durante ese `update` se desactivó el trigger `tickets_actualizar_updated_at`, para no cambiar el `updated_at` de esos tickets (migración `rellenar_resuelto_at_desde_auditoria`). Los tickets cerrados sin haber pasado por Resuelto, o anteriores al trigger de auditoría (14-10), quedan fuera del promedio.
+
+| N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
+|---|---|---|---|---|---|
+| 1 | Diagnóstico antes del relleno: Resueltos y Cerrados con y sin `resuelto_at` (SQL Editor) | — | Cerrados antiguos sin `resuelto_at` | [7] cerrados sin fecha | ✅ |
+| 2 | Repetir el diagnóstico después del relleno | — | Solo quedan sin fecha los tickets sin evento `resuelto` en la auditoría | [3] sin fecha | ✅ |
+| 3 | Revisar `updated_at` de los tickets rellenados | — | Sin cambios (trigger desactivado durante el `update`) | Sin cambios | ✅ |
+| 4 | Comparar la tarjeta con `avg(resuelto_at - created_at)` en el SQL Editor | Admin (Andrea) | Misma cantidad de tickets y mismo promedio (±1 h por redondeo) | [8] tickets, [24 d 14 h] en ambos | ✅ |
+| 5 | Abrir Indicadores | Técnico (Diego) | Promedio calculado solo sobre sus tickets (la RLS filtra) | [4] tickets, [25 d 10 h] | ✅ |
+| 6 | Resolver un ticket y recargar Indicadores | Técnico (Diego) | La cantidad de tickets considerados sube en 1 | Como se esperaba | ✅ |
+| 7 | Consola durante las pruebas anteriores | Admin / Técnico | Sin errores | Sin errores | ✅ |
 
 ## Registro de defectos corregidos
 

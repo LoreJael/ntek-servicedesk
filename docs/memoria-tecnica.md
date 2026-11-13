@@ -23,7 +23,7 @@ El sistema es una aplicación web estática que se comunica directamente con Sup
   - `estados.js`: estados de vacío y de error recuperable.
   - `seguridad.js`: `escaparHTML()` para mostrar datos de usuario como texto.
   - `paginacion.js`, `reglas-adjuntos.js`, `notificaciones.js`, `eventos-auditoria.js`.
-- `supabase/migrations/`: esquema versionado (34 migraciones).
+- `supabase/migrations/`: esquema versionado (35 migraciones).
 - `docs/`: modelo de datos, pruebas, manual de usuario, respaldo y restauración.
 
 ### Recorrido de una consulta
@@ -86,7 +86,7 @@ Después del cambio, el Advisor los marca como "sin uso": con los datos de demos
 | Cambio | Justificación |
 |---|---|
 | `tickets.ticket_origen_id` (único, referencia a `tickets`) | Vincula el subticket con su ticket original (CA-08). Al ser único, cada ticket tiene como máximo un subticket. |
-| `tickets.resuelto_at` | Permite calcular el plazo de 7 días para protestar o para el cierre automático. |
+| `tickets.resuelto_at` | Permite calcular el plazo de 7 días para protestar o para el cierre automático, y el tiempo promedio de resolución del panel de indicadores. |
 | `tickets.contexto_origen` (jsonb) | Copia del historial y de los comentarios públicos del original, para que el subticket conserve el contexto aunque se archive la auditoría. |
 | `audit_events.entity` en vez de `entity_type` | Mismo propósito, nombre más corto. `entity_id` no es una FK real, porque depende de la entidad. |
 | Sin borrado de usuarios ni de tickets | Se desactiva en vez de eliminar (CA-09), para conservar el historial. |
@@ -187,6 +187,7 @@ Los dos procesos corren en la base con `pg_cron`, sin intervención del usuario.
 | La vista de Auditoría muestra los últimos 7 días | Indicación de NTEK; coincide con el archivo semanal, que guarda cada semana en Storage. Es solo un filtro de la vista: la tabla `audit_events` no se borra por esto (la limpieza la hace la tarea semanal, con los tickets cerrados hace más de 2 meses). |
 | Una política RLS por rol en cada tabla | Más legible y ya probada. Por eso se mantienen los avisos "Multiple Permissive Policies" del Performance Advisor: juntarlas implicaría reescribir todas las reglas de seguridad al cierre del proyecto. |
 | Service worker que va primero a la red y solo guarda archivos propios | La app instalada siempre muestra la última versión publicada; las consultas a Supabase no pasan por el caché, así que no quedan datos de tickets ni de usuarios guardados en el navegador. |
+| Tiempo promedio de resolución calculado con `tickets.resuelto_at`, no con `audit_events` | La limpieza de la tarea semanal borra la auditoría de los tickets cerrados hace más de 2 meses; con `resuelto_at` el indicador no pierde datos. Los tickets cerrados sin pasar por Resuelto quedan fuera del promedio. |
 
 ## 6. Pendientes conocidos
 
