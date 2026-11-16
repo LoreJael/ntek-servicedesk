@@ -672,17 +672,18 @@ Pruebas de aislamiento repetidas después del cambio, desde la consola del sitio
 
 Nueva tarjeta en `equipo/indicadores.html`: promedio del tiempo entre `created_at` y `resuelto_at` de los tickets en estado Resuelto o Cerrado. Se usa `tickets.resuelto_at` (trigger `tickets_resuelto_at`, 27-10) y no `audit_events`, porque `borrar_auditoria_antigua()` elimina la auditoría de los tickets cerrados hace más de 2 meses y el indicador iría perdiendo datos. La RLS decide qué tickets entran al cálculo (admin: todos; técnico: asignados a él y sin asignar).
 
-Los tickets que ya estaban Cerrados cuando se creó `resuelto_at` habían quedado con la columna vacía. Se rellenaron una sola vez con la fecha del último evento `despues = 'resuelto'` de `audit_events`. Durante ese `update` se desactivó el trigger `tickets_actualizar_updated_at`, para no cambiar el `updated_at` de esos tickets (migración `rellenar_resuelto_at_desde_auditoria`). Los tickets cerrados sin haber pasado por Resuelto, o anteriores al trigger de auditoría (14-10), quedan fuera del promedio.
+Los tickets que ya estaban Cerrados cuando se creó `resuelto_at` habían quedado con la columna vacía. Se rellenaron una sola vez con la fecha del último evento `despues = 'resuelto'` de `audit_events`. Durante ese `update` se desactivó el trigger `tickets_actualizar_updated_at`, para no cambiar el `updated_at` de esos tickets (migración `rellenar_resuelto_at_desde_auditoria`)., El 16-11 se descubrió que esto no bastó: la tabla tenía un segundo trigger de `updated_at` (`set_tickets_updated_at`) que siguió activo y cambió la fecha de los 4 tickets rellenados (defecto 18). Los tickets cerrados sin haber pasado por Resuelto, o anteriores al trigger de auditoría (14-10), quedan fuera del promedio.
 
 | N.º | Prueba | Cuenta | Resultado esperado | Resultado obtenido | Estado |
 |---|---|---|---|---|---|
 | 1 | Diagnóstico antes del relleno: Resueltos y Cerrados con y sin `resuelto_at` (SQL Editor) | — | Cerrados antiguos sin `resuelto_at` | [7] cerrados sin fecha | ✅ |
 | 2 | Repetir el diagnóstico después del relleno | — | Solo quedan sin fecha los tickets sin evento `resuelto` en la auditoría | [3] sin fecha | ✅ |
-| 3 | Revisar `updated_at` de los tickets rellenados | — | Sin cambios (trigger desactivado durante el `update`) | Sin cambios | ✅ |
+| 3 | Revisar `updated_at` de los tickets rellenados | — | Sin cambios (trigger desactivado durante el `update`) | Cambiaron a la hora del relleno: el trigger repetido `set_tickets_updated_at` siguió activo. Corregido el 16-11 (defecto 18) | ✅ |
 | 4 | Comparar la tarjeta con `avg(resuelto_at - created_at)` en el SQL Editor | Admin (Andrea) | Misma cantidad de tickets y mismo promedio (±1 h por redondeo) | [8] tickets, [24 d 14 h] en ambos | ✅ |
 | 5 | Abrir Indicadores | Técnico (Diego) | Promedio calculado solo sobre sus tickets (la RLS filtra) | [4] tickets, [25 d 10 h] | ✅ |
 | 6 | Resolver un ticket y recargar Indicadores | Técnico (Diego) | La cantidad de tickets considerados sube en 1 | Como se esperaba | ✅ |
 | 7 | Consola durante las pruebas anteriores | Admin / Técnico | Sin errores | Sin errores | ✅ |
+| 8 | Triggers de `tickets` y horas de `updated_at` repetidas, después de la corrección (SQL Editor) | — | Un solo trigger de `updated_at`; ya no aparecen los 4 tickets con la hora del relleno | 3 triggers (`tickets_actualizar_updated_at`, `tickets_auditoria`, `tickets_resuelto_at`); la hora del 13-11 ya no aparece | ✅ |
 
 ## Registro de defectos corregidos
 
@@ -707,3 +708,4 @@ Resumen de los defectos encontrados durante el desarrollo y las pruebas. El deta
 | 15 | 04-11 | Restauración | Cargar el respaldo completo fallaba: buckets duplicados y columna de Storage inexistente en la CLI local. | Se carga solo hasta antes de la sección `storage`; los buckets los crean las migraciones. | Respaldo y restauración |
 | 16 | 04-11 | Documentación | El procedimiento usaba `127.0.0.1` dentro del contenedor. | `host.docker.internal` y carga sin `storage`. | Respaldo y restauración |
 | 17 | 11-11 | RLS (`profiles`) | `update_own_profile` comparaba el rol y el estado con subconsultas a la misma tabla `profiles`; Postgres detectaba recursión (`42P17`) y respondía 500 en cualquier `update` sobre el propio perfil. | Funciones `security definer` `rol_actual()` y `activo_actual()`; la política las usa en vez de las subconsultas (migración `corregir_recursion_update_own_profile`). | Rendimiento RLS — Políticas con `(select ...)` |
+| 18 | 16-11 | Base de datos (triggers) | `tickets` tenía dos triggers de `updated_at` (`set_tickets_updated_at`, del 22-09, y `tickets_actualizar_updated_at`, del 29-09). En el uso normal no se notaba, pero el relleno de `resuelto_at` del 13-11 desactivó solo uno y el otro cambió el `updated_at` de 4 tickets cerrados. | Se borraron `set_tickets_updated_at` y `set_updated_at()`; el `updated_at` de los 4 tickets se restauró con la fecha de su último evento de auditoría, o con su `created_at` en el único sin auditoría (migración `quitar_trigger_updated_at_duplicado`). | RF-10 — Tiempo promedio de resolución (13-11) |
