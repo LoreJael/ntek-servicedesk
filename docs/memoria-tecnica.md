@@ -13,6 +13,7 @@ El sistema es una aplicación web estática que se comunica directamente con Sup
 | Procesos programados | `pg_cron`, `pg_net` y Edge Function `archivar-auditoria` | Cierre automático de tickets resueltos y archivo semanal de auditoría |
 | Servidor web | Docker con `nginx:alpine` | Sirve los archivos estáticos, aplica cabeceras de seguridad y la página 404 propia |
 | Hosting | Render (plan Free) | Despliegue automático en cada push a `main` |
+| App instalable (PWA) | `manifest.webmanifest`, `sw.js` y `js/pwa.js` | Permite instalar la app; el service worker va primero a la red y solo guarda archivos propios |
 
 ### Organización del código
 
@@ -22,9 +23,11 @@ El sistema es una aplicación web estática que se comunica directamente con Sup
   - `barra-lateral.js`, `header-cliente.js`, `header-equipo.js`: navegación según el rol.
   - `estados.js`: estados de vacío y de error recuperable.
   - `seguridad.js`: `escaparHTML()` para mostrar datos de usuario como texto.
-  - `paginacion.js`, `reglas-adjuntos.js`, `notificaciones.js`, `eventos-auditoria.js`.
-- `supabase/migrations/`: esquema versionado (35 migraciones).
-- `docs/`: modelo de datos, pruebas, manual de usuario, respaldo y restauración.
+  - `etiquetas.js`: textos en pantalla de estado, prioridad y rol (centralizados el 10-11).
+  - `iconos.js`: íconos SVG de la navegación y del logo.
+  - `paginacion.js`, `reglas-adjuntos.js`, `notificaciones.js`, `eventos-auditoria.js`, `pwa.js`.
+- `supabase/migrations/`: esquema versionado (36 migraciones).
+- `docs/`: historias de usuario, mapa de pantallas, modelo de datos y modelo relacional, glosario, pruebas, guía de validación, manual de usuario, respaldo y restauración.
 
 ### Recorrido de una consulta
 
@@ -48,7 +51,7 @@ El sistema es una aplicación web estática que se comunica directamente con Sup
 - Estados permitidos: `nuevo`, `en_revision`, `en_progreso`, `en_espera`, `resuelto`, `cerrado`.
 - Prioridades permitidas: `baja`, `media`, `alta`, `critica`.
 - Categorías permitidas: `Software`, `Hardware`, `Red`, `Cuenta`.
-- Largos: título de 5 a 120 caracteres, descripción de 10 a 2000 y comentario de 10 a 2000.
+- Largos: título de 5 a 120 caracteres, descripción de 10 a 2000 y comentario de 10 a 2000 (la restricción de comentarios se creó con `not valid`: aplica a los comentarios nuevos, no revisa los anteriores).
 - Fechas en UTC (`timestamptz`). La hora de Chile se aplica solo al mostrarlas.
 
 ### Índices
