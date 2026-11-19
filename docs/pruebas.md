@@ -612,7 +612,7 @@ Restauración del respaldo `2026-11-03_datos.sql` en un Supabase local (`npx sup
 
 | N.º | Prueba | Resultado esperado | Estado |
 |---|---|---|---|
-| 1 | `npx supabase start` | Se aplican las 31 migraciones sin errores (estructura, RLS, funciones, triggers y buckets) | ✅ |
+| 1 | `npx supabase start` | Se aplican las 36 migraciones sin errores (estructura, RLS, funciones, triggers y buckets) | ✅ |
 | 2 | Cargar los datos con `psql` (hasta antes de la sección `storage`) | Sin errores; `COPY` con 7 usuarios de Auth, 7 perfiles, 29 tickets, 13 adjuntos, 46 eventos y 15 comentarios | ✅ |
 | 3 | Comparar conteos entre la nube y local | `auth.users`, `profiles`, `tickets`, `comments` y `attachments` iguales | ✅ |
 | 4 | `audit_events`: nube 48, local 46 | Diferencia explicada: 2 eventos `cerrar` del cierre automático (pg_cron) del 04-11 a las 04:00, posteriores al respaldo | ✅ |
