@@ -1,5 +1,11 @@
 {
+    "scripts": {
+    "test": "vitest run"
+  },
+  
   "devDependencies": {
-    "supabase": "^2.117.0"
+    "@supabase/supabase-js": "^2.119.2",
+    "supabase": "^2.117.0",
+    "vitest": "^5.1.1"
   }
 }
