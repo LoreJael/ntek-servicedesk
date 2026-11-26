@@ -7,4 +7,11 @@ describe('Conexión a la base de prueba', () => {
 
     expect(error).toBeNull();
   });
+
+  it('devuelve error al consultar una tabla inexistente', async () => {
+    const { error } = await supabaseAdmin.from('tablas').select('id').limit(1);
+
+    expect(error).not.toBeNull();
+  });
+
 });
