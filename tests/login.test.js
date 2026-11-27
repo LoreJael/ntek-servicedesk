@@ -23,4 +23,11 @@ describe('Usuarios de prueba y login', () => {
 
     expect(data.user.email).toBe(cliente.correo);
   });
+
+  it('rechaza el inicio de sesión con contraseña incorrecta', async () => {
+    const cliente = await crearUsuario('cliente');
+
+    await expect(iniciarSesion(cliente.correo, 'ContrasenaIncorrecta1')).rejects.toThrow();
+  });
+
 });

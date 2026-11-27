@@ -27,14 +27,14 @@ export async function crearUsuario(rol) {
   return { id: data.user.id, correo };
 }
 
-export async function iniciarSesion(correo) {
+export async function iniciarSesion(correo, contrasena = CONTRASENA_PRUEBA) {
   const cliente = createClient(URL_PRUEBA, LLAVE_PUBLICA_PRUEBA, {
     auth: { persistSession: false }
   });
 
   const { error } = await cliente.auth.signInWithPassword({
     email: correo,
-    password: CONTRASENA_PRUEBA
+    password: contrasena
   });
 
   if (error) throw error;

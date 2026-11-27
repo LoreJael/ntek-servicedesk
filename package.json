@@ -1,6 +1,6 @@
 {
     "scripts": {
-    "test": "vitest run"
+    "test": "vitest run --no-file-parallelism"
   },
   
   "devDependencies": {
