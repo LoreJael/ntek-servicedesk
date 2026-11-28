@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { crearUsuario, iniciarSesion } from './usuarios-prueba.js';
 import { supabaseAdmin } from './supabase-prueba.js';
+import { datosTicketValido } from './tickets-prueba.js';
 
 function datosTicketValido(idCliente) {
     return {
